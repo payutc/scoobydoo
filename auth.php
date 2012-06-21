@@ -5,7 +5,7 @@ session_start();
 if(isset($_GET["logout"]))
 {
 	session_destroy();
-	header("Location: ".$MADMIN->getCasUrl()."/logout?url=".$CONF['casper_url']);
+	header("Location: ".$MADMIN->getCasUrl()."/logout?url=".$CONF['scoobydoo_url']);
   exit();
 }
 
@@ -20,7 +20,7 @@ if(isset($_SESSION["loged"]) && $_SESSION["loged"] == 1) {
 		} catch (Exception $e) {
 				session_destroy();
 				// On envoie sur le cas
-				header("Location: ".$MADMIN->getCasUrl()."/login?service=".$CONF['casper_url']);
+				header("Location: ".$MADMIN->getCasUrl()."/login?service=".$CONF['scoobydoo_url']);
 				exit();
 		}
 		
@@ -28,7 +28,7 @@ if(isset($_SESSION["loged"]) && $_SESSION["loged"] == 1) {
 		// On délogue par sécurité
 		session_destroy();
 		// On envoie sur le cas
-		header("Location: ".$MADMIN->getCasUrl()."/login?service=".$CONF['casper_url']);
+		header("Location: ".$MADMIN->getCasUrl()."/login?service=".$CONF['scoobydoo_url']);
 		exit();
 	}
 } else {
@@ -38,7 +38,7 @@ if(isset($_SESSION["loged"]) && $_SESSION["loged"] == 1) {
 		// Connexion soap
 		$ticket = $_GET["ticket"];
 		try {
-			$code = $MADMIN->loginCas($ticket, $CONF['casper_url']);
+			$code = $MADMIN->loginCas($ticket, $CONF['scoobydoo_url']);
 		} catch (Exception $e) {
 				echo "<pre>".$e."</pre>";
 		}
@@ -47,7 +47,7 @@ if(isset($_SESSION["loged"]) && $_SESSION["loged"] == 1) {
 			$_SESSION['cookies'] = $MADMIN->_cookies;
 			$_SESSION['loged'] = 1;
 			// Pas obligatoire mais c'est mieux pour virer le ticket de la barre d'adresse
-			header("Location: ".$CONF['casper_url']);
+			header("Location: ".$CONF['scoobydoo_url']);
 		  	exit();
 		} else {
 			echo $MADMIN->getErrorDetail($code);
@@ -56,7 +56,7 @@ if(isset($_SESSION["loged"]) && $_SESSION["loged"] == 1) {
 	} else {
 		//2. On renvoie sur le cas
 		session_destroy();
-		header("Location: ".$MADMIN->getCasUrl()."/login?service=".$CONF['casper_url']);
+		header("Location: ".$MADMIN->getCasUrl()."/login?service=".$CONF['scoobydoo_url']);
 		exit();
 	}
 }
