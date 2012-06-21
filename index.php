@@ -13,7 +13,8 @@ require "view.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le styles -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">  
+	<link href="css/jqtree.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -68,8 +69,8 @@ require "view.php";
           <div class="row-fluid">
             <div class="span4">
               <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
+              <div id="tree1"></div>
+              <p></p>
             </div><!--/span-->
             <div class="span4">
               <h2>Heading</h2>
@@ -96,7 +97,7 @@ require "view.php";
             <div class="span4">
               <h2>Heading</h2>
               <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
+              <p><button id="tojson" class="btn">to json</button></p>
             </div><!--/span-->
           </div><!--/row-->
         </div><!--/span-->
@@ -109,19 +110,9 @@ require "view.php";
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap-transition.js"></script>
-    <script src="js/bootstrap-alert.js"></script>
-    <script src="js/bootstrap-modal.js"></script>
-    <script src="js/bootstrap-dropdown.js"></script>
-    <script src="js/bootstrap-scrollspy.js"></script>
-    <script src="js/bootstrap-tab.js"></script>
-    <script src="js/bootstrap-tooltip.js"></script>
-    <script src="js/bootstrap-popover.js"></script>
-    <script src="js/bootstrap-button.js"></script>
-    <script src="js/bootstrap-collapse.js"></script>
-    <script src="js/bootstrap-carousel.js"></script>
-    <script src="js/bootstrap-typeahead.js"></script>
+	<script src="libs/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" async="" src="libs/tree.jquery.js"></script>
+	<script type="text/javascript" async="" src="main.js"></script>
 
   </body>
 </html>
