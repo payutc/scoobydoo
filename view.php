@@ -11,6 +11,8 @@ class View {
 	 */
 	public function __construct() {
 		global $CONF;
+		$this->param = array();
+		$this->view_url = "";
 		$this->header = '
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -51,8 +53,19 @@ class View {
       </footer>';
 	}
 
-	public function set_container($container) {
-		$this->container = $container;
+	public function get_container() {
+		$param = $this->param;
+		include $this->view_url;
 	}
+
+	public function set_param($param) {
+		$this->param = $param;
+	}
+
+	public function set_view($url) {
+		$this->view_url = $url;
+	}
+
+
 
 }

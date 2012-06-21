@@ -40,7 +40,7 @@ Controller::execute();
 
   	<?=$View->header?>
 
-  	<?=$View->container?>
+  	<?=$View->get_container()?>
 
  	<?=$View->footer?>
 
