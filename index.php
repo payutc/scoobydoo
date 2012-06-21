@@ -6,7 +6,8 @@ require "view.php";
 require "controller.php";
 
 $View = new View();
-Controller::execute($View);
+$Controller = new Controller($View);
+$Controller->execute();
 $View->render();
 
 ?>
