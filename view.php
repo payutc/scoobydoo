@@ -12,6 +12,7 @@ class View {
 	public function __construct() {
 		global $CONF;
 		$this->param = array();
+		$this->template = "view/template/default.phtml";
 		$this->view_url = "";
 		$this->header = '
     <div class="navbar navbar-fixed-top">
@@ -66,6 +67,8 @@ class View {
 		$this->view_url = $url;
 	}
 
-
+	public function render() {
+		include $this->template;
+	}
 
 }
