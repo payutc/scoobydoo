@@ -1,8 +1,11 @@
 <?php
 require "config.php";
 //require "auth.php";
-
 require "view.php";
+require "controller.php";
+
+$View = new View();
+Controller::execute();
 
 ?>
 <!DOCTYPE html>
@@ -34,11 +37,11 @@ require "view.php";
 
   <body>
 
-  	<?=$view["header"]?>
+  	<?=$View->header?>
 
-  	<?=$view["container"]?>
+  	<?=$View->container?>
 
- 	<?=$view["footer"]?>
+ 	<?=$View->footer?>
 
     </div><!--/.fluid-container-->
 
