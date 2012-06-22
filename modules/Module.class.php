@@ -15,6 +15,12 @@ class Module {
 			$view_template = 'ajax';
 		}
 		else if (isset($_GET['view'])) {
+			foreach ($this->get_js_files() as $filename) {
+				$this->view->add_jsfile($filename);
+			}
+			foreach ($this->get_css_files() as $filename) {
+				$this->view->add_cssfile($filename);
+			}
 			$filename = $this->view_to_filename($_GET['view']);
 			$view_template = 'view';
 		}
@@ -26,10 +32,13 @@ class Module {
 			echo '404';
 			die();
 		}
-		
+
 		$this->view->set_template($view_template);
 		$this->view->set_view($filename);
 	}
+
+	protected function get_js_files() { return array(); }
+	protected function get_css_files() { return array(); }
 
 	public function get_module_name() {
 		$classname = get_class($this);
