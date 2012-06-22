@@ -13,19 +13,18 @@ class Node {
 
 class ModuleArticle extends Module {
 
-	public function action_index(&$view) {
+	public function action_index() {
 		$modulepath = $this->get_path_module();
-		$view->set_template('html');
-		$view->add_jsfile('libs/jquery-1.7.2.min.js');
-		$view->add_jsfile($modulepath.'res/js/jqtree.jquery.js');
-		$view->add_jsfile($modulepath.'?module=article&action=mainjs');
-		$view->set_view($modulepath.'view/index.phtml');
-		return $view;
+		$this->view->set_template('html');
+		$this->view->add_jsfile('libs/jquery-1.7.2.min.js');
+		$this->view->add_jsfile($modulepath.'res/js/jqtree.jquery.js');
+		$this->view->add_jsfile('?module=article&action=mainjs');
+		$this->view->set_view($modulepath.'view/index.phtml');
 	}
 
-	public function action_get_tree(&$view) {
-		$view->set_template('json');
-		$view->set_param(array(
+	public function action_get_tree() {
+		$this->view->set_template('json');
+		$this->view->set_param(array(
 			new Node(1, 'node1', array(
 				new Node(2, 'child1'),
 				new Node(3, 'child2'),
@@ -36,12 +35,12 @@ class ModuleArticle extends Module {
 		));
 	}
 
-	public function action_mainjs(&$view) {
+	public function action_mainjs() {
 		// Pour cette action on veut le template JS
 		$this->view->set_template("js");
 
 		// On veut égallement une vue particuliére
-		$myview = $this->view_to_filename("main.js");
+		$myview = $this->get_path_module()."view/main.js";
 		$this->view->set_view($myview);
 
 		// Configuration des parametres nécessaires à la vue (les urls ajax)

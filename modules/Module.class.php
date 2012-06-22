@@ -20,10 +20,10 @@ class Module {
 		
 		$method = $this->actionname_to_methodname($action);
 		if (method_exists($this, $method)) {
-			$this->$method($this->view);
+			$this->$method();
 		}
 		else {
-			$this->action_404($this->view);
+			$this->action_404();
 		}
 	}
 
@@ -40,9 +40,8 @@ class Module {
 		return 'action_'.$action;
 	}
 
-	public function action_404(&$view) {
-		$view->set_template('404');
-		return $view;
+	public function action_404() {
+		$this->view->set_template('404');
 	}
 }
 
