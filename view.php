@@ -8,7 +8,7 @@
 class View {
 
 	public $title;
-	public $template_url; // URL DU TEMPLATE A CHARGER
+	public $template_path; // URL DU TEMPLATE A CHARGER
 	public $view_url; // URL DE LA VUE A CHARGER
 	public $param = array(); // STOCKAGE DES PARAMETRES NECESAIRES AUX VUES
 	public $js_files = array(); // Url des fichiers javascipts à charger  !! Utiliser uniquement dans les templates html... (pas en json)
@@ -22,7 +22,7 @@ class View {
 		global $CONF;
 
 		$this->title = $CONF["title"];
-		$this->template_url = "view/template/default.phtml";
+		$this->template_path = "view/template/default.phtml";
 		$this->view_url = "view/vue-test.phtml";
 		$this->param = array();
 		$this->copyright = $CONF["title"];
@@ -81,15 +81,15 @@ class View {
 	}
 
 	public function render() {
-		include $this->template_url;
+		include $this->template_path;
 	}
 
 	public function set_template($template_name) {
 		if ($template_name == 'ajax') {
-			$this->template = 'template/ajax.phtml';
+			$this->template_path = 'template/ajax.phtml';
 		}
 		else {
-			$this->template = 'template/default.phtml';
+			$this->template_path = 'template/default.phtml';
 		}
 
 		return $this;
