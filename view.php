@@ -22,7 +22,7 @@ class View {
 		global $CONF;
 
 		$this->title = $CONF["title"];
-		$this->template_path = "template/default.phtml";
+		$this->template_path = "";
 		$this->view_url = "";
 		$this->param = array();
 		$this->copyright = $CONF["title"];
@@ -88,12 +88,12 @@ class View {
 
 	public function set_template($template_name) {
 		$file = dirname(__FILE__)."/template/".$template_name.".phtml";
-		if(isset($file))
+		if(file_exists($file))
 		{
 			$this->template_path = $file;
 		}
 		else {
-			$this->template_path = 'template/default.phtml';
+			$this->template_path = 'template/html.phtml';
 		}
 
 		return $this;
