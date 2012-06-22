@@ -1,5 +1,6 @@
 <?
-header('Content-type: application/json');
+// Pour cette action on veut le template ajax (JSON)
+$this->view->set_template("ajax");
 
 class Node {
 	public $id, $label, $children;
@@ -10,7 +11,7 @@ class Node {
 	}
 }
 
-echo json_encode(array(
+$this->view->set_param(array(
 	new Node(1, 'node1', array(
 		new Node(2, 'child1'),
 		new Node(3, 'child2'),

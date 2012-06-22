@@ -34,6 +34,8 @@ class Module {
 			$action = 'index';
 		}
 
+
+
 		$filename_action = $this->action_to_filename($action);
 
 		// LOAD JS AND CSS FILES NEEDED BY THE MODULE
@@ -47,6 +49,11 @@ class Module {
 		if (!$filename_action or !file_exists($filename_action)) {
 			$filename_action = $this->action_to_filename("index");
 		}
+
+		// On donne à la vue, la vue par défaut d'un modules,
+		// L'action poura la modifier si ça lui plait pas...
+		$myview = $this->view_to_filename("default");
+		$this->view->set_view($myview);
 
 		//CHARGER L'ACTION
 		include $filename_action;

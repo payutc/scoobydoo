@@ -12,7 +12,7 @@ class View {
 	public $view_url; // URL DE LA VUE A CHARGER
 	public $param = array(); // STOCKAGE DES PARAMETRES NECESAIRES AUX VUES
 	public $js_files = array(); // Url des fichiers javascipts à charger  !! Utiliser uniquement dans les templates html... (pas en json)
-	public $css_files = array('bootstrap/css/bootstrap.min.css','bootstrap-responsive.min.css'); // Url des fichiers css à charger  !! Utiliser uniquement dans les templates html... (pas en json)
+	public $css_files = array('bootstrap/css/bootstrap.min.css','bootstrap/css/bootstrap-responsive.min.css'); // Url des fichiers css à charger  !! Utiliser uniquement dans les templates html... (pas en json)
 	public $copyright;
 
 	/**
@@ -43,7 +43,7 @@ class View {
 	}
 
 	public function get_param($key) {
-		$this->param[$key];
+		return $this->param[$key];
 	}
 
 	public function set_jsfiles($param) {
@@ -87,8 +87,10 @@ class View {
 	}
 
 	public function set_template($template_name) {
-		if ($template_name == 'ajax') {
-			$this->template_path = 'template/ajax.phtml';
+		$file = dirname(__FILE__)."/template/".$template_name.".phtml";
+		if(isset($file))
+		{
+			$this->template_path = $file;
 		}
 		else {
 			$this->template_path = 'template/default.phtml';

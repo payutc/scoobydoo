@@ -1,5 +1,6 @@
 <?
-header('Content-type: application/json');
+// Pour cette action on veut le template ajax (JSON)
+$this->view->set_template("ajax");
 
 //$name = $_REQUEST['name'];
 
@@ -10,6 +11,6 @@ else {
 	// AJOUT d'un nouvel article
 }
 
-echo json_encode(array('success'=> 'ok'));
+$this->view->set_param(array('success'=> 'ok'));
 ?>
 
