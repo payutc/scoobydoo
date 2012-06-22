@@ -20,6 +20,7 @@ class ModuleArticle extends Module {
 		$this->view->add_jsfile('libs/jquery-1.7.2.min.js');
 		$this->view->add_jsfile($modulepath.'res/js/jqtree.jquery.js');
 		$this->view->add_jsfile('?module=article&action=mainjs');
+		$this->view->add_cssfile($modulepath.'res/css/jqtree.css');
 		$this->view->set_view($modulepath.'view/index.phtml');
 	}
 
@@ -59,13 +60,12 @@ class ModuleArticle extends Module {
 	}
 
 	public function action_article_details() {
+		global $AADMIN;
 		$this->view->set_template('json');
 		$id = $_REQUEST['id'];
-		$this->view->set_param(array(
-			'id'=>$id,
-			'name'=>'coca',
-			'price'=>100,
-		));
+		$article = $AADMIN->get_article($id);
+		//echo '<pre>';print_r($article);echo '</pre>'; die();
+		$this->view->set_param($article);
 	}
 
 	public function action_save_article() {
@@ -81,12 +81,12 @@ class ModuleArticle extends Module {
 	}
 
 	public function action_categorie_details() {
+		global $AADMIN;
 		$this->view->set_template('json');
 		$id = $_REQUEST['id'];
-		$this->view->set_param(array(
-			'id'=>$id,
-			'name'=>'Une categorie',
-		));
+		$categorie = $AADMIN->get_categorie($id);
+		//echo '<pre>';print_r($categorie);echo '</pre>'; die();
+		$this->view->set_param($categorie);
 	}
 
 	public function action_save_categorie() {
