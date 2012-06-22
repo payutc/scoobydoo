@@ -16,8 +16,6 @@ class ModuleArticle extends Module {
 
 	public function action_index() {
 		$modulepath = $this->get_path_module();
-		//echo "coucou".$modulepath;
-		//die();
 		$this->view->set_template('html');
 		$this->view->add_jsfile('libs/jquery-1.7.2.min.js');
 		$this->view->add_jsfile($modulepath.'res/js/jqtree.jquery.js');

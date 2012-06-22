@@ -21,11 +21,11 @@ class View {
 	public function __construct() {
 		global $CONF;
 
-		$this->title = $CONF["title"];
-		$this->template_path = "";
-		$this->view_url = "";
+		$this->title = $CONF['title'];
+		$this->template_path = '';
+		$this->view_url = '';
 		$this->param = array();
-		$this->copyright = $CONF["title"];
+		$this->copyright = $CONF['title'];
 	}
 
 	private function get_container() {
@@ -55,7 +55,7 @@ class View {
 	}
 
 	public function echo_jsfiles() {
-		$r = "";
+		$r = '';
 		foreach($this->js_files as $js) {
 			$r.='<script src="'.$js.'"></script>';
 		}
@@ -71,7 +71,7 @@ class View {
 	}
 
 	public function echo_cssfiles() {
-		$r = "";
+		$r = '';
 		foreach($this->css_files as $css) {
 			$r.='<link href="'.$css.'" rel="stylesheet">';
 		}
@@ -87,7 +87,7 @@ class View {
 	}
 
 	public function set_template($template_name) {
-		$file = dirname(__FILE__)."/template/".$template_name.".phtml";
+		$file = dirname(__FILE__).'/template/'.$template_name.'.phtml';
 		if(file_exists($file))
 		{
 			$this->template_path = $file;
