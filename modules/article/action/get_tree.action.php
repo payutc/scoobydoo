@@ -13,7 +13,10 @@ class Node {
 
 $this->view->set_param(array(
 	new Node(1, 'node1', array(
-		new Node(2, 'child1'),
+		new Node(2, 'child1', array(
+			new Node(6, 'child4'),
+			new Node(7, 'child5'),
+		)),
 		new Node(3, 'child2'),
 	)),
 	new Node(4, 'node2', array(

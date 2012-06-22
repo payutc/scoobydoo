@@ -52,7 +52,7 @@ class Module {
 
 		// On donne à la vue, la vue par défaut d'un modules,
 		// L'action poura la modifier si ça lui plait pas...
-		$myview = $this->view_to_filename("default");
+		$myview = $this->view_to_filename("default.phtml");
 		$this->view->set_view($myview);
 
 		//CHARGER L'ACTION
@@ -81,7 +81,7 @@ class Module {
 	}
 
 	public function view_to_filename($action) {
-		return $this->get_path_module().'view/'.$action.'.phtml';
+		return $this->get_path_module().'view/'.$action;
 	}
 
 }
