@@ -54,7 +54,12 @@ $(document).ready(function () {
 		function(event) {
 			// The clicked node is 'event.node'
 			var node = event.node;
-			load_article_details(node.id);
+			if (node.children.length == 0) {
+				load_article_details(node.id);
+			}
+			else {
+				load_categorie_details(node.id);
+			}
 		}
 	);
 });
@@ -79,6 +84,23 @@ function load_article_details(id) {
 			$('#article_id').html(data.id);
 			$('#article_field_name').val(data.name);
 			$('#article_field_price').val(data.price);
+			$('#article_details').show();
+			$('#categorie_details').hide();
+		},
+	});
+}
+
+function load_categorie_details(id) {
+	$.ajax({
+		url: 'http://localhost/scoobydoo/?module=article&ajax=details_categorie',
+		data: {id: id},
+		async: true,
+		success: function(data) {
+			$('#categorie_name').html(data.name);
+			$('#categorie_id').html(data.id);
+			$('#categorie_field_name').val(data.name);
+			$('#article_details').hide();
+			$('#categorie_details').show();
 		},
 	});
 }
