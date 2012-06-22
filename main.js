@@ -25,6 +25,11 @@ $(document).ready(function () {
 			}
 			return true;
 		}*/
+		onCreateLi: function(node, $li) {
+			// Add 'icon' span before title
+			$li.find('div').wrap('<a />');
+			$('#tree').find('ul').addClass('nav nav-list');
+		}
     });
 
     refresh_tree();
@@ -57,8 +62,10 @@ $(document).ready(function () {
 	$('#tree').bind(
 		'tree.click',
 		function(event) {
+			$('#tree').find('.active').removeClass('active');
 			// The clicked node is 'event.node'
 			var node = event.node;
+			node.element.className = 'active';
 			if (node.children.length == 0) {
 				load_article_details(node.id);
 			}
