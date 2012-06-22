@@ -38,7 +38,7 @@ class Module {
 	}
 
 	public function action_to_methodname($action) {
-		return 'action'.ucfirst($action);
+		return 'action_'.$action;
 	}
 
 }

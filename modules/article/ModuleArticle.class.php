@@ -13,7 +13,7 @@ class Node {
 
 class ModuleArticle extends Module {
 
-	public function actionIndex(&$view) {
+	public function action_index(&$view) {
 		$modulepath = $this->get_path_module();
 		$view->set_template('html');
 		$view->add_jsfile('libs/jquery-1.7.2.min.js');
@@ -23,7 +23,7 @@ class ModuleArticle extends Module {
 		return $view;
 	}
 
-	public function actionGettree(&$view) {
+	public function action_get_tree(&$view) {
 		$view->set_template('json');
 		$view->set_param(array(
 			new Node(1, 'node1', array(
