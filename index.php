@@ -1,7 +1,7 @@
 <?php
 require "config.php";
 require "soap.php";
-//require "auth.php";
+require "auth.php";
 require "view.php";
 require "controller.php";
 

@@ -1,5 +1,6 @@
 <?php
-
+global $AADMIN;
+$username = ucfirst($AADMIN->getFirstname())." ".ucfirst($AADMIN->getLastname());
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -38,7 +39,7 @@
           <a class="brand" href="#"><?=$this->title?></a>
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-              <i class="icon-user"></i> Username
+              <i class="icon-user"></i> <?=$username?>
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">

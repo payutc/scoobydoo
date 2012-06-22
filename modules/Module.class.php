@@ -25,6 +25,8 @@ class Module {
 		else {
 			$this->action_404();
 		}
+
+		$this->view->set_template('html.phtml');
 	}
 
 	public function get_module_name() {
@@ -41,7 +43,8 @@ class Module {
 	}
 
 	public function action_404() {
-		$this->view->set_template('404');
+		header("HTTP/1.0 404 Not Found");
+		$this->view->set_view('modules/404.view.phtml');
 	}
 }
 
