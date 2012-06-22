@@ -20,6 +20,7 @@ class ModuleArticle extends Module {
 		$this->view->add_jsfile('libs/jquery-1.7.2.min.js');
 		$this->view->add_jsfile($modulepath.'res/js/jqtree.jquery.js');
 		$this->view->add_jsfile('?module=article&action=mainjs');
+		$this->view->add_cssfile('css/jqtree.css');
 		$this->view->set_view($modulepath.'view/index.phtml');
 	}
 
