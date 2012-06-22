@@ -25,8 +25,6 @@ class Module {
 		else {
 			$this->action_404();
 		}
-
-		$this->view->set_template('html.phtml');
 	}
 
 	public function get_module_name() {
