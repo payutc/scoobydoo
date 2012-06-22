@@ -32,9 +32,14 @@ $(document).ready(function () {
     $('#tojson').click(function(event) {
 		alert($('#tree').tree('toJson'));
 	});
-
-    $('#refresh').click(function(event) {
-		refresh_tree();
+    $('#refresh').click(refresh_tree);
+    $('#save_categorie').click(function(event) {
+		event.preventDefault();
+		save_categorie();
+	});
+    $('#save_article').click(function(event) {
+		event.preventDefault();
+		save_article();
 	});
 
 	/*$('#tree').bind(
@@ -102,6 +107,62 @@ function load_categorie_details(id) {
 			$('#article_details').hide();
 			$('#categorie_details').show();
 		},
+	});
+}
+
+function save_article() {
+	$.ajax({
+		url: 'http://localhost/scoobydoo/?module=article&ajax=save_article',
+		async: true,
+		success: function(data) {
+			if (data.success == 'ok') {
+				show_alert_success();
+			}
+			else {
+				show_alert_fail();
+			}
+		},
+	});
+}
+
+function save_categorie() {
+	$.ajax({
+		url: 'http://localhost/scoobydoo/?module=article&ajax=save_categorie',
+		async: true,
+		success: function(data) {
+			if (data.success == 'ok') {
+				show_alert_success();
+			}
+			else {
+				show_alert_fail();
+			}
+		},
+	});
+}
+
+function show_alert_success() {
+	$('#alert').html(
+		'<div class="alert alert-success">'+
+		'	<button type="button" class="close" data-dismiss="alert">×</button>'+
+		'	<strong>Well done!</strong> You successfully read this important alert message.'+
+		'</div>'
+	);
+	bind_close_alert();
+}
+
+function show_alert_fail() {
+	$('#alert').html(
+		'<div class="alert alert-error">'+
+		'	<button type="button" class="close" data-dismiss="alert">×</button>'+
+		'	<strong>Oh snap!</strong> Change a few things up and try submitting again.'+
+		'</div>'
+	);
+	bind_close_alert();
+}
+
+function bind_close_alert() {
+	$('.close').click(function(event) {
+		$('#alert').html('');
 	});
 }
 
