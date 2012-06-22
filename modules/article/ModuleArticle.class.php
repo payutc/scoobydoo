@@ -2,16 +2,39 @@
 
 require 'modules/Module.class.php';
 
+class Node {
+	public $id, $label, $children;
+	public function __construct($id, $label, $children=array()) {
+		$this->id = $id;
+		$this->label = $label;
+		$this->children = $children;
+	}
+}
+
 class ModuleArticle extends Module {
 
-	protected function get_js_files() {
-		return array('libs/jquery-1.7.2.min.js', 'libs/tree.jquery.js', '?module=article&action=main.js');
+	public function actionIndex(&$view) {
+		$modulepath = $this->get_path_module();
+		$view->set_template('html');
+		$view->add_jsfile('libs/jquery-1.7.2.min.js');
+		$view->add_jsfile($modulepath.'res/js/jqtree.jquery.js');
+		$view->add_jsfile($modulepath.'res/js/main.js');
+		$view->set_view($modulepath.'view/index.phtml');
+		return $view;
 	}
 
-	protected function get_css_files() {
-		return array(
-			'css/jqtree.css',
-		);
+	public function actionGettree(&$view) {
+		$view->set_template('json');
+		$view->set_param(array(
+			new Node(1, 'node1', array(
+				new Node(2, 'child1'),
+				new Node(3, 'child2'),
+			)),
+			new Node(4, 'node2', array(
+				new Node(5, 'child3')
+			))
+		));
+		return $view;
 	}
 }
 
