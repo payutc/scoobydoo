@@ -1,12 +1,49 @@
 <?php
 
 class Controller {
+	protected $view;
+	public function __construct(&$view) {
+		$this->view = $view;
+	}
+	
+	public function execute()
+	{
+		if (isset($_GET['module'])) {
+			$module = $this->get_module($_GET['module']);
+		}
 
-  static public function execute(&$View)
-  {
-    $View->set_param(array(1=>"reer",2=>"hgghg",3=>"khjjh",4=>"hkjhk"));
-    $View->set_view("view/vue-test.phtml");
-  }
+		if (!$module) {
+			echo '404';
+			die();
+		}
+
+		$module->execute();
+	}
+
+	protected function get_module($modulename) {
+		$moduleclassname = $this->modulename_to_classname($modulename);
+		$modulefilepath = $this->modulename_to_modulepath($modulename).$this->modulename_to_classfilename($modulename);
+		$module = null;
+		
+		if (file_exists($modulefilepath)) {
+			require $modulefilepath;
+			$module = new $moduleclassname($this->view);
+		}
+		
+		return $module;
+	}
+
+	public function modulename_to_classfilename($modulename) {
+		return $this->modulename_to_classname($modulename).'.class.php';
+	}
+
+	public function modulename_to_modulepath($modulename) {
+		return 'modules/'.$modulename.'/';
+	}
+
+	public function modulename_to_classname($modulename) {
+		return 'Module'.ucfirst($modulename);
+	}
 
 }
 

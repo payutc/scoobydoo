@@ -71,4 +71,15 @@ class View {
 		include $this->template;
 	}
 
+	public function set_template($template_name) {
+		if ($template_name == 'ajax') {
+			$this->template = 'template/ajax.phtml';
+		}
+		else {
+			$this->template = 'template/default.phtml';
+		}
+
+		return $this;
+	}
+
 }
