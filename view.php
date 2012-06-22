@@ -1,61 +1,34 @@
 <?
-
+/*
+	Le constructeur de la classe View préconfigure la classe avec une configuration par défaut.
+	Ce qui décide réellement ce que doit afficher la vue est le template. 
+	==> Normalement un module, ne modifie pas le template ! (Par contre la vue peut le changer en fonction que l'on veuille une sortie json ou html par exemple)
+	Les modules doivent par contre fair charger leurs propres vue à l'intérieur du template. Par l'intérmédiaire du view_url.
+*/
 class View {
 
-	public $header;
-	public $footer;
-	public $container;
+	public $title;
+	public $template_url; // URL DU TEMPLATE A CHARGER
+	public $view_url; // URL DE LA VUE A CHARGER
+	public $param = array(); // STOCKAGE DES PARAMETRES NECESAIRES AUX VUES
+	public $js_files = array(); // Url des fichiers javascipts à charger  !! Utiliser uniquement dans les templates html... (pas en json)
+	public $css_files = array(); // Url des fichiers css à charger  !! Utiliser uniquement dans les templates html... (pas en json)
+	public $copyright;
 
 	/**
 	 * Constructeur.
 	 */
 	public function __construct() {
 		global $CONF;
+
+		$this->title = $CONF["title"];
+		$this->template_url = "view/template/default.phtml";
+		$this->view_url = "view/vue-test.phtml";
 		$this->param = array();
-		$this->template = "view/template/default.phtml";
-		$this->view_url = "";
-		$this->header = '
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="#">'.$CONF["title"].'</a>
-          <div class="btn-group pull-right">
-            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-              <i class="icon-user"></i> Username
-              <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Profile</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Sign Out</a></li>
-            </ul>
-          </div>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>';
-
-    	$this->footer = '
-      <hr>
-
-      <footer>
-        <p>&copy; '.$CONF["title"].'</p>
-      </footer>';
+		$this->copyright = $CONF["title"];
 	}
 
-	public function get_container() {
-		$param = $this->param;
+	private function get_container() {
 		include $this->view_url;
 	}
 
@@ -63,12 +36,52 @@ class View {
 		$this->param = $param;
 	}
 
+	public function add_param($key, $param) {
+		$this->param[$key] = $param;
+	}
+
+	public function get_param($key) {
+		$this->param[$key];
+	}
+
+	public function set_jsfiles($param) {
+		$this->js_files = $param;
+	}
+
+	public function add_jsfiles($param) {
+		$this->js_files[] = $param;
+	}
+
+	public function echo_jsfiles() {
+		$r = "";
+		foreach($this->js_files as $js) {
+			$r.='<script src="'.$js.'"></script>';
+		}
+		echo $r;
+	}
+
+	public function set_cssfiles($param) {
+		$this->css_files = $param;
+	}
+
+	public function add_cssfiles($param) {
+		$this->css_files[] = $param;
+	}
+
+	public function echo_cssfiles() {
+		$r = "";
+		foreach($this->css_files as $css) {
+			$r.='<link href="'.$css.'" rel="stylesheet">';
+		}
+		echo $r;
+	}
+
 	public function set_view($url) {
 		$this->view_url = $url;
 	}
 
 	public function render() {
-		include $this->template;
+		include $this->template_url;
 	}
 
 	public function set_template($template_name) {
