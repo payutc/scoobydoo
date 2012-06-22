@@ -27,19 +27,22 @@ class ModuleArticle extends Module {
 	public function action_get_tree() {
 		global $AADMIN;
 		$this->view->set_template('json');
-		$arr = array(
-			array('id'=> 0, 'label'=>'label0', 'parent'=>NULL),
-			array('id'=> 1, 'label'=>'label1', 'parent'=>0),
-			array('id'=> 2, 'label'=>'label2', 'parent'=>0),
-			array('id'=> 3, 'label'=>'label3', 'parent'=>1),
-			array('id'=> 4, 'label'=>'label4', 'parent'=>1),
-		);
-		$temp = $AADMIN->get_categories();
+
 		$categories = array('root' => array('id'=>'root', 'label'=>'root', 'parent_id'=>null, 'children'=>array()));
+
+		$fundations = $AADMIN->get_my_fundations();
+		foreach ($fundations as $fundation) {
+			$fundation['children'] = array();
+			$fundation['parent_id'] = 'root';
+			$fundation['label'] = $fundation['name'];
+			$categories['fun'.$fundation['id']] = $fundation;
+		}	
+
+		$temp = $AADMIN->get_categories();
 		foreach ($temp as $categorie) {
 			$categorie['children'] = array();
 			if (!$categorie['parent_id']) {
-				$categorie['parent_id'] = 'root';
+				$categorie['parent_id'] = 'fun'.$categorie['fun_id'];
 			}
 			$categories[$categorie['id']] = $categorie;
 		}
@@ -51,6 +54,7 @@ class ModuleArticle extends Module {
 		//echo '<pre>';print_r($categories);echo '</pre>';
 		
 		$tree = $this::generate_tree($categories, 'parent_id');
+		$tree = $tree[0]['children'];
 
 		//echo '<pre>';print_r($tree);echo '</pre>';
 
