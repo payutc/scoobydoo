@@ -54,7 +54,7 @@ $(document).ready(function () {
 		function(event) {
 			// The clicked node is 'event.node'
 			var node = event.node;
-			alert(node.name);
+			load_article_details(node.id);
 		}
 	);
 });
@@ -68,3 +68,18 @@ function refresh_tree() {
 		},
 	});
 }
+
+function load_article_details(id) {
+	$.ajax({
+		url: 'http://localhost/scoobydoo/?module=article&ajax=details_article',
+		data: {id: id},
+		async: true,
+		success: function(data) {
+			$('#article_name').html(data.name);
+			$('#article_id').html(data.id);
+			$('#article_field_name').val(data.name);
+			$('#article_field_price').val(data.price);
+		},
+	});
+}
+
