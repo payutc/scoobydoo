@@ -1,7 +1,7 @@
 
 $(document).ready(function () {
 
-	$('#tree1').tree({
+	$('#tree').tree({
         data: [],
 		autoOpen: true,
 		//dragAndDrop: true,
@@ -30,14 +30,14 @@ $(document).ready(function () {
     refresh_tree();
 
     $('#tojson').click(function(event) {
-		alert($('#tree1').tree('toJson'));
+		alert($('#tree').tree('toJson'));
 	});
 
     $('#refresh').click(function(event) {
 		refresh_tree();
 	});
 
-	/*$('#tree1').bind(
+	/*$('#tree').bind(
 		'tree.move',
 		function(event) {
 			console.log('moved_node', e.move_info.moved_node);
@@ -49,7 +49,7 @@ $(document).ready(function () {
 
 	 
 	// bind 'tree.click' event
-	$('#tree1').bind(
+	$('#tree').bind(
 		'tree.click',
 		function(event) {
 			// The clicked node is 'event.node'
@@ -69,7 +69,7 @@ function refresh_tree() {
 		url: 'http://localhost/scoobydoo/?module=article&ajax=get_tree',
 		async: true,
 		success: function(data) {
-			$('#tree1').tree('loadData', data);
+			$('#tree').tree('loadData', data);
 		},
 	});
 }
