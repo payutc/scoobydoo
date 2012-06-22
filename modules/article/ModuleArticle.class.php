@@ -1,6 +1,7 @@
 <?
 
 require 'modules/Module.class.php';
+require 'config.php';
 
 class Node {
 	public $id, $label, $children;
@@ -35,22 +36,66 @@ class ModuleArticle extends Module {
 		));
 	}
 
+	public function action_article_details() {
+		$this->view->set_template('json');
+		$id = $_REQUEST['id'];
+		$this->view->set_param(array(
+			'id'=>$id,
+			'name'=>'coca',
+			'price'=>100,
+		));
+	}
+
+	public function action_save_article() {
+		$this->view->set_template('json');
+		if (isset($_REQUEST['id'])) {
+			// EDITION d'un article déjà existant
+		}
+		else {
+			// AJOUT d'un nouvel article
+		}
+
+		$this->view->set_param(array('success'=> 'ok'));
+	}
+
+	public function action_categorie_details() {
+		$this->view->set_template('json');
+		$id = $_REQUEST['id'];
+		$this->view->set_param(array(
+			'id'=>$id,
+			'name'=>'Une categorie',
+		));
+	}
+
+	public function action_save_categorie() {
+		$this->view->set_template('json');
+		if (isset($_REQUEST['id'])) {
+			// EDITION d'un article déjà existant
+		}
+		else {
+			// AJOUT d'un nouvel article
+		}
+
+		$this->view->set_param(array('success'=> 'ok'));
+	}
+
+
 	public function action_mainjs() {
 		// Pour cette action on veut le template JS
-		$this->view->set_template("js");
+		$this->view->set_template('js');
 
 		// On veut égallement une vue particuliére
-		$myview = $this->get_path_module()."view/main.js";
+		$myview = $this->get_path_module().'view/main.js';
 		$this->view->set_view($myview);
 
 		// Configuration des parametres nécessaires à la vue (les urls ajax)
 		global $CONF;
-		$url_base = $CONF["scoobydoo_url"]."?module=article&action=";
-		$this->view->add_param("get_tree", $url_base."get_tree");
-		$this->view->add_param("details_article", $url_base."details_article");
-		$this->view->add_param("details_categorie", $url_base."details_categorie");
-		$this->view->add_param("save_article", $url_base."save_article");
-		$this->view->add_param("save_categorie", $url_base."save_categorie");
+		$url_base = $CONF['scoobydoo_url'].'?module=article&action=';
+		$this->view->add_param('get_tree', $url_base.'get_tree');
+		$this->view->add_param('details_article', $url_base.'article_details');
+		$this->view->add_param('details_categorie', $url_base.'categorie_details');
+		$this->view->add_param('save_article', $url_base.'save_article');
+		$this->view->add_param('save_categorie', $url_base.'save_categorie');
 	}
 }
 

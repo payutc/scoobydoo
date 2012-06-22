@@ -11,11 +11,11 @@ class Controller {
 		if (isset($_GET['module'])) {
 			$module = $this->get_module($_GET['module']);
 		} else {
-			$module = $this->get_module("index");
+			$module = $this->get_module('index');
 		}
 
 		if (!$module) {
-			$module = $this->get_module("index");
+			$module = $this->get_module('index');
 		}
 
 		$module->execute();
