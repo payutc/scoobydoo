@@ -10,11 +10,12 @@ class Controller {
 	{
 		if (isset($_GET['module'])) {
 			$module = $this->get_module($_GET['module']);
+		} else {
+			$module = $this->get_module("index");
 		}
 
 		if (!$module) {
-			echo '404';
-			die();
+			$module = $this->get_module("index");
 		}
 
 		$module->execute();

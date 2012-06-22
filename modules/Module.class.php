@@ -9,32 +9,48 @@ class Module {
 
 	public function execute() {
 		$view_template = null;
-		$filename = null;
-		if (isset($_GET['ajax'])) {
-			$filename = $this->ajax_to_filename($_GET['ajax']);
-			$view_template = 'ajax';
-		}
-		else if (isset($_GET['view'])) {
-			foreach ($this->get_js_files() as $filename) {
-				$this->view->add_jsfile($filename);
-			}
-			foreach ($this->get_css_files() as $filename) {
-				$this->view->add_cssfile($filename);
-			}
-			$filename = $this->view_to_filename($_GET['view']);
-			$view_template = 'view';
-		}
+		$filename_action = null;
+		$action = null;
 
-		//echo $filename.'<br>';
-		//echo $view_template.'<br>';
-		
-		if (!$filename or !file_exists($filename)) {
-			echo '404';
-			die();
+		/* Define output template
+		On choisit si l'on veut une sortie ajax (json) ou un autre sortie (on pourrait ajouter un template de debug par exemple pour dev...)
+		Un template par defaut correspondant au site est appliqué par défaut.
+		*/
+		if (isset($_GET['template']) && file_exists($this->template_to_filename($_GET['template'])))
+		{
+			$view_template = $_GET['template'];
+		} else {
+			$view_template = 'default';
 		}
-
 		$this->view->set_template($view_template);
-		$this->view->set_view($filename);
+
+		/* Define action
+		On choisit quelle action du module on veut appeler par défaut une action index est appelé.
+		*/
+		if (isset($_GET['action']) && file_exists($this->action_to_filename($_GET['action'])))
+		{
+			$action = $_GET['action'];
+		} else {
+			$action = 'index';
+		}
+
+		$filename_action = $this->action_to_filename($action);
+
+		// LOAD JS AND CSS FILES NEEDED BY THE MODULE
+		foreach ($this->get_js_files() as $filename) {
+			$this->view->add_jsfile($filename);
+		}
+		foreach ($this->get_css_files() as $filename) {
+			$this->view->add_cssfile($filename);
+		}
+
+		if (!$filename_action or !file_exists($filename_action)) {
+			$filename_action = $this->action_to_filename("index");
+		}
+
+		//CHARGER L'ACTION
+		include $filename_action;
+
 	}
 
 	protected function get_js_files() { return array(); }
@@ -49,13 +65,18 @@ class Module {
 		return dirname(__FILE__).'/'.$this->get_module_name().'/';
 	}
 
-	public function ajax_to_filename($ajax) {
-		return $this->get_path_module().'ajax/'.$ajax.'.ajax.phtml';
+	public function action_to_filename($action) {
+		return $this->get_path_module().'action/'.$action.'.action.php';
 	}
 
-	public function view_to_filename($ajax) {
-		return $this->get_path_module().'view/'.$ajax.'.view.phtml';
+	public function template_to_filename($action) {
+		return $this->get_path_module().'action/'.$action.'.action.php';
 	}
+
+	public function view_to_filename($action) {
+		return $this->get_path_module().'view/'.$action.'.phtml';
+	}
+
 }
 
 ?>

@@ -22,14 +22,16 @@ class View {
 		global $CONF;
 
 		$this->title = $CONF["title"];
-		$this->template_path = "view/template/default.phtml";
-		$this->view_url = "view/vue-test.phtml";
+		$this->template_path = "template/default.phtml";
+		$this->view_url = "";
 		$this->param = array();
 		$this->copyright = $CONF["title"];
 	}
 
 	private function get_container() {
-		include $this->view_url;
+		if ($this->view_url and file_exists($this->view_url)) {
+			include $this->view_url;
+		}
 	}
 
 	public function set_param($param) {
