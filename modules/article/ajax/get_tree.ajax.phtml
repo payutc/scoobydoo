@@ -1,1 +1,23 @@
-{'coucou': 'hello'}
+<?
+header('Content-type: application/json');
+
+class Node {
+	public $id, $label, $children;
+	public function __construct($id, $label, $children=array()) {
+		$this->id = $id;
+		$this->label = $label;
+		$this->children = $children;
+	}
+}
+
+echo json_encode(array(
+	new Node(1, 'node1', array(
+		new Node(2, 'child1'),
+		new Node(3, 'child2'),
+	)),
+	new Node(4, 'node2', array(
+		new Node(5, 'child3')
+	))
+));
+
+?>

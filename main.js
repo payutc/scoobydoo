@@ -1,25 +1,8 @@
 
 $(document).ready(function () {
-	var data = [
-		{
-			id: 1,
-			label: 'node1',
-			children: [
-				{ id: 2, label: 'child1' },
-				{ id: 3, label: 'child2' }
-			]
-		},
-		{
-			id: 4,
-			label: 'node2',
-			children: [
-				{ id: 5, label: 'child3' }
-			]
-		}
-	];
 
 	$('#tree1').tree({
-        data: data,
+        data: [],
 		autoOpen: true,
 		//dragAndDrop: true,
 		selectable: true,
@@ -44,8 +27,14 @@ $(document).ready(function () {
 		}*/
     });
 
+    refresh_tree();
+
     $('#tojson').click(function(event) {
 		alert($('#tree1').tree('toJson'));
+	});
+
+    $('#refresh').click(function(event) {
+		refresh_tree();
 	});
 
 	/*$('#tree1').bind(
@@ -69,3 +58,13 @@ $(document).ready(function () {
 		}
 	);
 });
+
+function refresh_tree() {
+	$.ajax({
+		url: 'http://localhost/scoobydoo/?module=article&ajax=get_tree',
+		async: true,
+		success: function(data) {
+			$('#tree1').tree('loadData', data);
+		},
+	});
+}
