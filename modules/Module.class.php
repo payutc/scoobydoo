@@ -18,13 +18,12 @@ class Module {
 			$action = 'index';
 		}
 		
-		$method = $this->action_to_methodname($action);
+		$method = $this->actionname_to_methodname($action);
 		if (method_exists($this, $method)) {
 			$this->$method($this->view);
 		}
 		else {
-			echo '404';
-			die();
+			$this->action_404($this->view);
 		}
 	}
 
@@ -37,10 +36,14 @@ class Module {
 		return 'modules/'.$this->get_module_name().'/';
 	}
 
-	public function action_to_methodname($action) {
+	public function actionname_to_methodname($action) {
 		return 'action_'.$action;
 	}
 
+	public function action_404(&$view) {
+		$view->set_template('404');
+		return $view;
+	}
 }
 
 ?>
