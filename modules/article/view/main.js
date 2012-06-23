@@ -142,10 +142,11 @@ function save_article() {
 	$.ajax({
 		url: '<?=$this->get_param("save_article")?>',
 		data: {
-			id: $('#article_field_id').val(),
+			id: $('#article_id').html(),
 			name: $('#article_field_name').val(),
 			categorie_id: $('#article_field_categorie_id').val(),
 			price: $('#article_field_price').val(),
+			stock: $('#article_field_stock').val(),
 		},
 		async: true,
 		success: function(data) {
