@@ -5,16 +5,20 @@
 		</div><!--/.well -->
 	</div><!--/span-->
 	<div class="span9">
+		<button id="add_article" type="submit" class="btn btn-primary">
+			<i class="icon-plus icon-white"></i>Ajouter un nouvel article
+		</button>
+		<button id="add_categorie" type="submit" class="btn btn-primary">
+			<i class="icon-plus icon-white"></i>Ajouter une nouvelle catégorie
+		</button>
 		<button id="tojson" class="btn">to json</button>
 		<button id="refresh" class="btn">refresh</button>
 		<div class="hero-unit">
+			
 			<div id="alert"></div>
 
 			<!--			ARTICLE			-->
 			<div id="article_details" style="display: none;">
-				<button id="add_article" type="submit" class="btn btn-primary">
-					<i class="icon-plus icon-white"></i>Ajouter un nouvel article
-				</button>
 				<h2><span id="article_name"></span>(#<span id="article_id"></span>)</h2>
 				<form class="form-horizontal">
 					<fieldset>
@@ -62,9 +66,6 @@
 			
 			<!--			CATEGORIE			-->
 			<div id="categorie_details" style="display: none;">
-				<button id="add_categorie" type="submit" class="btn btn-primary">
-					<i class="icon-plus icon-white"></i>Ajouter une nouvelle catégorie
-				</button>
 				<h2><span id="categorie_name"></span>(#<span id="categorie_id"></span>)</h2>
 				<form class="form-horizontal">
 					<fieldset>

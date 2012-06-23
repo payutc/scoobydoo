@@ -99,7 +99,7 @@ class ModuleArticle extends Module {
 		$result = $AADMIN->get_article($id);
 		//echo '<pre>';print_r($article);echo '</pre>'; die();
 		// TODO check $result
-		$this->view->set_param($result['success']);
+		$this->view->set_param($result);
 	}
 
 	public function action_save_article() {
@@ -126,7 +126,7 @@ class ModuleArticle extends Module {
 		$result = $AADMIN->get_categorie($id);
 		//echo '<pre>';print_r($categorie);echo '</pre>'; die();
 		// TODO check $result
-		$this->view->set_param($result['success']);
+		$this->view->set_param($result);
 	}
 
 	public function action_save_categorie() {
