@@ -85,19 +85,23 @@ $(document).ready(function () {
 		function(event) {
 			// The clicked node is 'event.node'
 			var node = event.node;
-			highlight(node.id);
-			if (node.type == 'fundation') {
-				load_fundation_details(node.id);
-			}
-			else if (node.type == 'categorie') {
-				load_categorie_details(node.id);
-			}
-			else {
-				load_article_details(node.id);
-			}
+			select_node(node);
 		}
 	);
 });
+
+function select_node(node) {
+	highlight(node.id);
+	if (node.type == 'fundation') {
+		load_fundation_details(node.id);
+	}
+	else if (node.type == 'categorie') {
+		load_categorie_details(node.id);
+	}
+	else {
+		load_article_details(node.id);
+	}
+}
 
 function get_nod_by_id(id) {
 	return $('#tree').tree('getNodeById',id);
@@ -277,13 +281,18 @@ function save_categorie() {
 }
 
 function delete_article() {
+	var data = {id: $('#article_id').html()};
 	$.ajax({
 		url: '<?=$this->get_param("delete_article")?>',
-		data: {id: $('#article_id').html()},
+		data: data,
 		async: true,
 		success: function(result) {
 			if (result.success) {
 				show_alert_success();
+				var node = get_nod_by_id(data.id);
+				var parent = node.parent;
+				$('#tree').tree('removeNode', node);
+				select_node(parent);
 			}
 			else {
 				show_alert_fail(result.error+' '+result.error_msg);
@@ -293,13 +302,18 @@ function delete_article() {
 }
 
 function delete_categorie() {
+	var data = {id: $('#categorie_id').html()};
 	$.ajax({
 		url: '<?=$this->get_param("delete_categorie")?>',
-		data: {id: $('#categorie_id').html()},
+		data: data,
 		async: true,
 		success: function(result) {
 			if (result.success) {
 				show_alert_success();
+				var node = get_nod_by_id(data.id);
+				var parent = node.parent;
+				$('#tree').tree('removeNode', node);
+				select_node(parent);
 			}
 			else {
 				show_alert_fail(result.error+' '+result.error_msg);
