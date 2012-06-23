@@ -43,9 +43,9 @@ $(document).ready(function () {
 	});
 	$('#add_article').click(function(event) {
 		event.preventDefault();
-		$('#input_field_price').val('');
-		$('#input_field_name').val('');
-		$('#input_field_stock').val('');
+		$('#article_field_price').val('');
+		$('#article_field_name').val('');
+		$('#article_field_stock').val('');
 	});
     $('#save_categorie').click(function(event) {
 		event.preventDefault();
@@ -142,7 +142,8 @@ function save_article() {
 	$.ajax({
 		url: '<?=$this->get_param("save_article")?>',
 		data: {
-			id: $('#article_field_name').val(),
+			id: $('#article_field_id').val(),
+			name: $('#article_field_name').val(),
 			categorie_id: $('#article_field_categorie_id').val(),
 			price: $('#article_field_price').val(),
 		},
@@ -152,8 +153,11 @@ function save_article() {
 				show_alert_success();
 			}
 			else {
-				show_alert_fail();
+				show_alert_fail(data.error);
 			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			error = [jqXHR, textStatus, errorThrown];
 		},
 	});
 }
@@ -187,11 +191,12 @@ function show_alert_success() {
 	bind_close_alert();
 }
 
-function show_alert_fail() {
+function show_alert_fail(msg) {
 	$('#alert').html(
 		'<div class="alert alert-error">'+
 		'	<button type="button" class="close" data-dismiss="alert">×</button>'+
 		'	<strong>Oh snap!</strong> Change a few things up and try submitting again.'+
+		'	Err : '+msg+
 		'</div>'
 	);
 	bind_close_alert();

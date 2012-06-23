@@ -108,7 +108,6 @@ class ModuleArticle extends Module {
 		$name = $_REQUEST['name'];
 		$cat_id = $_REQUEST['categorie_id'];
 		$price = $_REQUEST['price'];
-		$categorie = $_REQUEST['categorie'];
 		if (isset($_REQUEST['id'])) {
 			$reqult = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price);
 		}
@@ -116,8 +115,7 @@ class ModuleArticle extends Module {
 			$result = $AADMIN->add_article($name, $cat_id, $price);
 		}
 
-		// TODO check $result
-		$this->view->set_param(array('success'=> 'ok'));
+		$this->view->set_param($result);
 	}
 
 	public function action_categorie_details() {
@@ -150,8 +148,7 @@ class ModuleArticle extends Module {
 			$result = $AADMIN->add_categorie($name, $parent_id, $fundation);
 		}
 		
-		// TODO check $result
-		$this->view->set_param(array('success'=> 'ok'));
+		$this->view->set_param($result);
 	}
 
 
