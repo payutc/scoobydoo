@@ -16,6 +16,15 @@ class ModuleIndex extends Module {
 		$this->view->set_template('html');
 		$this->view->set_view($this->get_path_module()."view/index.phtml");
 	}
+
+	protected function action_debug() {
+		global $AADMIN;
+		$this->view->set_template('html');
+		$this->view->set_view($this->get_path_module()."view/debug.phtml");
+		$this->view->add_param("all_functions", $AADMIN->__getFunctions());
+
+
+	}
 }
 
 ?>
