@@ -2,7 +2,7 @@ $(document).ready(function () {
 
 	$('#tree').tree({
         data: [],
-		autoOpen: true,
+		autoOpen: 1,
 		//dragAndDrop: true,
 		selectable: true,
 		/*onCanMove: function(node) {
