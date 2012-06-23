@@ -99,7 +99,7 @@ class ModuleArticle extends Module {
 		$result = $AADMIN->get_article($id);
 		//echo '<pre>';print_r($article);echo '</pre>'; die();
 		// TODO check $result
-		$this->view->set_param($result['success']);
+		$this->view->set_param($result);
 	}
 
 	public function action_save_article() {
@@ -119,6 +119,16 @@ class ModuleArticle extends Module {
 		$this->view->set_param($result);
 	}
 
+	public function action_delete_article() {
+		global $AADMIN;
+		$this->view->set_template('json');
+		$id = $_REQUEST['id'];
+
+		$result = $AADMIN->delete_article($id);
+
+		$this->view->set_param($result);
+	}
+
 	public function action_categorie_details() {
 		global $AADMIN;
 		$this->view->set_template('json');
@@ -126,7 +136,7 @@ class ModuleArticle extends Module {
 		$result = $AADMIN->get_categorie($id);
 		//echo '<pre>';print_r($categorie);echo '</pre>'; die();
 		// TODO check $result
-		$this->view->set_param($result['success']);
+		$this->view->set_param($result);
 	}
 
 	public function action_save_categorie() {
@@ -153,6 +163,16 @@ class ModuleArticle extends Module {
 		$this->view->set_param($result);
 	}
 
+	public function action_delete_categorie() {
+		global $AADMIN;
+		$this->view->set_template('json');
+		$id = $_REQUEST['id'];
+
+		$result = $AADMIN->delete_categorie($id);
+
+		$this->view->set_param($result);
+	}
+
 
 	public function action_mainjs() {
 		// Pour cette action on veut le template JS
@@ -170,6 +190,8 @@ class ModuleArticle extends Module {
 		$this->view->add_param('details_categorie', $url_base.'categorie_details');
 		$this->view->add_param('save_article', $url_base.'save_article');
 		$this->view->add_param('save_categorie', $url_base.'save_categorie');
+		$this->view->add_param('delete_article', $url_base.'delete_article');
+		$this->view->add_param('delete_categorie', $url_base.'delete_categorie');
 	}
 
 	
