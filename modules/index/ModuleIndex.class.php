@@ -23,6 +23,8 @@ class ModuleIndex extends Module {
 		$this->view->set_view($this->get_path_module()."view/debug.phtml");
 		$this->view->add_param("all_functions", $AADMIN->__getFunctions());
 
+		$this->view->add_param("get article 597", $AADMIN->get_article(597));
+
 
 	}
 }
