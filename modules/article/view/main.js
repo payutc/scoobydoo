@@ -100,7 +100,6 @@ function load_article_details(id) {
 		data: {id: id},
 		async: true,
 		success: function(data) {
-			t = data;
 			$('#article_name').html(data.name);
 			$('#article_id').html(data.id);
 			$('#article_field_name').val(data.name);
@@ -119,7 +118,6 @@ function load_categorie_details(id) {
 		data: {id: id},
 		async: true,
 		success: function(data) {
-			t = data;
 			$('#categorie_name').html(data.name);
 			$('#categorie_id').html(data.id);
 			$('#categorie_field_name').val(data.name);
