@@ -43,6 +43,8 @@ $(document).ready(function () {
 	});
 	$('#add_article').click(function(event) {
 		event.preventDefault();
+		$('#article_name').html('');
+		$('#article_id').html('');
 		$('#article_field_price').val('');
 		$('#article_field_name').val('');
 		$('#article_field_stock').val('');
@@ -139,6 +141,7 @@ function load_fundation_details(id) {
 }
 
 function save_article() {
+	close_alert();
 	$.ajax({
 		url: '<?=$this->get_param("save_article")?>',
 		data: {
@@ -150,11 +153,12 @@ function save_article() {
 		},
 		async: true,
 		success: function(data) {
-			if (data.success == 'ok') {
+			if (data.success) {
 				show_alert_success();
+				load_article_details(data.success);
 			}
 			else {
-				show_alert_fail(data.error);
+				show_alert_fail(data.error+' '+data.error_msg);
 			}
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -164,6 +168,7 @@ function save_article() {
 }
 
 function save_categorie() {
+	close_alert();
 	$.ajax({
 		url: '<?=$this->get_param("save_categorie")?>',
 		data: {
@@ -205,6 +210,10 @@ function show_alert_fail(msg) {
 
 function bind_close_alert() {
 	$('.close').click(function(event) {
-		$('#alert').html('');
+		close_alert();
 	});
+}
+
+function close_alert() {
+	$('#alert').html('');
 }

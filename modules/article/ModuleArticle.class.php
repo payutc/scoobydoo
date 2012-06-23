@@ -109,11 +109,11 @@ class ModuleArticle extends Module {
 		$cat_id = $_REQUEST['categorie_id'];
 		$price = $_REQUEST['price'];
 		$stock = $_REQUEST['stock'];
-		if (isset($_REQUEST['id'])) {
+		if (isset($_REQUEST['id']) and !empty($_REQUEST['id'])) {
 			$result = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price, $stock);
 		}
 		else {
-			$result = $AADMIN->add_article($name, $cat_id, $price);
+			$result = $AADMIN->add_article($name, $cat_id, $price, $stock);
 		}
 
 		$this->view->set_param($result);
