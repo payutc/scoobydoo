@@ -3,18 +3,23 @@
 require 'modules/Module.class.php';
 require 'config.php';
 
-class Node {
-	public $id, $label, $children;
-	public function __construct($id, $label, $children=array()) {
-		$this->id = $id;
-		$this->label = $label;
-		$this->children = $children;
-	}
-}
 
 class ModuleArticle extends Module {
 
 	public function action_index() {
+		global $AADMIN;
+		$categories = $AADMIN->get_categories(); $categories = $categories['success'];
+		$fundations = $AADMIN->get_fundations(); $fundations=$fundations['success'];
+		$article_parents = array();
+		foreach($categories as $categorie) {
+			$article_parents[] = array('id'=>$categorie['id'], 'name'=>$categorie['name']);
+		}
+		foreach($fundations as $fundation) {
+			$article_parents[] = array('id'=>'fun'.$fundation['id'], 'name'=>$fundation['name']);
+		}
+		$this->view->add_param('categorie_parents', $article_parents);
+		$this->view->add_param('categories', $categories);
+		$this->view->add_param('fundations', $fundations);
 		$modulepath = $this->get_path_module();
 		$this->view->set_template('html');
 		$this->view->add_jsfile('libs/jquery-1.7.2.min.js');
@@ -28,32 +33,56 @@ class ModuleArticle extends Module {
 		global $AADMIN;
 		$this->view->set_template('json');
 
-		$categories = array('root' => array('id'=>'root', 'label'=>'root', 'parent_id'=>null, 'children'=>array()));
 
-		$fundations = $AADMIN->get_my_fundations();
-		foreach ($fundations as $fundation) {
-			$fundation['children'] = array();
-			$fundation['parent_id'] = 'root';
-			$fundation['label'] = $fundation['name'];
-			$categories['fun'.$fundation['id']] = $fundation;
-		}	
-
-		$temp = $AADMIN->get_categories();
-		foreach ($temp as $categorie) {
-			$categorie['children'] = array();
-			if (!$categorie['parent_id']) {
-				$categorie['parent_id'] = 'fun'.$categorie['fun_id'];
-			}
-			$categories[$categorie['id']] = $categorie;
-		}
+		$fundations = $AADMIN->get_fundations();
+		$categories = $AADMIN->get_categories();
 		$articles = $AADMIN->get_articles();
+		if (!isset($fundations['success']) or !isset($categories['success']) or !isset($articles['success'])) {
+			$this->view->set_param(array(array('name'=>'echec')));
+			return;
+		}
+		
+		$fundations = $fundations['success'];
+		$categories = $categories['success'];
+		$articles = $articles['success'];
+		
+		$arr = array('root' => $this::ArrNode('root','root',NULL,'root'));
+		
+		foreach ($fundations as $fundation) {
+			$arr['fun'.$fundation['id']] = $this::ArrNode(
+				$fundation['id'],
+				$fundation['name'],
+				'root',
+				'fundation'
+			);
+		}
+
+		foreach ($categories as $categorie) {
+			if (!$categorie['parent_id']) {
+				$parent_id = 'fun'.$categorie['fundation_id'];
+			}
+			else {
+				$parent_id = $categorie['parent_id'];
+			}
+			$arr[$categorie['id']] = $this::ArrNode(
+				$categorie['id'],
+				$categorie['name'],
+				$parent_id,
+				'categorie'
+			);
+		}
 		foreach ($articles as $article) {
-			$categories[$article['parent_id']]['children'][] = $article;
+			$arr[$article['parent_id']]['children'][] = $this::ArrNode(
+				$article['id'],
+				$article['name'],
+				$article['parent_id'],
+				'article'
+			);
 		}
 
 		//echo '<pre>';print_r($categories);echo '</pre>';
 		
-		$tree = $this::generate_tree($categories, 'parent_id');
+		$tree = $this::generate_tree($arr, 'parent_id');
 		$tree = $tree[0]['children'];
 
 		//echo '<pre>';print_r($tree);echo '</pre>';
@@ -67,20 +96,27 @@ class ModuleArticle extends Module {
 		global $AADMIN;
 		$this->view->set_template('json');
 		$id = $_REQUEST['id'];
-		$article = $AADMIN->get_article($id);
+		$result = $AADMIN->get_article($id);
 		//echo '<pre>';print_r($article);echo '</pre>'; die();
-		$this->view->set_param($article);
+		// TODO check $result
+		$this->view->set_param($result['success']);
 	}
 
 	public function action_save_article() {
+		global $AADMIN;
 		$this->view->set_template('json');
+		$name = $_REQUEST['name'];
+		$cat_id = $_REQUEST['categorie_id'];
+		$price = $_REQUEST['price'];
+		$categorie = $_REQUEST['categorie'];
 		if (isset($_REQUEST['id'])) {
-			// EDITION d'un article déjà existant
+			$reqult = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price);
 		}
 		else {
-			// AJOUT d'un nouvel article
+			$result = $AADMIN->add_article($name, $cat_id, $price);
 		}
 
+		// TODO check $result
 		$this->view->set_param(array('success'=> 'ok'));
 	}
 
@@ -88,20 +124,33 @@ class ModuleArticle extends Module {
 		global $AADMIN;
 		$this->view->set_template('json');
 		$id = $_REQUEST['id'];
-		$categorie = $AADMIN->get_categorie($id);
+		$result = $AADMIN->get_categorie($id);
 		//echo '<pre>';print_r($categorie);echo '</pre>'; die();
-		$this->view->set_param($categorie);
+		// TODO check $result
+		$this->view->set_param($result['success']);
 	}
 
 	public function action_save_categorie() {
+		global $AADMIN;
 		$this->view->set_template('json');
-		if (isset($_REQUEST['id'])) {
-			// EDITION d'un article déjà existant
+		$name = $_REQUEST['name'];
+		$parent = $_REQUEST['parent_id'];
+		if (substr($parent, 0, 3) == 'fun') {
+			$parent_id = NULL;
+			$fundation_id = substr($parent, 3);
 		}
 		else {
-			// AJOUT d'un nouvel article
+			$parent_id = $parent;
+			$fundation_id = NULL;
 		}
-
+		if (isset($_REQUEST['id'])) {
+			$reqult = $AADMIN->edit_categorie($_REQUEST['id'], $name, $parent_id, $fundation);
+		}
+		else {
+			$result = $AADMIN->add_categorie($name, $parent_id, $fundation);
+		}
+		
+		// TODO check $result
 		$this->view->set_param(array('success'=> 'ok'));
 	}
 
@@ -145,6 +194,10 @@ class ModuleArticle extends Module {
 			}
 		}
 		return $tree;
+	}
+
+	public static function ArrNode($id, $name, $parent, $type, $children=array()) {
+		return array('id'=>$id, 'name'=>$name, 'parent_id'=>$parent, 'type'=>$type, 'children'=>$children);
 	}
 }
 

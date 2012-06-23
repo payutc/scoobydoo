@@ -9,7 +9,10 @@
 		<button id="refresh" class="btn">refresh</button>
 		<div class="hero-unit">
 			<div id="alert"></div>
+
+			<!--			ARTICLE			-->
 			<div id="article_details" style="display: none;">
+				<button id="add_article" type="submit" class="btn btn-primary">Ajouter un nouvel article</button>
 				<h2><span id="article_name"></span>(#<span id="article_id"></span>)</h2>
 				<form class="form-horizontal">
 					<fieldset>
@@ -20,19 +23,39 @@
 							</div>
 						</div>
 						<div class="control-group">
+							<label class="control-label" for="article_field_categorie_id">Catégorie</label>
+							<div class="controls">
+								<select name="categorie_id" id="article_field_categorie_id" class="input-xlarge">
+									<?php foreach($this->param['categories'] as $categorie)
+										echo '<option value="'.$categorie['id'].'">'.$categorie['name'].'</option>';
+									?>
+								</select>
+							</div>
+						</div>
+						<div class="control-group">
 							<label class="control-label" for="article_field_price">Prix</label>
 							<div class="controls">
-							<div class="input-append">
-								<input name="price" id="article_field_price" class="input-xlarge" size="16" type="text"><span class="add-on">€</span>
+								<div class="input-append">
+									<input name="price" id="article_field_price" class="input-xlarge" size="16" type="text"><span class="add-on">€</span>
+								</div>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="article_field_stock">Stock</label>
+							<div class="controls">
+								<input name="stock" id="article_field_stock" class="input-xlarge" size="16" type="text">
 							</div>
 						</div>
 						<div class="form-actions">
-							<button id="save_article" type="submit" class="btn btn-primary">Save changes</button>
+							<button id="save_article" type="submit" class="btn btn-primary">Save</button>
 						</div>
 					</fieldset>
 				</form>
 			</div>
+			
+			<!--			CATEGORIE			-->
 			<div id="categorie_details" style="display: none;">
+				<button id="add_categorie" type="submit" class="btn btn-primary">Ajouter une nouvelle catégorie</button>
 				<h2><span id="categorie_name"></span>(#<span id="categorie_id"></span>)</h2>
 				<form class="form-horizontal">
 					<fieldset>
@@ -42,8 +65,28 @@
 								<input name="name" class="input-xlarge focused" id="categorie_field_name" type="text">
 							</div>
 						</div>
+						<div class="control-group">
+							<label class="control-label" for="categorie_field_parent_id">Parent</label>
+							<div class="controls">
+								<select name="parent_id" id="categorie_field_parent_id" class="input-xlarge">
+									<?php foreach($this->param['categorie_parents'] as $parent)
+										echo '<option value="'.$parent['id'].'">'.$parent['name'].'</option>';
+									?>
+								</select>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="categorie_field_fundation_id">Asso</label>
+							<div class="controls">
+								<select name="fundation_id" id="categorie_field_fundation_id" class="input-xlarge" disabled>
+									<?php foreach($this->param['fundations'] as $fundation)
+										echo '<option value="'.$fundation['id'].'">'.$fundation['name'].'</option>';
+									?>
+								</select>
+							</div>
+						</div>
 						<div class="form-actions">
-							<button id="save_categorie" type="submit" class="btn btn-primary">Save changes</button>
+							<button id="save_categorie" type="submit" class="btn btn-primary">Save</button>
 						</div>
 					</fieldset>
 				</form>

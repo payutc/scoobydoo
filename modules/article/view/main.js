@@ -37,13 +37,19 @@ $(document).ready(function () {
 		alert($('#tree').tree('toJson'));
 	});
     $('#refresh').click(refresh_tree);
-    $('#save_categorie').click(function(event) {
-		event.preventDefault();
-		save_categorie();
-	});
     $('#save_article').click(function(event) {
 		event.preventDefault();
 		save_article();
+	});
+	$('#add_article').click(function(event) {
+		event.preventDefault();
+		$('#input_field_price').val('');
+		$('#input_field_name').val('');
+		$('#input_field_stock').val('');
+	});
+    $('#save_categorie').click(function(event) {
+		event.preventDefault();
+		save_categorie();
 	});
 
 	/*$('#tree').bind(
@@ -65,11 +71,14 @@ $(document).ready(function () {
 			// The clicked node is 'event.node'
 			var node = event.node;
 			node.element.className = 'active';
-			if (node.children.length == 0) {
-				load_article_details(node.id);
+			if (node.type == 'fundation') {
+				load_fundation_details(node.id);
+			}
+			else if (node.type == 'categorie') {
+				load_categorie_details(node.id);
 			}
 			else {
-				load_categorie_details(node.id);
+				load_article_details(node.id);
 			}
 		}
 	);
@@ -91,10 +100,13 @@ function load_article_details(id) {
 		data: {id: id},
 		async: true,
 		success: function(data) {
+			t = data;
 			$('#article_name').html(data.name);
 			$('#article_id').html(data.id);
 			$('#article_field_name').val(data.name);
 			$('#article_field_price').val(data.price);
+			$('#article_field_stock').val(data.stock);
+			$('#article_field_categorie_id').val(data.parent_id);
 			$('#article_details').show();
 			$('#categorie_details').hide();
 		},
@@ -107,18 +119,35 @@ function load_categorie_details(id) {
 		data: {id: id},
 		async: true,
 		success: function(data) {
+			t = data;
 			$('#categorie_name').html(data.name);
 			$('#categorie_id').html(data.id);
 			$('#categorie_field_name').val(data.name);
+			$('#categorie_field_fundation_id').val(data.fundation_id);
+			if (data.parent_id) {
+				$('#categorie_field_parent_id').val(data.parent_id);
+			}
+			else {
+				$('#categorie_field_parent_id').val('fun'+data.fundation_id);
+			}
 			$('#article_details').hide();
 			$('#categorie_details').show();
 		},
 	});
 }
 
+function load_fundation_details(id) {
+	alert('todo');
+}
+
 function save_article() {
 	$.ajax({
 		url: '<?=$this->get_param("save_article")?>',
+		data: {
+			id: $('#article_field_name').val(),
+			categorie_id: $('#article_field_categorie_id').val(),
+			price: $('#article_field_price').val(),
+		},
 		async: true,
 		success: function(data) {
 			if (data.success == 'ok') {
@@ -134,6 +163,10 @@ function save_article() {
 function save_categorie() {
 	$.ajax({
 		url: '<?=$this->get_param("save_categorie")?>',
+		data: {
+			id: $('#categorie_field_name').val(),
+			parent_id: $('#categorie_field_parent_id').val(),
+		},
 		async: true,
 		success: function(data) {
 			if (data.success == 'ok') {
