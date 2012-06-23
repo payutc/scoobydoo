@@ -142,23 +142,38 @@ function load_fundation_details(id) {
 
 function save_article() {
 	close_alert();
-	$.ajax({
-		url: '<?=$this->get_param("save_article")?>',
-		data: {
+	var data = {
 			id: $('#article_id').html(),
 			name: $('#article_field_name').val(),
 			categorie_id: $('#article_field_categorie_id').val(),
 			price: $('#article_field_price').val(),
 			stock: $('#article_field_stock').val(),
-		},
+	};
+	
+	$.ajax({
+		url: '<?=$this->get_param("save_article")?>',
+		data: data,
 		async: true,
-		success: function(data) {
-			if (data.success) {
+		success: function(result) {
+			if (result.success) {
 				show_alert_success();
-				load_article_details(data.success);
+				// si ajout, on ajoute à l'arbre
+				if (!data.id) {
+					var parent = $('#tree').tree('getNodeById',data.categorie_id);
+					$('#tree').tree('appendNode',
+						{
+							name: data.name,
+							id: result.success,
+						},
+						parent
+					);
+				};
+				var node = $('#tree').tree('getNodeById',result.success);
+				node.element.className = 'active';
+				load_article_details(result.success);
 			}
 			else {
-				show_alert_fail(data.error+' '+data.error_msg);
+				show_alert_fail(result.error+' '+result.error_msg);
 			}
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
