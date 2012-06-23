@@ -167,7 +167,15 @@ function save_article() {
 						},
 						parent
 					);
-				};
+				}
+				// si update, on update l'arbre
+				else {
+					var node = $('#tree').tree('getNodeById',data.id);
+					var parent = node.parent;
+					node.name = data.name;
+					$('#tree').tree('removeNode', node);
+					$('#tree').tree('appendNode', node, parent);
+				}
 				var node = $('#tree').tree('getNodeById',result.success);
 				node.element.className = 'active';
 				load_article_details(result.success);
