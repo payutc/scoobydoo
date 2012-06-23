@@ -49,6 +49,10 @@ $(document).ready(function () {
 		$('#article_field_name').val('');
 		$('#article_field_stock').val('');
 	});
+    $('#delete_article').click(function(event) {
+		event.preventDefault();
+		delete_article();
+	});
     $('#save_categorie').click(function(event) {
 		event.preventDefault();
 		save_categorie();
@@ -58,6 +62,10 @@ $(document).ready(function () {
 		$('#categorie_name').html('');
 		$('#categorie_id').html('');
 		$('#categorie_field_name').val('');
+	});
+    $('#delete_categorie').click(function(event) {
+		event.preventDefault();
+		delete_categorie();
 	});
 
 	/*$('#tree').bind(
@@ -90,6 +98,10 @@ $(document).ready(function () {
 		}
 	);
 });
+
+function get_nod_by_id(id) {
+	return $('#tree').tree('getNodeById',id);
+}
 
 /**
  * Afficher la vue des articles et cacher les autres
@@ -146,6 +158,9 @@ function highlight(id) {
 }
 
 function load_article_details(id) {
+	var node = get_nod_by_id(id);
+	fill_article({id: id, name: node.name});
+	display_article_view();
 	$.ajax({
 		url: '<?=$this->get_param("details_article")?>',
 		data: {id: id},
@@ -163,6 +178,9 @@ function load_article_details(id) {
 }
 
 function load_categorie_details(id) {
+	var node = get_nod_by_id(id);
+	fill_categorie({id: id, name: node.name});
+	display_categorie_view();
 	$.ajax({
 		url: '<?=$this->get_param("details_categorie")?>',
 		data: {id: id},
@@ -255,6 +273,38 @@ function save_categorie() {
 				show_alert_fail(result.error+' '+result.error_msg);
 			}
 		},
+	});
+}
+
+function delete_article() {
+	$.ajax({
+		url: '<?=$this->get_param("delete_article")?>',
+		data: {id: $('#article_id').html()},
+		async: true,
+		success: function(result) {
+			if (result.success) {
+				show_alert_success();
+			}
+			else {
+				show_alert_fail(result.error+' '+result.error_msg);
+			}
+		}
+	});
+}
+
+function delete_categorie() {
+	$.ajax({
+		url: '<?=$this->get_param("delete_categorie")?>',
+		data: {id: $('#categorie_id').html()},
+		async: true,
+		success: function(result) {
+			if (result.success) {
+				show_alert_success();
+			}
+			else {
+				show_alert_fail(result.error+' '+result.error_msg);
+			}
+		}
 	});
 }
 
