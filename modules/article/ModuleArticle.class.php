@@ -9,7 +9,7 @@ class ModuleArticle extends Module {
 	public function action_index() {
 		global $AADMIN;
 		$categories = $AADMIN->get_categories(); $categories = $categories['success'];
-		$fundations = $AADMIN->get_fundations(); $fundations=$fundations['success'];
+		$fundations = $AADMIN->get_fundations_with_right("GESARTICLE"); $fundations=$fundations['success'];
 		$article_parents = array();
 		foreach($categories as $categorie) {
 			$article_parents[] = array('id'=>$categorie['id'], 'name'=>$categorie['name']);
@@ -34,7 +34,7 @@ class ModuleArticle extends Module {
 		$this->view->set_template('json');
 
 
-		$fundations = $AADMIN->get_fundations();
+		$fundations = $AADMIN->get_fundations_with_right("GESARTICLE");
 		$categories = $AADMIN->get_categories();
 		$articles = $AADMIN->get_articles();
 		if (!isset($fundations['success']) or !isset($categories['success']) or !isset($articles['success'])) {

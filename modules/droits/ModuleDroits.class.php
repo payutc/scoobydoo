@@ -33,6 +33,9 @@ class ModuleDroits extends Module {
 
 		$this->view->add_param("get_rights_fundation(1)", $AADMIN->get_rights_fundation(1));
 		$this->view->add_param("get_rights_fundation(2)", $AADMIN->get_rights_fundation(2));
+		
+
+		$this->view->add_param("set_right_fundation(9422, GESARTICLE, 2) ", $AADMIN->set_right_fundation(9422, "GESARTICLE", 2));
 
 		$rights = array("ADMIN","GESARTICLE", "VENDRE", "TRESO");
 		foreach($rights as $right)
