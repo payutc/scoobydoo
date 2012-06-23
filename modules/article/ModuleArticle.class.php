@@ -109,11 +109,11 @@ class ModuleArticle extends Module {
 		$cat_id = $_REQUEST['categorie_id'];
 		$price = $_REQUEST['price'];
 		$stock = $_REQUEST['stock'];
-		if (isset($_REQUEST['id'])) {
+		if (isset($_REQUEST['id']) and !empty($_REQUEST['id'])) {
 			$result = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price, $stock);
 		}
 		else {
-			$result = $AADMIN->add_article($name, $cat_id, $price);
+			$result = $AADMIN->add_article($name, $cat_id, $price, $stock);
 		}
 
 		$this->view->set_param($result);
@@ -142,11 +142,12 @@ class ModuleArticle extends Module {
 			$parent_id = $parent;
 			$fundation_id = NULL;
 		}
-		if (isset($_REQUEST['id'])) {
-			$reqult = $AADMIN->edit_categorie($_REQUEST['id'], $name, $parent_id, $fundation);
+		//print_r(array($_REQUEST['id'], $name, $parent_id, $fundation_id));
+		if (isset($_REQUEST['id']) and !empty($_REQUEST['id'])) {
+			$reqult = $AADMIN->edit_categorie($_REQUEST['id'], $name, $parent_id, $fundation_id);
 		}
 		else {
-			$result = $AADMIN->add_categorie($name, $parent_id, $fundation);
+			$result = $AADMIN->add_categorie($name, $parent_id, $fundation_id);
 		}
 		
 		$this->view->set_param($result);
@@ -186,8 +187,9 @@ class ModuleArticle extends Module {
 			if ($object[$key_parent] == $parent) {
 				unset($arr[$key]);
 				if (!$object['children']) {
-					$object['children'] = ModuleArticle::generate_tree($arr, $key_parent, $key);
+					$object['children'] = array();
 				}
+				$object['children'] = array_merge($object['children'], ModuleArticle::generate_tree($arr, $key_parent, $key));
 				$tree[] = $object;
 			}
 		}

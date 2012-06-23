@@ -43,6 +43,8 @@ $(document).ready(function () {
 	});
 	$('#add_article').click(function(event) {
 		event.preventDefault();
+		$('#article_name').html('');
+		$('#article_id').html('');
 		$('#article_field_price').val('');
 		$('#article_field_name').val('');
 		$('#article_field_stock').val('');
@@ -50,6 +52,12 @@ $(document).ready(function () {
     $('#save_categorie').click(function(event) {
 		event.preventDefault();
 		save_categorie();
+	});
+	$('#add_categorie').click(function(event) {
+		event.preventDefault();
+		$('#categorie_name').html('');
+		$('#categorie_id').html('');
+		$('#categorie_field_name').val('');
 	});
 
 	/*$('#tree').bind(
@@ -139,22 +147,52 @@ function load_fundation_details(id) {
 }
 
 function save_article() {
-	$.ajax({
-		url: '<?=$this->get_param("save_article")?>',
-		data: {
+	close_alert();
+	var data = {
 			id: $('#article_id').html(),
 			name: $('#article_field_name').val(),
 			categorie_id: $('#article_field_categorie_id').val(),
 			price: $('#article_field_price').val(),
 			stock: $('#article_field_stock').val(),
-		},
+	};
+	
+	$.ajax({
+		url: '<?=$this->get_param("save_article")?>',
+		data: data,
 		async: true,
-		success: function(data) {
-			if (data.success == 'ok') {
+		success: function(result) {
+			if (result.success) {
 				show_alert_success();
+				// si ajout, on ajoute à l'arbre
+				if (!data.id) {
+					var parent = $('#tree').tree('getNodeById',data.categorie_id);
+					$('#tree').tree('appendNode',
+						{
+							name: data.name,
+							id: result.success,
+						},
+						parent
+					);
+				}
+				// si update, on update l'arbre
+				else {
+					var node = $('#tree').tree('getNodeById',data.id);
+					var parent = node.parent;
+					node.name = data.name;
+					$('#tree').tree('removeNode', node);
+					$('#tree').tree('appendNode', node, parent);
+				}
+
+				// surligner la bonne ligne
+				$('#tree').find('.active').removeClass('active');
+				var node = $('#tree').tree('getNodeById',result.success);
+				node.element.className = 'active';
+
+				// afficher le message
+				load_article_details(result.success);
 			}
 			else {
-				show_alert_fail(data.error);
+				show_alert_fail(result.error+' '+result.error_msg);
 			}
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -164,19 +202,22 @@ function save_article() {
 }
 
 function save_categorie() {
+	close_alert();
+	data = {
+		id: $('#categorie_field_id').val(),
+		name: $('#categorie_field_name').val(),
+		parent_id: $('#categorie_field_parent_id').val(),
+	};
 	$.ajax({
 		url: '<?=$this->get_param("save_categorie")?>',
-		data: {
-			id: $('#categorie_field_name').val(),
-			parent_id: $('#categorie_field_parent_id').val(),
-		},
+		data: data,
 		async: true,
-		success: function(data) {
-			if (data.success == 'ok') {
+		success: function(result) {
+			if (result.success) {
 				show_alert_success();
 			}
 			else {
-				show_alert_fail();
+				show_alert_fail(result.error+' '+result.error_msg);
 			}
 		},
 	});
@@ -205,6 +246,10 @@ function show_alert_fail(msg) {
 
 function bind_close_alert() {
 	$('.close').click(function(event) {
-		$('#alert').html('');
+		close_alert();
 	});
+}
+
+function close_alert() {
+	$('#alert').html('');
 }

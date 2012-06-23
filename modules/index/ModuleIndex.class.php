@@ -27,6 +27,16 @@ class ModuleIndex extends Module {
 
 
 	}
+
+	
+	protected function action_debug2() {
+		global $AADMIN;
+		$this->view->set_template('html');
+		$this->view->set_view($this->get_path_module()."view/debug.phtml");
+		//$this->view->add_param("all_functions", $AADMIN->__getFunctions());
+		$this->view->add_param("add", $AADMIN->add_article("Cuve", 3000, 581, 100));
+
+	}
 }
 
 ?>
