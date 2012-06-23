@@ -10,17 +10,23 @@ $AADMIN = @new SoapClient($CONF['soap_url'].'/AADMIN.class.php?wsdl');
 /*
 echo "<pre>";
 print_r($AADMIN->__getFunctions());
-<<<<<<< HEAD
-exit();
-print_r($AADMIN->getArray());
-print_r($AADMIN->getArray2());
 
-print_r($AADMIN->get_categories());
-=======
 
-print_r($AADMIN->get_categorie(125));
->>>>>>> 4c89098e9b478d8eb277e6d7b62bf9d53192d5aa
-print_r($AADMIN->get_articles());
+print_r($AADMIN->get_fundations());
+
+//print_r($AADMIN->get_categories());
+
+print "get_categorie 582\n";
+print_r($AADMIN->get_categorie(582));
+//print_r($AADMIN->edit_categorie(125, "TEST", 1));
+//print_r($AADMIN->edit_categorie(582, "BOISSONS", NULL));
+
+print "get_article 591\n";
+print_r($AADMIN->get_article(591));
+//print_r($AADMIN->edit_article(591, "Pampryl ananas", 586, 80, 102));
+print_r($AADMIN->get_article(591));
+
+//print_r($AADMIN->get_articles());
 echo "</pre>";
 exit();
 //  */
