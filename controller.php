@@ -36,10 +36,12 @@ class Controller {
 		foreach($this->get_all_modules() as $modulename)
 		{
 			$module= $this->get_module($modulename);
-			$menus[]=$module->get_menus();
+			$menu=$module->get_menus();
+			if(is_array($menu))
+				$menus[]=$menu;
 		}
 		$this->view->set_menu($menus);
-		$this->menu_index = $this->get_module("index")->get_link_to_action("index");
+		$this->view->index_link = $this->get_module("index")->get_link_to_action("index");
 	}
 
 	public function get_all_modules() {

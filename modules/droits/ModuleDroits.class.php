@@ -121,6 +121,15 @@ class ModuleDroits extends Module {
 		//$this->view->add_param("add cuve", $AADMIN->add_article("Cuve", 3000, 581, 100));
 
 	}
+
+	public function has_rights() {
+		global $AADMIN;
+		$right=$AADMIN->get_fundations_with_right("ADMIN");
+		if(count($right["success"]) > 0)
+			return True;
+		else
+			return False;
+	}
 }
 
 ?>

@@ -32,6 +32,11 @@ class ModuleIndex extends Module {
 		$login = "trecouvr";
 		$this->view->add_param("getUserIDfromLogin($login)", $AADMIN->getUserIDfromLogin($login));
 
+		$right=$AADMIN->get_fundations_with_right("GESARTICLE");
+		$this->view->add_param("get_fundations_with_right('GESARTICLE')", $right);
+		$this->view->add_param("sfdsfd", count($right["success"]));
+
+
 	}
 
 	

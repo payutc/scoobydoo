@@ -223,14 +223,25 @@ class ModuleArticle extends Module {
 	}
 
 	public function get_menus() {
-		// TODO : Retourner que si l'user courant à les droits pour y toucher.
-		return array("content" => "Articles", "class"=>"", "link"=>"#", "submenu"=> array(
+		if($this->has_rights())
+			return array("content" => "Articles", "class"=>"", "link"=>"#", "submenu"=> array(
 							  array("content" => "Gestion", "class"=>"", "link"=>$this->get_link_to_action("index")),
 							  array("content" => "", "class"=>"divider", "link"=>"#"),
                               array("content" => "Ajouter un article", "class"=>"", "link"=>$this->get_link_to_action("add-article")), 
                               array("content" => "Ajouter une catégorie", "class"=>"", "link"=>$this->get_link_to_action("add-categorie"))));
+		else
+			return;
                               
                               
+	}
+
+	public function has_rights() {
+		global $AADMIN;
+		$right=$AADMIN->get_fundations_with_right("GESARTICLE");
+		if(count($right["success"]) > 0)
+			return True;
+		else
+			return False;
 	}
 }
 
