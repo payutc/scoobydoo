@@ -1,3 +1,16 @@
+<?php
+
+function dh($heure) {
+  if(strlen($heure) == 4)
+    echo sprintf('%02d', substr($heure,0,2)).":".sprintf('%02d', substr($heure,2,2));
+  else if(strlen($heure) == 3)
+    echo sprintf('%02d', substr($heure,0,1)).":".sprintf('%02d', substr($heure,1,2));
+  else
+    echo "00:".sprintf('%02d', substr($heure,0,2));
+}
+
+?>
+
       <div class="row-fluid">
           <div class="hero-unit">
             <h1>Gestion des plages horaires</h1>
@@ -31,8 +44,8 @@
                     <tbody>
                     <?php $plages = $fundation["plages"]; 
                       foreach($plages as $plage) { ?>
-                      <tr><td><?php echo sprintf('%02d', substr($plage['start'],0,2)).":".sprintf('%02d', substr($plage['start'],2,2)); ?></td>
-                          <td><?php echo sprintf('%02d', substr($plage['end'],0,2)).":".sprintf('%02d', substr($plage['end'],2,2)); ?></td>
+                      <tr><td><?php dh($plage['start']); ?></td>
+                          <td><?php dh($plage['end']); ?></td>
                           <td><?php echo $plage['name']; ?></td>
                           <td><?php echo $plage['poi_name']; ?></td>
                           <td><a class="btn btn-danger" href="<?php echo $fundation["url_remove"]."&fun_id=".$fundation["id"]."&pla_id=".$plage['id']; ?>">Supprimer la plage horaire</a></td>
