@@ -137,6 +137,11 @@ function stop_details_spinner() {
 	stop_spinner('#detailsdiv');
 }
 
+function select_node_by_id(id) {
+	var node = get_nod_by_id(id);
+	select_node(node);
+}
+
 function select_node(node) {
 	current_node_view = node;
 	highlight(node.id);
@@ -298,7 +303,7 @@ function collect_categorie_data() {
 	return data;
 }
 
-function refresh_tree() {
+function refresh_tree(id) {
 	start_tree_spinner();
 	$.ajax({
 		url: '<?=$this->get_param("get_tree")?>',
@@ -306,6 +311,9 @@ function refresh_tree() {
 		success: function(data) {
 			$('#tree').tree('loadData', data);
 			stop_tree_spinner();
+			if (id) {
+				select_node_by_id(id);
+			}
 		},
 	});
 }
@@ -444,25 +452,10 @@ function save_categorie() {
 
 function on_save_success(data, fill_fn) {
 	return function(result) {
+		stop_details_spinner();
 		if (result.success) {
-			// si ajout, on ajoute à l'arbre
-			if (!data.id) {
-				var parent = get_nod_by_id(data.categorie_id);
-				append_node(parent, result.success, data.name);
-			}
-			// si update, on update l'arbre
-			else {
-				update_node(data.id, data.name);
-			}
-
-			// surligner la bonne ligne
-			highlight(result.success);
-
-			// affiche les nouvelles valeurs
-			fill_fn(data);
-
-			// stop le spinner
-			stop_details_spinner();
+			// refresh tree
+			refresh_tree(result.success);
 
 			// affiche le message de succès
 			show_alert_success();
