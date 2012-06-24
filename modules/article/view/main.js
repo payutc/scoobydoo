@@ -261,6 +261,14 @@ function fill_categorie(data) {
 function fill_fundation(data) {
 	$('#fundation_name').html(data.name);
 	$('#fundation_id').html(data.id);
+	if (data.categories) {
+		var html = '';
+		for(var i in data.categories) {
+			var categorie = data.categories[i];
+			html += '<tr><td>'+categorie.id+'</td><td><a>'+categorie.name+'</a></td></tr>';
+		}
+		$('#fundation_categories').html(html);
+	}
 }
 
 function collect_article_data() {
@@ -309,6 +317,7 @@ function highlight(id) {
 }
 
 function on_ajax_error(jqXHR, textStatus, errorThrown) {
+	stop_details_spinner();
 	var err_msg = ''
 	if (jqXHR.status == 200) {
 		err_msg = 'La transaction s\'est bien déroulée, cependant une erreur sur la page est survenue. ';
@@ -383,6 +392,28 @@ function load_fundation_details(id) {
 	current_node_view = node;
 	fill_fundation({id: id, name: node.name});
 	display_fundation_view();
+	start_details_spinner();
+	$.ajax({
+		url: '<?=$this->get_param("details_fundation")?>',
+		data: {id: id},
+		async: true,
+		success: function(result) {
+			// arret du spinner
+			if (current_node_view.id == node.id) {
+				stop_details_spinner();
+			}
+			if (result.success) {
+				// test si on est encore entrain de regarder ce node
+				if (current_node_view.id == node.id) {
+					fill_fundation(result.success);
+				}
+			}
+			else {
+				show_alert_error(result.error+' '+result.error_msg);
+			}
+		},
+		error: on_ajax_error,
+	});
 }
 
 function save_article() {
