@@ -11,11 +11,11 @@ class ModuleArticle extends Module {
 		$categories = $AADMIN->get_categories(); $categories = $categories['success'];
 		$fundations = $AADMIN->get_fundations_with_right("GESARTICLE"); $fundations=$fundations['success'];
 		$article_parents = array();
-		foreach($categories as $categorie) {
-			$article_parents[] = array('id'=>$categorie['id'], 'name'=>$categorie['name']);
-		}
 		foreach($fundations as $fundation) {
-			$article_parents[] = array('id'=>'fun'.$fundation['id'], 'name'=>$fundation['name']);
+			$article_parents[] = array('id'=>'fun'.$fundation['id'], 'name'=>'asso : '.$fundation['name']);
+		}
+		foreach($categories as $categorie) {
+			$article_parents[] = array('id'=>$categorie['id'], 'name'=>'catégorie : '.$categorie['name']);
 		}
 		$this->view->add_param('categorie_parents', $article_parents);
 		$this->view->add_param('categories', $categories);
