@@ -12,6 +12,7 @@ ul.tree ul {
     display: block;
     margin-left: 12px;
     margin-right: 0;
+    padding: 0;
 }
 
 ul.tree li.closed > ul {
