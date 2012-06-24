@@ -70,6 +70,18 @@ $(document).ready(function () {
 		event.preventDefault();
 		delete_categorie();
 	});
+	$('#categorie_field_parent_id').change(function(event) {
+		var opt = $('#categorie_field_parent_id option:selected');
+		var parent_id = opt.val();
+		if (parent_id.indexOf('fun') != -1) {
+			$('#categorie_field_fundation_id').val(parent_id.substr(3));
+		}
+		else {
+			var node_categorie = get_nod_by_id(parent_id);
+			t = [parent_id, node_categorie];
+			$('#categorie_field_fundation_id').val(node_categorie.fundation_id);
+		}
+	});
 
 	/*$('#tree').bind(
 		'tree.move',

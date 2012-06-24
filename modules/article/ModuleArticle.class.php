@@ -70,6 +70,7 @@ class ModuleArticle extends Module {
 				$parent_id,
 				'categorie'
 			);
+			$arr[$categorie['id']]['fundation_id'] = $categorie['fundation_id'];
 		}
 		foreach ($articles as $article) {
 			$arr[$article['categorie_id']]['children'][] = $this::ArrNode(
