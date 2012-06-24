@@ -138,6 +138,7 @@ function hide_all_views() {
 	$('#article_details').hide();
 	$('#categorie_details').hide();
 	$('#fundation_details').hide();
+	$('#home').hide();
 }
 
 /**
