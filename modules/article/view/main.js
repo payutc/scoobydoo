@@ -2,6 +2,8 @@ $(document).ready(function () {
 
 	spinners = {};
 	current_node_view = null;
+	current_fundation_id = null;
+	current_categorie_id = null;
 	
 	$('.dropdown-toggle').dropdown();
 	
@@ -223,6 +225,7 @@ function clear_article() {
 		name: 'Nouvel article',
 		price: 0,
 		stock: 0,
+		categorie_id: current_categorie_id,
 	}
 	fill_article(data);
 }
@@ -231,6 +234,8 @@ function clear_categorie() {
 	var data = {
 		id: '',
 		name: 'Nouvelle catégorie',
+		categorie_id: current_fundation_id,
+		fundation_id: current_fundation_id
 	}
 	fill_categorie(data);
 }
@@ -339,7 +344,10 @@ function on_ajax_error(jqXHR, textStatus, errorThrown) {
 
 function load_article_details(id) {
 	var node = get_nod_by_id(id);
+	// update globals
 	current_node_view = node;
+	current_categorie_id = node.parent.id;
+	
 	fill_article({id: id, name: node.name});
 	display_article_view();
 	start_details_spinner();
@@ -368,7 +376,11 @@ function load_article_details(id) {
 
 function load_categorie_details(id) {
 	var node = get_nod_by_id(id);
+	// update globals
 	current_node_view = node;
+	current_categorie_id = node.id;
+	current_fundation_id = node.parent.id;
+	
 	fill_categorie({id: id, name: node.name});
 	display_categorie_view();
 	start_details_spinner();
@@ -397,7 +409,10 @@ function load_categorie_details(id) {
 
 function load_fundation_details(id) {
 	var node = get_nod_by_id(id);
+	// update globals
 	current_node_view = node;
+	current_fundation_id = node.id;
+	
 	fill_fundation({id: id, name: node.name});
 	display_fundation_view();
 	start_details_spinner();
