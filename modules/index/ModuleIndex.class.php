@@ -1,6 +1,6 @@
-<?
+<?php
 
-require 'modules/Module.class.php';
+require_once 'modules/Module.class.php';
 
 class ModuleIndex extends Module {
 
@@ -24,7 +24,13 @@ class ModuleIndex extends Module {
 		$this->view->add_param("all_functions", $AADMIN->__getFunctions());
 
 		$this->view->add_param("get article 597", $AADMIN->get_article(597));
-
+		
+		$login = "mguffroy";
+		$this->view->add_param("getUserIDfromLogin($login)", $AADMIN->getUserIDfromLogin($login));
+		$login = "puyouart";
+		$this->view->add_param("getUserIDfromLogin($login)", $AADMIN->getUserIDfromLogin($login));
+		$login = "trecouvr";
+		$this->view->add_param("getUserIDfromLogin($login)", $AADMIN->getUserIDfromLogin($login));
 
 	}
 
@@ -34,8 +40,12 @@ class ModuleIndex extends Module {
 		$this->view->set_template('html');
 		$this->view->set_view($this->get_path_module()."view/debug.phtml");
 		//$this->view->add_param("all_functions", $AADMIN->__getFunctions());
-		$this->view->add_param("add", $AADMIN->add_article("Cuve", 3000, 581, 100));
+		//$this->view->add_param("add", $AADMIN->add_article("Cuve", 3000, 581, 100));
 
+	}
+
+	public function get_menus() {
+		return ;
 	}
 }
 

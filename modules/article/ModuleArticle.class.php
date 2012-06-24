@@ -1,7 +1,7 @@
-<?
+<?php
 
-require 'modules/Module.class.php';
-require 'config.php';
+require_once 'modules/Module.class.php';
+require_once 'config.php';
 
 
 class ModuleArticle extends Module {
@@ -220,6 +220,17 @@ class ModuleArticle extends Module {
 
 	public static function ArrNode($id, $name, $parent, $type, $children=array()) {
 		return array('id'=>$id, 'name'=>$name, 'parent_id'=>$parent, 'type'=>$type, 'children'=>$children);
+	}
+
+	public function get_menus() {
+		// TODO : Retourner que si l'user courant à les droits pour y toucher.
+		return array("content" => "Articles", "class"=>"", "link"=>"#", "submenu"=> array(
+							  array("content" => "Gestion", "class"=>"", "link"=>$this->get_link_to_action("index")),
+							  array("content" => "", "class"=>"divider", "link"=>"#"),
+                              array("content" => "Ajouter un article", "class"=>"", "link"=>$this->get_link_to_action("add-article")), 
+                              array("content" => "Ajouter une catégorie", "class"=>"", "link"=>$this->get_link_to_action("add-categorie"))));
+                              
+                              
 	}
 }
 

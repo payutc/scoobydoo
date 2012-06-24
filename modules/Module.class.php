@@ -44,6 +44,15 @@ class Module {
 		header("HTTP/1.0 404 Not Found");
 		$this->view->set_view('modules/404.view.phtml');
 	}
+
+	public function get_link_to_action($action) {
+		return "?module=".$this->get_module_name()."&action=$action";
+	}
+
+	public function get_menus() {
+		// CETTE FONCTION DOIT ETRE SURCHARGE, POUR CHECKER SI L'USER A LES DROITS SUR LE MODULE EN QUESTION
+		return array("content" => ucfirst($this->get_module_name()), "class"=>"", "link"=>$this->get_link_to_action("index"));
+	}
 }
 
 ?>
