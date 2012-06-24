@@ -99,4 +99,8 @@ class View {
 		return $this;
 	}
 
+	public function module_url($modulename) {
+		global $CONF;
+		return $CONF['scoobydoo_url'].'?module='.$modulename;
+	}
 }
