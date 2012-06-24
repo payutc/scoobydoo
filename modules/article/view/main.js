@@ -1,12 +1,15 @@
 $(document).ready(function () {
 
+	// GLOBALS
 	spinners = {};
 	current_node_view = null;
 	current_fundation_id = null;
 	current_categorie_id = null;
-	
+
+	// activer le plugin dropdown de bootsrap
 	$('.dropdown-toggle').dropdown();
-	
+
+	// activer le plugin jqtree
 	$('#tree').tree({
         data: [],
 		autoOpen: 1,
@@ -38,8 +41,11 @@ $(document).ready(function () {
 		}
     });
 
+	// lancer la rafraichissement de l'arbre
     refresh_tree();
 
+
+	// BINDINGS
     $('#tojson').click(function(event) {
 		alert($('#tree').tree('toJson'));
 	});
@@ -105,10 +111,16 @@ $(document).ready(function () {
 	);
 });
 
+/**
+ * Arreter un spinner
+ */
 function stop_spinner(id) {
 	spinners[id].stop();
 }
 
+/**
+ * Démarrer un spinner
+ */
 function start_spinner(id) {
 	if (spinners[id]) {
 		stop_spinner(id);
@@ -135,27 +147,20 @@ function start_spinner(id) {
 	}
 }
 
-function start_tree_spinner() {
-	start_spinner('#treediv');
-}
+/**
+ * Spinner convenience functions
+ */
+function start_tree_spinner() { start_spinner('#treediv'); }
+function start_details_spinner() { start_spinner('#detailsdiv'); }
+function stop_tree_spinner() { stop_spinner('#treediv'); }
+function stop_details_spinner() { stop_spinner('#detailsdiv'); }
 
-function start_details_spinner() {
-	start_spinner('#detailsdiv');
-}
 
-function stop_tree_spinner() {
-	stop_spinner('#treediv');
-}
-
-function stop_details_spinner() {
-	stop_spinner('#detailsdiv');
-}
-
-function select_node_by_id(id) {
-	var node = get_nod_by_id(id);
-	select_node(node);
-}
-
+/**
+ * Selectionne un node:
+ * 	1. change la couleur de fond de la ligne
+ * 	2. charge dans les infos dans la vue details
+ */
 function select_node(node) {
 	current_node_view = node;
 	highlight(node.id);
@@ -170,10 +175,28 @@ function select_node(node) {
 	}
 }
 
+/**
+ * Convenience function
+ * @param id
+ */
+function select_node_by_id(id) {
+	var node = get_nod_by_id(id);
+	select_node(node);
+}
+
+/**
+ * Récupérer un node de l'arbre à partir de son id
+ */
 function get_nod_by_id(id) {
 	return $('#tree').tree('getNodeById',id);
 }
 
+/**
+ * Ajouter un node à l'arbre
+ * @parem {Node} parent
+ * @parem id
+ * @param name
+ */
 function append_node(parent, id, name) {
 	$('#tree').tree('appendNode',
 		{ id: id, name: name },
@@ -200,6 +223,9 @@ function update_node(id, name) {
 	*/
 }
 
+/**
+ * Cacher toutes les vues
+ */
 function hide_all_views() {
 	$('#article_details').hide();
 	$('#categorie_details').hide();
@@ -231,6 +257,10 @@ function display_fundation_view() {
 	$('#fundation_details').show();
 }
 
+/**
+ * Vider les champs du formulaire article. Pré remplie catégorie avec la
+ * catégorie courante.
+ */
 function clear_article() {
 	var data = {
 		id: '',
@@ -242,6 +272,10 @@ function clear_article() {
 	fill_article(data);
 }
 
+/**
+ * Vider les champs du formulaire article. Préremplie parent et asso avec
+ * les variables globales courantes
+ */
 function clear_categorie() {
 	var data = {
 		id: '',
@@ -252,6 +286,10 @@ function clear_categorie() {
 	fill_categorie(data);
 }
 
+/**
+ * Remplir la vue article.
+ * @data {id, name, price, stock, categorie_id} data donées récupérée via ajax 
+ */
 function fill_article(data) {
 	var price = data.price;
 	if (price) {
@@ -267,6 +305,10 @@ function fill_article(data) {
 	if (data.categorie_id) $('#article_field_categorie_id').val(data.categorie_id);
 }
 
+/**
+ * Remplir la vue catégorie.
+ * @data {id, name, parent_id} data donées récupérée via ajax
+ */
 function fill_categorie(data) {
 	$('#categorie_name').html(data.name);
 	$('#categorie_id').html(data.id);
@@ -280,6 +322,10 @@ function fill_categorie(data) {
 	}
 }
 
+/**
+ * Remplir la vue fondation.
+ * @data {id, name, {array} categories} data donées récupérée via ajax
+ */
 function fill_fundation(data) {
 	$('#fundation_name').html(data.name);
 	$('#fundation_id').html(data.id);
@@ -293,6 +339,10 @@ function fill_fundation(data) {
 	}
 }
 
+/**
+ * Empackter le formulaire article
+ * @return {id, name, price, stock, categorie_id} data
+ */
 function collect_article_data() {
 	var price = $('#article_field_price').val();
 	if (price.indexOf(',') != -1)
@@ -310,6 +360,10 @@ function collect_article_data() {
 	return data;
 }
 
+/**
+ * Empackter le formulaire catégorie
+ * @return {id, name, parent_id} data
+ */
 function collect_categorie_data() {
 	var data = {
 		id : $('#categorie_id').html(),
@@ -320,6 +374,11 @@ function collect_categorie_data() {
 	return data;
 }
 
+/**
+ * Récupère les données de l'arbre via ajax puis l'affiche.
+ * Si un id est précisé, le node correspondant sera selectionné.
+ * @param {optional} id
+ */
 function refresh_tree(id) {
 	start_tree_spinner();
 	$.ajax({
@@ -335,12 +394,19 @@ function refresh_tree(id) {
 	});
 }
 
+/**
+ * Surligner un noeud
+ * @param id
+ */
 function highlight(id) {
 	$('#tree').find('.active').removeClass('active');
 	var node = $('#tree').tree('getNodeById',id);
 	node.element.className = 'active';
 }
 
+/**
+ * callback lorsqu'un erreur intervient dans une requête ajax des vues.
+ */
 function on_ajax_error(jqXHR, textStatus, errorThrown) {
 	stop_details_spinner();
 	var err_msg = ''
@@ -354,6 +420,9 @@ function on_ajax_error(jqXHR, textStatus, errorThrown) {
 	show_alert_error(err_msg);
 }
 
+/**
+ * Récupérer les infos d'un article via ajax et les charger dans la vue.
+ */
 function load_article_details(id) {
 	var node = get_nod_by_id(id);
 	// update globals
@@ -386,6 +455,9 @@ function load_article_details(id) {
 	});
 }
 
+/**
+ * Récupérer les infos d'une catégorie via ajax et les charger dans la vue.
+ */
 function load_categorie_details(id) {
 	var node = get_nod_by_id(id);
 	// update globals
@@ -419,6 +491,10 @@ function load_categorie_details(id) {
 	});
 }
 
+/**
+ * Récupérer les infos d'une fundation via ajax et les charger dans la vue.
+ * Lance le spinner.
+ */
 function load_fundation_details(id) {
 	var node = get_nod_by_id(id);
 	// update globals
@@ -451,6 +527,10 @@ function load_fundation_details(id) {
 	});
 }
 
+/**
+ * Sauvegarder l'article.
+ * Lance le spinner.
+ */
 function save_article() {
 	close_alert();
 	var data = collect_article_data();
@@ -464,6 +544,10 @@ function save_article() {
 	});
 }
 
+/**
+ * Sauvegarder la catégorie.
+ * Lance le spinner.
+ */
 function save_categorie() {
 	close_alert();
 	var data = collect_categorie_data();
@@ -477,6 +561,10 @@ function save_categorie() {
 	});
 }
 
+/**
+ * callback lors du succes d'une sauvegarde.
+ * Stop le spinner, refresh le tree et affiche un message d'alert.
+ */
 function on_save_success(data, fill_fn) {
 	return function(result) {
 		stop_details_spinner();
@@ -493,6 +581,10 @@ function on_save_success(data, fill_fn) {
 	};
 }
 
+/**
+ * Supprimer un article.
+ * Lance et arrête le spinner.
+ */
 function delete_article() {
 	start_details_spinner();
 	var data = {id: $('#article_id').html()};
@@ -517,6 +609,10 @@ function delete_article() {
 	});
 }
 
+/**
+ * Supprimer une catégorie.
+ * Lance et arrête le spinner.
+ */
 function delete_categorie() {
 	start_details_spinner();
 	var data = {id: $('#categorie_id').html()};
@@ -541,6 +637,9 @@ function delete_categorie() {
 	});
 }
 
+/**
+ * Afficher un message vert pour dire que succès il y a eu.
+ */
 function show_alert_success() {
 	$('#alert').html(
 		'<div class="alert alert-success">'+
@@ -551,6 +650,9 @@ function show_alert_success() {
 	bind_close_alert();
 }
 
+/**
+ * Afficher un message d'erreur
+ */
 function show_alert_error(msg) {
 	$('#alert').html(
 		'<div class="alert alert-error">'+
@@ -562,6 +664,9 @@ function show_alert_error(msg) {
 	bind_close_alert();
 }
 
+/**
+ * Tool function, permet de binder le bouton close de l'alert créer à la suppressiond e celle ci.
+ */
 function bind_close_alert() {
 	$('.close').click(function(event) {
 		close_alert();
