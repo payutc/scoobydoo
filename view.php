@@ -101,8 +101,12 @@ class View {
 		return $this;
 	}
 
+	public function module_url($modulename) {
+		global $CONF;
+		return $CONF['scoobydoo_url'].'?module='.$modulename;
+	}
+	
 	public function set_menu($menu) {
 		$this->menus = $menu;
 	}
-
 }
