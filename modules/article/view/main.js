@@ -217,10 +217,9 @@ function fill_fundation(data) {
 
 function collect_article_data() {
 	var price = $('#article_field_price').val();
-	if (price.indexOf('.') != -1 || price.indexOf(',') != -1) {
+	if (price.indexOf(',') != -1)
 		price = price.replace(',','.');
-		price *= 100;
-	}
+	price *= 100;
 	
 	var data = {
 		id : $('#article_id').html(),
