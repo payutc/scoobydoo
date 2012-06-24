@@ -49,9 +49,15 @@ class Module {
 		return "?module=".$this->get_module_name()."&action=$action";
 	}
 
+	public function has_rights() {
+		return True;
+	}
+
 	public function get_menus() {
-		// CETTE FONCTION DOIT ETRE SURCHARGE, POUR CHECKER SI L'USER A LES DROITS SUR LE MODULE EN QUESTION
-		return array("content" => ucfirst($this->get_module_name()), "class"=>"", "link"=>$this->get_link_to_action("index"));
+		if($this->has_rights())
+			return array("content" => ucfirst($this->get_module_name()), "class"=>"", "link"=>$this->get_link_to_action("index"));
+		else
+			return;
 	}
 }
 
