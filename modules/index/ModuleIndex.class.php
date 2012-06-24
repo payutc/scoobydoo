@@ -49,7 +49,10 @@ class ModuleIndex extends Module {
 		$this->view->set_view($this->get_path_module()."view/debug.phtml");
 		//$this->view->add_param("all_functions", $AADMIN->__getFunctions());
 		//$this->view->add_param("add", $AADMIN->add_article("Cuve", 3000, 581, 100));
-
+		$x = $_REQUEST['x'];
+		$this->view->add_param('x', $x);
+		$xx = $x*100;
+		$this->view->add_param('xx', $xx);
 	}
 
 	public function get_menus() {

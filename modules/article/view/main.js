@@ -183,10 +183,16 @@ function clear_categorie() {
 }
 
 function fill_article(data) {
+	var price = data.price;
+	if (price) {
+		price /= 100.0;
+		price = (''+price).replace('.', ',');
+	}
+	
 	$('#article_name').html(data.name);
 	$('#article_id').html(data.id);
 	$('#article_field_name').val(data.name);
-	$('#article_field_price').val(data.price);
+	$('#article_field_price').val(price);
 	$('#article_field_stock').val(data.stock);
 	if (data.categorie_id) $('#article_field_categorie_id').val(data.categorie_id);
 }
@@ -210,10 +216,16 @@ function fill_fundation(data) {
 }
 
 function collect_article_data() {
+	var price = $('#article_field_price').val();
+	if (price.indexOf('.') != -1 || price.indexOf(',') != -1) {
+		price = price.replace(',','.');
+		price *= 100;
+	}
+	
 	var data = {
 		id : $('#article_id').html(),
 		name: $('#article_field_name').val(),
-		price: $('#article_field_price').val(),
+		price: price,
 		stock: $('#article_field_stock').val(),
 		categorie_id: $('#article_field_categorie_id').val(),
 	};
