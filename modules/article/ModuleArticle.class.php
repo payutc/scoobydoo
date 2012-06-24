@@ -22,7 +22,6 @@ class ModuleArticle extends Module {
 		$this->view->add_param('fundations', $fundations);
 		$modulepath = $this->get_path_module();
 		$this->view->set_template('html');
-		$this->view->add_jsfile('libs/jquery-1.7.2.min.js');
 		$this->view->add_jsfile($modulepath.'res/js/jqtree.jquery.js');
 		$this->view->add_jsfile('?module=article&action=mainjs');
 		$this->view->add_cssfile($modulepath.'res/css/jqtree.css');
@@ -72,10 +71,10 @@ class ModuleArticle extends Module {
 			);
 		}
 		foreach ($articles as $article) {
-			$arr[$article['parent_id']]['children'][] = $this::ArrNode(
+			$arr[$article['categorie_id']]['children'][] = $this::ArrNode(
 				$article['id'],
 				$article['name'],
-				$article['parent_id'],
+				$article['categorie_id'],
 				'article'
 			);
 		}
@@ -154,7 +153,7 @@ class ModuleArticle extends Module {
 		}
 		//print_r(array($_REQUEST['id'], $name, $parent_id, $fundation_id));
 		if (isset($_REQUEST['id']) and !empty($_REQUEST['id'])) {
-			$reqult = $AADMIN->edit_categorie($_REQUEST['id'], $name, $parent_id, $fundation_id);
+			$result = $AADMIN->edit_categorie($_REQUEST['id'], $name, $parent_id, $fundation_id);
 		}
 		else {
 			$result = $AADMIN->add_categorie($name, $parent_id, $fundation_id);

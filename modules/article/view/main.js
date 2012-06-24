@@ -1,5 +1,6 @@
 $(document).ready(function () {
-
+	$('.dropdown-toggle').dropdown();
+	
 	$('#tree').tree({
         data: [],
 		autoOpen: 1,
@@ -107,6 +108,32 @@ function get_nod_by_id(id) {
 	return $('#tree').tree('getNodeById',id);
 }
 
+function append_node(parent, id, name) {
+	$('#tree').tree('appendNode',
+		{ id: id, name: name },
+		parent
+	);
+}
+
+function update_node(id, name) {
+	refresh_tree();
+	// TODO
+	/*node = get_nod_by_id(id);
+	t2 = node;
+	parent = node.parent;
+	children = node.children;
+	$('#tree').tree('removeNode', node);
+	node.name = name;
+	$('#tree').tree('appendNode', node, parent);
+	for (var i in children) {
+		node = get_nod_by_id(id);
+		$('#tree').tree('appendNode', children[i], node);
+	}
+	data = jQuery.parseJSON( $('#tree').tree('toJson') );
+	$('#tree').tree('loadData', data);
+	*/
+}
+
 /**
  * Afficher la vue des articles et cacher les autres
  */
@@ -123,26 +150,66 @@ function display_categorie_view() {
 	$('#categorie_details').show();
 }
 
+function clear_article() {
+	var data = {
+		id: '',
+		name: '',
+		price: 0,
+		stock: 0,
+	}
+	fill_article(data);
+}
+
+function clear_categorie() {
+	var data = {
+		id: '',
+		name: '',
+	}
+	fill_article(data);
+}
+
 function fill_article(data) {
 	$('#article_name').html(data.name);
 	$('#article_id').html(data.id);
 	$('#article_field_name').val(data.name);
 	$('#article_field_price').val(data.price);
 	$('#article_field_stock').val(data.stock);
-	$('#article_field_categorie_id').val(data.parent_id);
+	if (data.categorie_id) $('#article_field_categorie_id').val(data.categorie_id);
 }
 
 function fill_categorie(data) {
 	$('#categorie_name').html(data.name);
 	$('#categorie_id').html(data.id);
 	$('#categorie_field_name').val(data.name);
-	$('#categorie_field_fundation_id').val(data.fundation_id);
+	if (data.fundation_id) $('#categorie_field_fundation_id').val(data.fundation_id);
 	if (data.parent_id) {
 		$('#categorie_field_parent_id').val(data.parent_id);
 	}
-	else {
+	else if (data.fundation_id) {
 		$('#categorie_field_parent_id').val('fun'+data.fundation_id);
 	}
+}
+
+function collect_article_data() {
+	var data = {
+		id : $('#article_id').html(),
+		name: $('#article_field_name').val(),
+		price: $('#article_field_price').val(),
+		stock: $('#article_field_stock').val(),
+		categorie_id: $('#article_field_categorie_id').val(),
+	};
+
+	return data;
+}
+
+function collect_categorie_data() {
+	var data = {
+		id : $('#categorie_id').html(),
+		name: $('#categorie_field_name').val(),
+		parent_id: $('#categorie_field_parent_id').val(),
+	};
+
+	return data;
 }
 
 function refresh_tree() {
@@ -161,6 +228,31 @@ function highlight(id) {
 	node.element.className = 'active';
 }
 
+function on_ajax_error(jqXHR, textStatus, errorThrown) {
+	var err_msg = ''
+	if (jqXHR.status == 200) {
+		err_msg = 'La transaction s\'est bien déroulée, cependant une erreur sur la page est survenue. ';
+	}
+
+	err_msg += 'StatusCode : '+jqXHR.status;
+	err_msg +=' responseText: '+jqXHR.responseText;
+
+	show_alert_error(err_msg);
+}
+
+function save_categorie() {
+	close_alert();
+	var data = collect_categorie_data();
+	
+	$.ajax({
+		url: '<?=$this->get_param("save_categorie")?>',
+		data: data,
+		async: true,
+		success: on_save_success(data,load_categorie_details),
+		error: on_ajax_error,
+	});
+}
+
 function load_article_details(id) {
 	var node = get_nod_by_id(id);
 	fill_article({id: id, name: node.name});
@@ -175,9 +267,10 @@ function load_article_details(id) {
 				display_article_view();
 			}
 			else {
-				show_alert_fail(result.error+' '+result.error_msg);
+				show_alert_error(result.error+' '+result.error_msg);
 			}
 		},
+		error: on_ajax_error,
 	});
 }
 
@@ -195,9 +288,10 @@ function load_categorie_details(id) {
 				display_categorie_view();
 			}
 			else {
-				show_alert_fail(result.error+' '+result.error_msg);
+				show_alert_error(result.error+' '+result.error_msg);
 			}
 		},
+		error: on_ajax_error,
 	});
 }
 
@@ -207,77 +301,43 @@ function load_fundation_details(id) {
 
 function save_article() {
 	close_alert();
-	var data = {
-			id: $('#article_id').html(),
-			name: $('#article_field_name').val(),
-			categorie_id: $('#article_field_categorie_id').val(),
-			price: $('#article_field_price').val(),
-			stock: $('#article_field_stock').val(),
-	};
+	var data = collect_article_data();
 	
 	$.ajax({
 		url: '<?=$this->get_param("save_article")?>',
 		data: data,
 		async: true,
-		success: function(result) {
-			if (result.success) {
-				show_alert_success();
-				// si ajout, on ajoute à l'arbre
-				if (!data.id) {
-					var parent = $('#tree').tree('getNodeById',data.categorie_id);
-					$('#tree').tree('appendNode',
-						{
-							name: data.name,
-							id: result.success,
-						},
-						parent
-					);
-				}
-				// si update, on update l'arbre
-				else {
-					var node = $('#tree').tree('getNodeById',data.id);
-					var parent = node.parent;
-					node.name = data.name;
-					$('#tree').tree('removeNode', node);
-					$('#tree').tree('appendNode', node, parent);
-				}
-
-				// surligner la bonne ligne
-				highlight(result.success);
-
-				// afficher le message
-				load_article_details(result.success);
-			}
-			else {
-				show_alert_fail(result.error+' '+result.error_msg);
-			}
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			error = [jqXHR, textStatus, errorThrown];
-		},
+		success: on_save_success(data,load_article_details),
+		error: on_ajax_error,
 	});
 }
 
-function save_categorie() {
-	close_alert();
-	data = {
-		id: $('#categorie_field_id').val(),
-		name: $('#categorie_field_name').val(),
-		parent_id: $('#categorie_field_parent_id').val(),
-	};
-	$.ajax({
-		url: '<?=$this->get_param("save_categorie")?>',
-		data: data,
-		async: true,
-		success: function(result) {
-			if (result.success) {
-				show_alert_success();
+function on_save_success(data, load_fn) {
+	return function(result) {
+		if (result.success) {
+			// si ajout, on ajoute à l'arbre
+			if (!data.id) {
+				var parent = get_nod_by_id(data.categorie_id);
+				append_node(parent, result.success, data.name);
 			}
+			// si update, on update l'arbre
 			else {
-				show_alert_fail(result.error+' '+result.error_msg);
+				update_node(data.id, data.name);
 			}
-		},
-	});
+
+			// surligner la bonne ligne
+			highlight(result.success);
+
+			// affiche les nouvelles valeurs
+			load_fn(result.success);
+
+			// affiche le message de succès
+			show_alert_success();
+		}
+		else {
+			show_alert_error(result.error+' '+result.error_msg);
+		}
+	};
 }
 
 function delete_article() {
@@ -295,9 +355,10 @@ function delete_article() {
 				select_node(parent);
 			}
 			else {
-				show_alert_fail(result.error+' '+result.error_msg);
+				show_alert_error(result.error+' '+result.error_msg);
 			}
-		}
+		},
+		error: on_ajax_error,
 	});
 }
 
@@ -316,9 +377,10 @@ function delete_categorie() {
 				select_node(parent);
 			}
 			else {
-				show_alert_fail(result.error+' '+result.error_msg);
+				show_alert_error(result.error+' '+result.error_msg);
 			}
-		}
+		},
+		error: on_ajax_error,
 	});
 }
 
@@ -332,7 +394,7 @@ function show_alert_success() {
 	bind_close_alert();
 }
 
-function show_alert_fail(msg) {
+function show_alert_error(msg) {
 	$('#alert').html(
 		'<div class="alert alert-error">'+
 		'	<button type="button" class="close" data-dismiss="alert">×</button>'+

@@ -5,14 +5,17 @@
 		</div><!--/.well -->
 	</div><!--/span-->
 	<div class="span9">
-		<button id="add_article" type="submit" class="btn btn-primary">
-			<i class="icon-plus icon-white"></i>Ajouter un nouvel article
-		</button>
-		<button id="add_categorie" type="submit" class="btn btn-primary">
-			<i class="icon-plus icon-white"></i>Ajouter une nouvelle catégorie
-		</button>
 		<button id="tojson" class="btn">to json</button>
 		<button id="refresh" class="btn">refresh</button>
+		<div class="btn-group pull-right">
+			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+				<i class="icon-plus icon-white"></i><span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li><a id="add_article">Article</a></li>
+				<li><a id="add_categorie">Catégorie</a></li>
+			</ul>
+		</div>
 		<div class="hero-unit">
 			
 			<div id="alert"></div>
@@ -53,10 +56,10 @@
 							</div>
 						</div>
 						<div class="form-actions">
-							<button id="save_article" type="submit" class="btn btn-success">
+							<button id="save_article" class="btn btn-success">
 								<i class="icon-ok icon-white"></i>Sauvegarder
 							</button>
-							<button id="delete_article" type="submit" class="btn btn-danger">
+							<button id="delete_article" class="btn btn-danger">
 								<i class="icon-trash icon-white"></i>Supprimer
 							</button>
 						</div>
@@ -96,10 +99,10 @@
 							</div>
 						</div>
 						<div class="form-actions">
-							<button id="save_categorie" type="submit" class="btn btn-success">
+							<button id="save_categorie" class="btn btn-success">
 								<i class="icon-ok icon-white"></i>Sauvegarder
 							</button>
-							<button id="delete_categorie" type="submit" class="btn btn-danger">
+							<button id="delete_categorie" class="btn btn-danger">
 								<i class="icon-trash icon-white"></i>Supprimer
 							</button>
 						</div>
