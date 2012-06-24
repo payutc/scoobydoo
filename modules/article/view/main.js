@@ -261,6 +261,14 @@ function fill_categorie(data) {
 function fill_fundation(data) {
 	$('#fundation_name').html(data.name);
 	$('#fundation_id').html(data.id);
+	if (data.categories) {
+		var html = '';
+		for(var i in data.categories) {
+			var categorie = data.categories[i];
+			html += '<tr><td>'+categorie.id+'</td><td><a>'+categorie.name+'</a></td></tr>';
+		}
+		$('#fundation_categories').html(html);
+	}
 }
 
 function collect_article_data() {
@@ -309,6 +317,7 @@ function highlight(id) {
 }
 
 function on_ajax_error(jqXHR, textStatus, errorThrown) {
+	stop_details_spinner();
 	var err_msg = ''
 	if (jqXHR.status == 200) {
 		err_msg = 'La transaction s\'est bien déroulée, cependant une erreur sur la page est survenue. ';
@@ -318,19 +327,6 @@ function on_ajax_error(jqXHR, textStatus, errorThrown) {
 	err_msg +=' responseText: '+jqXHR.responseText;
 
 	show_alert_error(err_msg);
-}
-
-function save_categorie() {
-	close_alert();
-	var data = collect_categorie_data();
-	
-	$.ajax({
-		url: '<?=$this->get_param("save_categorie")?>',
-		data: data,
-		async: true,
-		success: on_save_success(data,load_categorie_details),
-		error: on_ajax_error,
-	});
 }
 
 function load_article_details(id) {
@@ -344,11 +340,14 @@ function load_article_details(id) {
 		data: {id: id},
 		async: true,
 		success: function(result) {
+			// arret du spinner
+			if (current_node_view.id == node.id) {
+				stop_details_spinner();
+			}
 			if (result.success) {
 				// test si on est encore entrain de regarder ce node
 				if (current_node_view.id == node.id) {
 					fill_article(result.success);
-					stop_details_spinner();
 				}
 			}
 			else {
@@ -370,11 +369,14 @@ function load_categorie_details(id) {
 		data: {id: id},
 		async: true,
 		success: function(result) {
+			// arret du spinner
+			if (current_node_view.id == node.id) {
+				stop_details_spinner();
+			}
 			if (result.success) {
 				// test si on est encore entrain de regarder ce node
 				if (current_node_view.id == node.id) {
 					fill_categorie(result.success);
-					stop_details_spinner();
 				}
 			}
 			else {
@@ -390,22 +392,57 @@ function load_fundation_details(id) {
 	current_node_view = node;
 	fill_fundation({id: id, name: node.name});
 	display_fundation_view();
+	start_details_spinner();
+	$.ajax({
+		url: '<?=$this->get_param("details_fundation")?>',
+		data: {id: id},
+		async: true,
+		success: function(result) {
+			// arret du spinner
+			if (current_node_view.id == node.id) {
+				stop_details_spinner();
+			}
+			if (result.success) {
+				// test si on est encore entrain de regarder ce node
+				if (current_node_view.id == node.id) {
+					fill_fundation(result.success);
+				}
+			}
+			else {
+				show_alert_error(result.error+' '+result.error_msg);
+			}
+		},
+		error: on_ajax_error,
+	});
 }
 
 function save_article() {
 	close_alert();
 	var data = collect_article_data();
-	
+	start_details_spinner();
 	$.ajax({
 		url: '<?=$this->get_param("save_article")?>',
 		data: data,
 		async: true,
-		success: on_save_success(data,load_article_details),
+		success: on_save_success(data,fill_article),
 		error: on_ajax_error,
 	});
 }
 
-function on_save_success(data, load_fn) {
+function save_categorie() {
+	close_alert();
+	var data = collect_categorie_data();
+	start_details_spinner();
+	$.ajax({
+		url: '<?=$this->get_param("save_categorie")?>',
+		data: data,
+		async: true,
+		success: on_save_success(data,fill_categorie),
+		error: on_ajax_error,
+	});
+}
+
+function on_save_success(data, fill_fn) {
 	return function(result) {
 		if (result.success) {
 			// si ajout, on ajoute à l'arbre
@@ -422,7 +459,10 @@ function on_save_success(data, load_fn) {
 			highlight(result.success);
 
 			// affiche les nouvelles valeurs
-			load_fn(result.success);
+			fill_fn(data);
+
+			// stop le spinner
+			stop_details_spinner();
 
 			// affiche le message de succès
 			show_alert_success();
@@ -434,12 +474,14 @@ function on_save_success(data, load_fn) {
 }
 
 function delete_article() {
+	start_details_spinner();
 	var data = {id: $('#article_id').html()};
 	$.ajax({
 		url: '<?=$this->get_param("delete_article")?>',
 		data: data,
 		async: true,
 		success: function(result) {
+			stop_details_spinner();
 			if (result.success) {
 				show_alert_success();
 				var node = get_nod_by_id(data.id);
@@ -456,12 +498,14 @@ function delete_article() {
 }
 
 function delete_categorie() {
+	start_details_spinner();
 	var data = {id: $('#categorie_id').html()};
 	$.ajax({
 		url: '<?=$this->get_param("delete_categorie")?>',
 		data: data,
 		async: true,
 		success: function(result) {
+			stop_details_spinner();
 			if (result.success) {
 				show_alert_success();
 				var node = get_nod_by_id(data.id);

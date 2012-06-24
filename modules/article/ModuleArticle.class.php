@@ -92,6 +92,26 @@ class ModuleArticle extends Module {
 		$this->view->set_param($tree);
 	}
 
+	public function action_fundation_details() {
+		global $AADMIN;
+		$this->view->set_template('json');
+		$id = $_REQUEST['id'];
+		$result = $AADMIN->get_fundation($id);
+		if (isset($result['success'])) {
+			$result2 = $AADMIN->get_categories_by_fundation_id($id, true);
+			if (isset($result2['success'])) {
+				$result['success']['categories'] = $result2['success'];
+				$this->view->set_param($result);
+			}
+			else {
+				$this->view->set_param($result2);
+			}
+		}
+		else {
+			$this->view->set_param($result);
+		}
+	}
+
 	public function action_article_details() {
 		global $AADMIN;
 		$this->view->set_template('json');
@@ -186,6 +206,7 @@ class ModuleArticle extends Module {
 		global $CONF;
 		$url_base = $CONF['scoobydoo_url'].'?module=article&action=';
 		$this->view->add_param('get_tree', $url_base.'get_tree');
+		$this->view->add_param('details_fundation', $url_base.'fundation_details');
 		$this->view->add_param('details_article', $url_base.'article_details');
 		$this->view->add_param('details_categorie', $url_base.'categorie_details');
 		$this->view->add_param('save_article', $url_base.'save_article');
