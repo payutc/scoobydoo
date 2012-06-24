@@ -1,6 +1,6 @@
 <?
 
-require 'modules/Module.class.php';
+require_once 'modules/Module.class.php';
 
 class ModuleDroits extends Module {
 

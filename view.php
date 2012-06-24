@@ -13,6 +13,8 @@ class View {
 	public $param = array(); // STOCKAGE DES PARAMETRES NECESAIRES AUX VUES
 	public $js_files = array('libs/jquery-1.7.2.min.js', 'bootstrap/bootstrap-dropdown.js'); // Url des fichiers javascipts à charger  !! Utiliser uniquement dans les templates html... (pas en json)
 	public $css_files = array('bootstrap/css/bootstrap.min.css','bootstrap/css/bootstrap-responsive.min.css'); // Url des fichiers css à charger  !! Utiliser uniquement dans les templates html... (pas en json)
+	public $menus;
+	public $index_link;
 	public $copyright;
 
 	/**
@@ -97,6 +99,10 @@ class View {
 		}
 
 		return $this;
+	}
+
+	public function set_menu($menu) {
+		$this->menus = $menu;
 	}
 
 }

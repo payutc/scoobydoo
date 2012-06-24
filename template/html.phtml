@@ -30,13 +30,13 @@ $username = ucfirst($AADMIN->getFirstname())." ".ucfirst($AADMIN->getLastname())
   <body>
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container-fluid">
+        <div class="container">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#"><?=$this->title?></a>
+          <a class="brand" href="<?php echo $this->index_link; ?>"><?php echo $this->title; ?></a>
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
               <i class="icon-user"></i> <?=$username?>
@@ -50,9 +50,37 @@ $username = ucfirst($AADMIN->getFirstname())." ".ucfirst($AADMIN->getLastname())
           </div>
           <div class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <?php
+              foreach($this->menus as $menu) {
+                $li_class=$menu['class'];
+                $a_class='';
+                $a_more='';
+                if(isset($menu['submenu'])) {
+                  $li_class.=' dropdown';
+                  $a_more.='data-toggle="dropdown"';
+                }
+                echo '<li class="'.$li_class.'" >';
+                echo '<a href="'.$menu['link'].'" class="" '.$a_more.'>';
+                echo $menu['content'];
+                if(isset($menu['submenu'])) {
+                  echo '<b class="caret"></b>';
+                }
+                echo '</a>';
+                if(isset($menu['submenu'])) {
+                  echo '<ul class="dropdown-menu">';
+                    $submenus = $menu['submenu'];
+                    foreach($submenus as $submenu) {
+                        echo '<li class="'.$submenu['class'].'" >';
+                        echo '<a href="'.$submenu['link'].'" class="" >';
+                        echo $submenu['content'];
+                        echo '</a>';
+                        echo '</li>';
+                    }
+                  echo '</ul>';
+                }
+                echo '</li>';
+              }
+              ?>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
