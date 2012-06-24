@@ -39,6 +39,8 @@ class ModuleIndex extends Module {
 		$this->view->add_param("get_fundations_with_right('GESARTICLE')", $right);
 		$this->view->add_param("sfdsfd", count($right["success"]));
 
+		$this->view->add_param("t", $AADMIN->get_categories_by_fundation_id(2, true));
+		$this->view->add_param("u", $AADMIN->get_categories_by_fundation_id(2, false));
 
 	}
 

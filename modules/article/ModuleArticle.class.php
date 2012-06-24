@@ -245,11 +245,11 @@ class ModuleArticle extends Module {
 
 	public function get_menus() {
 		if($this->has_rights())
-			return array("content" => "Articles", "class"=>"", "link"=>"#", "submenu"=> array(
+			return array("content" => "Articles", "class"=>"", "link"=>$this->get_link_to_action("index")); /*, "submenu"=> array(
 							  array("content" => "Gestion", "class"=>"", "link"=>$this->get_link_to_action("index")),
 							  array("content" => "", "class"=>"divider", "link"=>"#"),
                               array("content" => "Ajouter un article", "class"=>"", "link"=>$this->get_link_to_action("add-article")), 
-                              array("content" => "Ajouter une catégorie", "class"=>"", "link"=>$this->get_link_to_action("add-categorie"))));
+                              array("content" => "Ajouter une catégorie", "class"=>"", "link"=>$this->get_link_to_action("add-categorie")))); */
 		else
 			return;
                               
