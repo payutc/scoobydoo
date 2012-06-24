@@ -44,11 +44,8 @@ $(document).ready(function () {
 	});
 	$('#add_article').click(function(event) {
 		event.preventDefault();
-		$('#article_name').html('');
-		$('#article_id').html('');
-		$('#article_field_price').val('');
-		$('#article_field_name').val('');
-		$('#article_field_stock').val('');
+		clear_article();
+		display_article_view();
 	});
     $('#delete_article').click(function(event) {
 		event.preventDefault();
@@ -60,9 +57,8 @@ $(document).ready(function () {
 	});
 	$('#add_categorie').click(function(event) {
 		event.preventDefault();
-		$('#categorie_name').html('');
-		$('#categorie_id').html('');
-		$('#categorie_field_name').val('');
+		clear_categorie();
+		display_categorie_view();
 	});
     $('#delete_categorie').click(function(event) {
 		event.preventDefault();
@@ -153,7 +149,7 @@ function display_categorie_view() {
 function clear_article() {
 	var data = {
 		id: '',
-		name: '',
+		name: 'Nouvel article',
 		price: 0,
 		stock: 0,
 	}
@@ -163,9 +159,9 @@ function clear_article() {
 function clear_categorie() {
 	var data = {
 		id: '',
-		name: '',
+		name: 'Nouvelle catégorie',
 	}
-	fill_article(data);
+	fill_categorie(data);
 }
 
 function fill_article(data) {
