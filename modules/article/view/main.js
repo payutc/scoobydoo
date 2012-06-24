@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+	spinners = {};
 	current_node_view = null;
 	
 	$('.dropdown-toggle').dropdown();
@@ -89,6 +90,52 @@ $(document).ready(function () {
 		}
 	);
 });
+
+function stop_spinner(id) {
+	spinners[id].stop();
+}
+
+function start_spinner(id) {
+	if (spinners[id]) {
+		stop_spinner(id);
+		spinners[id].spin($(id)[0]);
+	}
+	else {
+		var opts = {
+			lines: 13, // The number of lines to draw
+			length: 30, // The length of each line
+			width: 10, // The line thickness
+			radius: 35, // The radius of the inner circle
+			rotate: 0, // The rotation offset
+			color: '#000', // #rgb or #rrggbb
+			speed: 0.8, // Rounds per second
+			trail: 81, // Afterglow percentage
+			shadow: false, // Whether to render a shadow
+			hwaccel: false, // Whether to use hardware acceleration
+			className: 'spinner', // The CSS class to assign to the spinner
+			zIndex: 2e9, // The z-index (defaults to 2000000000)
+			top: 'auto', // Top position relative to parent in px
+			left: 'auto' // Left position relative to parent in px
+		};
+		spinners[id] = new Spinner(opts).spin($(id)[0]);
+	}
+}
+
+function start_tree_spinner() {
+	start_spinner('#treediv');
+}
+
+function start_details_spinner() {
+	start_spinner('#detailsdiv');
+}
+
+function stop_tree_spinner() {
+	stop_spinner('#treediv');
+}
+
+function stop_details_spinner() {
+	stop_spinner('#detailsdiv');
+}
 
 function select_node(node) {
 	current_node_view = node;
@@ -244,11 +291,13 @@ function collect_categorie_data() {
 }
 
 function refresh_tree() {
+	start_tree_spinner();
 	$.ajax({
 		url: '<?=$this->get_param("get_tree")?>',
 		async: true,
 		success: function(data) {
 			$('#tree').tree('loadData', data);
+			stop_tree_spinner();
 		},
 	});
 }
@@ -289,6 +338,7 @@ function load_article_details(id) {
 	current_node_view = node;
 	fill_article({id: id, name: node.name});
 	display_article_view();
+	start_details_spinner();
 	$.ajax({
 		url: '<?=$this->get_param("details_article")?>',
 		data: {id: id},
@@ -298,6 +348,7 @@ function load_article_details(id) {
 				// test si on est encore entrain de regarder ce node
 				if (current_node_view.id == node.id) {
 					fill_article(result.success);
+					stop_details_spinner();
 				}
 			}
 			else {
@@ -313,6 +364,7 @@ function load_categorie_details(id) {
 	current_node_view = node;
 	fill_categorie({id: id, name: node.name});
 	display_categorie_view();
+	start_details_spinner();
 	$.ajax({
 		url: '<?=$this->get_param("details_categorie")?>',
 		data: {id: id},
@@ -322,6 +374,7 @@ function load_categorie_details(id) {
 				// test si on est encore entrain de regarder ce node
 				if (current_node_view.id == node.id) {
 					fill_categorie(result.success);
+					stop_details_spinner();
 				}
 			}
 			else {

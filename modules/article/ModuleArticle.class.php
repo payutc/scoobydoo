@@ -23,6 +23,7 @@ class ModuleArticle extends Module {
 		$modulepath = $this->get_path_module();
 		$this->view->set_template('html');
 		$this->view->add_jsfile($modulepath.'res/js/jqtree.jquery.js');
+		$this->view->add_jsfile($modulepath.'res/js/spin.min.js');
 		$this->view->add_jsfile('?module=article&action=mainjs');
 		$this->view->add_cssfile($modulepath.'res/css/jqtree.css');
 		$this->view->set_view($modulepath.'view/index.phtml');
