@@ -24,6 +24,9 @@ class ModuleIndex extends Module {
 		$this->view->add_param("all_functions", $AADMIN->__getFunctions());
 
 		$this->view->add_param("get article 597", $AADMIN->get_article(597));
+		$this->view->add_param("get articles", $AADMIN->get_articles());
+		$this->view->add_param("get categories", $AADMIN->get_categories());
+		$this->view->add_param("get categorie 580", $AADMIN->get_categorie(580));
 		
 		$login = "mguffroy";
 		$this->view->add_param("getUserIDfromLogin($login)", $AADMIN->getUserIDfromLogin($login));
