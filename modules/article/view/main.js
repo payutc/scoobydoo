@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+	current_node_view = null;
+	
 	$('.dropdown-toggle').dropdown();
 	
 	$('#tree').tree({
@@ -88,6 +91,7 @@ $(document).ready(function () {
 });
 
 function select_node(node) {
+	current_node_view = node;
 	highlight(node.id);
 	if (node.type == 'fundation') {
 		load_fundation_details(node.id);
@@ -130,20 +134,34 @@ function update_node(id, name) {
 	*/
 }
 
+function hide_all_views() {
+	$('#article_details').hide();
+	$('#categorie_details').hide();
+	$('#fundation_details').hide();
+}
+
 /**
  * Afficher la vue des articles et cacher les autres
  */
 function display_article_view() {
+	hide_all_views();
 	$('#article_details').show();
-	$('#categorie_details').hide();
 }
 
 /**
  * Afficher la vue des catégories et cacher les autres
  */
 function display_categorie_view() {
-	$('#article_details').hide();
+	hide_all_views();
 	$('#categorie_details').show();
+}
+
+/**
+ * Afficher la vue des assos et cacher les autres
+ */
+function display_fundation_view() {
+	hide_all_views();
+	$('#fundation_details').show();
 }
 
 function clear_article() {
@@ -184,6 +202,11 @@ function fill_categorie(data) {
 	else if (data.fundation_id) {
 		$('#categorie_field_parent_id').val('fun'+data.fundation_id);
 	}
+}
+
+function fill_fundation(data) {
+	$('#fundation_name').html(data.name);
+	$('#fundation_id').html(data.id);
 }
 
 function collect_article_data() {
@@ -251,6 +274,7 @@ function save_categorie() {
 
 function load_article_details(id) {
 	var node = get_nod_by_id(id);
+	current_node_view = node;
 	fill_article({id: id, name: node.name});
 	display_article_view();
 	$.ajax({
@@ -259,8 +283,10 @@ function load_article_details(id) {
 		async: true,
 		success: function(result) {
 			if (result.success) {
-				fill_article(result.success);
-				display_article_view();
+				// test si on est encore entrain de regarder ce node
+				if (current_node_view.id == node.id) {
+					fill_article(result.success);
+				}
 			}
 			else {
 				show_alert_error(result.error+' '+result.error_msg);
@@ -272,6 +298,7 @@ function load_article_details(id) {
 
 function load_categorie_details(id) {
 	var node = get_nod_by_id(id);
+	current_node_view = node;
 	fill_categorie({id: id, name: node.name});
 	display_categorie_view();
 	$.ajax({
@@ -280,8 +307,10 @@ function load_categorie_details(id) {
 		async: true,
 		success: function(result) {
 			if (result.success) {
-				fill_categorie(result.success);
-				display_categorie_view();
+				// test si on est encore entrain de regarder ce node
+				if (current_node_view.id == node.id) {
+					fill_categorie(result.success);
+				}
 			}
 			else {
 				show_alert_error(result.error+' '+result.error_msg);
@@ -292,7 +321,10 @@ function load_categorie_details(id) {
 }
 
 function load_fundation_details(id) {
-	alert('todo');
+	var node = get_nod_by_id(id);
+	current_node_view = node;
+	fill_fundation({id: id, name: node.name});
+	display_fundation_view();
 }
 
 function save_article() {
