@@ -84,7 +84,6 @@ $(document).ready(function () {
 		}
 		else {
 			var node_categorie = get_nod_by_id(parent_id);
-			t = [parent_id, node_categorie];
 			$('#categorie_field_fundation_id').val(node_categorie.fundation_id);
 		}
 	});
@@ -161,17 +160,20 @@ function stop_details_spinner() { stop_spinner('#detailsdiv'); }
  * 	1. change la couleur de fond de la ligne
  * 	2. charge dans les infos dans la vue details
  */
-function select_node(node) {
+function select_node(node,data) {
 	current_node_view = node;
 	highlight(node.id);
 	if (node.type == 'fundation') {
-		load_fundation_details(node.id);
+		if (!data) load_fundation_details(node.id);
+		else fill_fundation(data);
 	}
 	else if (node.type == 'categorie') {
-		load_categorie_details(node.id);
+		if (!data) load_categorie_details(node.id);
+		else fill_categorie(data);
 	}
 	else {
-		load_article_details(node.id);
+		if (!data) load_article_details(node.id);
+		else fill_article(data);
 	}
 }
 
@@ -179,9 +181,9 @@ function select_node(node) {
  * Convenience function
  * @param id
  */
-function select_node_by_id(id) {
+function select_node_by_id(id,data) {
 	var node = get_nod_by_id(id);
-	select_node(node);
+	select_node(node,data);
 }
 
 /**
@@ -379,23 +381,23 @@ function collect_categorie_data() {
  * Si un id est précisé, le node correspondant sera selectionné.
  * @param {optional} id
  */
-function refresh_tree(id) {
+function refresh_tree(id,data) {
 	start_tree_spinner();
 	$.ajax({
 		url: '<?=$this->get_param("get_tree")?>',
 		async: true,
-		success: function(data) {
-			$('#tree').tree('loadData', data);
+		success: function(result) {
+			$('#tree').tree('loadData', result);
 			stop_tree_spinner();
 			if (id) {
-				select_node_by_id(id);
+				select_node_by_id(id,data);
 			}
 		},
 	});
 }
 
 /**
- * Surligner un noeud
+ * Surligner un noeud, désurligne l'ancien
  * @param id
  */
 function highlight(id) {
@@ -569,8 +571,10 @@ function on_save_success(data, fill_fn) {
 	return function(result) {
 		stop_details_spinner();
 		if (result.success) {
-			// refresh tree
-			refresh_tree(result.success);
+			// refresh tree, sans redemander au serveur les infos
+			data.id = result.success;
+			refresh_tree(result.success,data);
+			fill_fn(data);
 
 			// affiche le message de succès
 			show_alert_success();
