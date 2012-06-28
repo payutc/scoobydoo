@@ -450,7 +450,7 @@ function load_article_details(id) {
 				}
 			}
 			else {
-				show_alert_error(result.error+' '+result.error_msg);
+				show_alert_error(result.error,result.error_msg);
 			}
 		},
 		error: on_ajax_error,
@@ -486,7 +486,7 @@ function load_categorie_details(id) {
 				}
 			}
 			else {
-				show_alert_error(result.error+' '+result.error_msg);
+				show_alert_error(result.error,result.error_msg);
 			}
 		},
 		error: on_ajax_error,
@@ -522,7 +522,7 @@ function load_fundation_details(id) {
 				}
 			}
 			else {
-				show_alert_error(result.error+' '+result.error_msg);
+				show_alert_error(result.error,result.error_msg);
 			}
 		},
 		error: on_ajax_error,
@@ -580,7 +580,7 @@ function on_save_success(data, fill_fn) {
 			show_alert_success();
 		}
 		else {
-			show_alert_error(result.error+' '+result.error_msg);
+			show_alert_error(result.error,result.error_msg);
 		}
 	};
 }
@@ -606,7 +606,7 @@ function delete_article() {
 				select_node(parent);
 			}
 			else {
-				show_alert_error(result.error+' '+result.error_msg);
+				show_alert_error(result.error,result.error_msg);
 			}
 		},
 		error: on_ajax_error,
@@ -634,7 +634,7 @@ function delete_categorie() {
 				select_node(parent);
 			}
 			else {
-				show_alert_error(result.error+' '+result.error_msg);
+				show_alert_error(result.error,result.error_msg);
 			}
 		},
 		error: on_ajax_error,
@@ -648,7 +648,7 @@ function show_alert_success() {
 	$('#alert').html(
 		'<div class="alert alert-success">'+
 		'	<button type="button" class="close" data-dismiss="alert">×</button>'+
-		'	<strong>Well done!</strong> You successfully read this important alert message.'+
+		'	<strong>Félicitation !</strong> Sans embrouilles à ta fin tu es arrivé.'+
 		'</div>'
 	);
 	bind_close_alert();
@@ -657,12 +657,12 @@ function show_alert_success() {
 /**
  * Afficher un message d'erreur
  */
-function show_alert_error(msg) {
+function show_alert_error(err_code,err_msg) {
 	$('#alert').html(
 		'<div class="alert alert-error">'+
 		'	<button type="button" class="close" data-dismiss="alert">×</button>'+
-		'	<strong>Oh snap!</strong> Change a few things up and try submitting again.'+
-		'	Err : '+msg+
+		'	<strong>Crotte de biquette !</strong> Il y a eu une couille.<br/>'+
+		'	Code d\'erreur : <strong>'+err_code+'</strong>. '+err_msg+
 		'</div>'
 	);
 	bind_close_alert();
