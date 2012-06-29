@@ -1,0 +1,19 @@
+	  <script>
+  			var users = <?php echo json_encode($this->param['users']); ?>;
+  			var articles = <?php echo json_encode($this->param['articles']); ?>;
+  			var transactions = <?php echo json_encode($this->param['transactions']); ?>;
+	  </script>
+      <div class="row">
+          <div class="hero-unit">
+            <h2>Graph bipartie Consomateurs <=> Consommations !</h2>
+      </div><!--/row-->
+      <div class="row">
+          <div class="span8 well">
+          	<div id="sigma-zone" style="width: 100%; height: 450px;"></div>
+          </div>
+          <div class="span3 well">
+          	<h2>Panneau de controle</h2>
+          	<button class="btn" id="stop-layout">Arêter la spatialisation</button>
+          	<button class="btn" id="rescale-graph">Repositionner</button>
+          </div>
+      </div><!--/row-->
