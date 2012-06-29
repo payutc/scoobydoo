@@ -6,11 +6,11 @@ $username = ucfirst($AADMIN->getFirstname())." ".ucfirst($AADMIN->getLastname())
 <html lang="fr">
   <head>
     <meta charset="utf-8">
-    <title><?=$this->title?></title>
+    <title><?php echo $this->title ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le styles -->
-    <? $this->echo_cssfiles(); ?>
+    <?php $this->echo_cssfiles(); ?>
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -39,7 +39,7 @@ $username = ucfirst($AADMIN->getFirstname())." ".ucfirst($AADMIN->getLastname())
           <a class="brand" href="<?php echo $this->index_link; ?>"><?php echo $this->title; ?></a>
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-              <i class="icon-user"></i> <?=$username?>
+              <i class="icon-user"></i> <?php echo $username ?>
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
@@ -87,18 +87,18 @@ $username = ucfirst($AADMIN->getFirstname())." ".ucfirst($AADMIN->getLastname())
       </div>
     </div>
     <div class="container">
-  	 <?=$this->get_container()?>
+  	 <?php echo $this->get_container() ?>
     <hr>
 
       <footer>
-        <p>&copy; <?=$this->copyright?></p>
+        <p>&copy; <?php echo $this->copyright ?></p>
       </footer>
 </div><!--/.fluid-container-->
 
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <? $this->echo_jsfiles(); ?>
+    <?php $this->echo_jsfiles(); ?>
 
   </body>
 </html>
