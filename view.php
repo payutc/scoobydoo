@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 	Le constructeur de la classe View préconfigure la classe avec une configuration par défaut.
 	Ce qui décide réellement ce que doit afficher la vue est le template. 
