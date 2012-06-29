@@ -384,7 +384,7 @@ function collect_categorie_data() {
 function refresh_tree(id,data) {
 	start_tree_spinner();
 	$.ajax({
-		url: '<?=$this->get_param("get_tree")?>',
+		url: '<?php echo $this->get_param("get_tree") ?>',
 		async: true,
 		success: function(result) {
 			$('#tree').tree('loadData', result);
@@ -435,7 +435,7 @@ function load_article_details(id) {
 	display_article_view();
 	start_details_spinner();
 	$.ajax({
-		url: '<?=$this->get_param("details_article")?>',
+		url: '<?php echo $this->get_param("details_article") ?>',
 		data: {id: id},
 		async: true,
 		success: function(result) {
@@ -471,7 +471,7 @@ function load_categorie_details(id) {
 	display_categorie_view();
 	start_details_spinner();
 	$.ajax({
-		url: '<?=$this->get_param("details_categorie")?>',
+		url: '<?php echo $this->get_param("details_categorie") ?>',
 		data: {id: id},
 		async: true,
 		success: function(result) {
@@ -507,7 +507,7 @@ function load_fundation_details(id) {
 	display_fundation_view();
 	start_details_spinner();
 	$.ajax({
-		url: '<?=$this->get_param("details_fundation")?>',
+		url: '<?php echo $this->get_param("details_fundation") ?>',
 		data: {id: id},
 		async: true,
 		success: function(result) {
@@ -538,7 +538,7 @@ function save_article() {
 	var data = collect_article_data();
 	start_details_spinner();
 	$.ajax({
-		url: '<?=$this->get_param("save_article")?>',
+		url: '<?php echo $this->get_param("save_article") ?>',
 		data: data,
 		async: true,
 		success: on_save_success(data,fill_article),
@@ -555,7 +555,7 @@ function save_categorie() {
 	var data = collect_categorie_data();
 	start_details_spinner();
 	$.ajax({
-		url: '<?=$this->get_param("save_categorie")?>',
+		url: '<?php echo $this->get_param("save_categorie") ?>',
 		data: data,
 		async: true,
 		success: on_save_success(data,fill_categorie),
@@ -593,7 +593,7 @@ function delete_article() {
 	start_details_spinner();
 	var data = {id: $('#article_id').html()};
 	$.ajax({
-		url: '<?=$this->get_param("delete_article")?>',
+		url: '<?php echo $this->get_param("delete_article") ?>',
 		data: data,
 		async: true,
 		success: function(result) {
@@ -621,7 +621,7 @@ function delete_categorie() {
 	start_details_spinner();
 	var data = {id: $('#categorie_id').html()};
 	$.ajax({
-		url: '<?=$this->get_param("delete_categorie")?>',
+		url: '<?php echo $this->get_param("delete_categorie") ?>',
 		data: data,
 		async: true,
 		success: function(result) {
