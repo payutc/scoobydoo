@@ -130,11 +130,13 @@ class ModuleArticle extends Module {
 		$cat_id = $_REQUEST['categorie_id'];
 		$price = $_REQUEST['price'];
 		$stock = $_REQUEST['stock'];
+		$tva = $_REQUEST['tva'];
+		$alcool = $_REQUEST['alcool'];
 		if (isset($_REQUEST['id']) and !empty($_REQUEST['id'])) {
-			$result = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price, $stock);
+			$result = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price, $stock, $tva, $alcool);
 		}
 		else {
-			$result = $AADMIN->add_article($name, $cat_id, $price, $stock);
+			$result = $AADMIN->add_article($name, $cat_id, $price, $stock, $tva, $alcool);
 		}
 
 		$this->view->set_param($result);
