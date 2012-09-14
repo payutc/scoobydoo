@@ -169,7 +169,7 @@ function select_node(node,data) {
 	}
 	else if (node.type == 'categorie') {
 		if (!data) load_categorie_details(node.id);
-		else fill_categorie(data);
+		else fill_categorie(data);(0 = sans alcool ; 1 = avec alcool)
 	}
 	else {
 		if (!data) load_article_details(node.id);
@@ -304,7 +304,6 @@ function fill_article(data) {
 	$('#article_field_name').val(data.name);
 	$('#article_field_price').val(price);
 	$('#article_field_stock').val(data.stock);
-	$('#article_field_tva').val(data.tva);
 	$('#article_field_alcool').val(data.alcool);	
 	if (data.categorie_id) $('#article_field_categorie_id').val(data.categorie_id);
 }
@@ -359,7 +358,6 @@ function collect_article_data() {
 		price: price,
 		stock: $('#article_field_stock').val(),
 		categorie_id: $('#article_field_categorie_id').val(),
-		tva: $('#article_field_tva').val(),
 		alcool: $('#article_field_alcool').val(),
 	};
 
