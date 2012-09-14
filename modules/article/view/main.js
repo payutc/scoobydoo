@@ -169,7 +169,7 @@ function select_node(node,data) {
 	}
 	else if (node.type == 'categorie') {
 		if (!data) load_categorie_details(node.id);
-		else fill_categorie(data);(0 = sans alcool ; 1 = avec alcool)
+		else fill_categorie(data);
 	}
 	else {
 		if (!data) load_article_details(node.id);
