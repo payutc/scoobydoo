@@ -358,7 +358,7 @@ function collect_article_data() {
 		price: price,
 		stock: $('#article_field_stock').val(),
 		categorie_id: $('#article_field_categorie_id').val(),
-		alcool: $('#article_field_alcool').val(),
+		alcool: $('#article_field_alcool').attr("checked") === "checked" ? 1 : 0,
 	};
 
 	return data;
