@@ -307,6 +307,8 @@ function fill_article(data) {
 	console.log(data.name, data.alcool);
 	if (data.alcool == 1)
 		$('#article_field_alcool').attr("checked", "checked");
+	else
+		$('#article_field_alcool').removeAttr("checked");
 	if (data.categorie_id) $('#article_field_categorie_id').val(data.categorie_id);
 }
 
