@@ -304,8 +304,9 @@ function fill_article(data) {
 	$('#article_field_name').val(data.name);
 	$('#article_field_price').val(price);
 	$('#article_field_stock').val(data.stock);
-	console.log(data.name, data.alcool)
-	$('#article_field_alcool').attr("checked", data.alcool == 1 ? "checked" : "");	
+	console.log(data.name, data.alcool);
+	if (data.alcool == 1)
+		$('#article_field_alcool').attr("checked", "checked");
 	if (data.categorie_id) $('#article_field_categorie_id').val(data.categorie_id);
 }
 
