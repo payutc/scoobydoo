@@ -16,6 +16,7 @@
           	<button class="btn" id="stop-layout">Arêter la spatialisation</button>
           	<button class="btn" id="rescale-graph">Repositionner</button>
             <h2>Autres statistiques</h2>
-            <?php print_r($this->param['stats']); ?>
+            Nombre de compte utilisateur : <?php echo $this->param['stats']['success'][0]; ?><br />
+            Somme d'argent sur les comptes : <?php echo $this->param['stats']['success'][1]; ?><br />
           </div>
       </div><!--/row-->
