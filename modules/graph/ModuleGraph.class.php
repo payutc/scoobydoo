@@ -17,10 +17,12 @@ class ModuleGraph extends Module {
 		$articles = $Stats->get_articles(); $articles = $articles['success'];
 		$users = $Stats->get_users(); $users = $users['success'];
 		$transactions = $Stats->get_transactions(); $transactions = $transactions['success'];
+		$stats = $Stats->stat_argent();
 
 		$this->view->add_param("articles", $articles);
 		$this->view->add_param("users", $users);
 		$this->view->add_param("transactions", $transactions);
+		$this->view->add_param("stats", $stats);
 
 	}
 
