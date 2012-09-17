@@ -304,7 +304,11 @@ function fill_article(data) {
 	$('#article_field_name').val(data.name);
 	$('#article_field_price').val(price);
 	$('#article_field_stock').val(data.stock);
-	$('#article_field_alcool').val(data.alcool);	
+	console.log(data.name, data.alcool);
+	if (data.alcool == 1)
+		$('#article_field_alcool').attr("checked", "checked");
+	else
+		$('#article_field_alcool').removeAttr("checked");
 	if (data.categorie_id) $('#article_field_categorie_id').val(data.categorie_id);
 }
 
@@ -358,7 +362,7 @@ function collect_article_data() {
 		price: price,
 		stock: $('#article_field_stock').val(),
 		categorie_id: $('#article_field_categorie_id').val(),
-		alcool: $('#article_field_alcool').val(),
+		alcool: $('#article_field_alcool').attr("checked") === "checked" ? 1 : 0,
 	};
 
 	return data;
