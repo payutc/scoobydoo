@@ -1,0 +1,11 @@
+	  <script>
+  			var users = <?php echo json_encode($this->param['users']); ?>;
+  			var articles = <?php echo json_encode($this->param['articles']); ?>;
+        var transactions = <?php echo json_encode($this->param['transactions']); ?>;
+  			var summary = <?php echo json_encode($this->param['summary']); ?>;
+        summary = summary["success"];
+
+	  </script>
+    <div id="treso">
+      <input type="text" id="datepicker"/>
+    </div>
