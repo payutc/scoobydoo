@@ -1,11 +1,28 @@
 	  <script>
-  			var users = <?php echo json_encode($this->param['users']); ?>;
-  			var articles = <?php echo json_encode($this->param['articles']); ?>;
-        var transactions = <?php echo json_encode($this->param['transactions']); ?>;
   			var summary = <?php echo json_encode($this->param['summary']); ?>;
-        summary = summary["success"];
+        summary = summary["success"] || [];
 
 	  </script>
+    <div class="hero-unit">
+      <h1>Trésorerie</h1>
+    </div>
     <div id="treso">
-      <input type="text" id="datepicker"/>
+      <p>Choisissez une ou deux dates pour en avoir le resumé d'un jour ou d'une période:  
+        <form action="" method="GET" id="dates">
+          Du <input type="text" id="datepicker"/> au 
+          <input type="text" id="datepicker2"/>
+          <input type="submit" />
+        </form>
+      </p>
+      <? if (isset($this->param["day"])) {
+            if (!isset($this->param["day2"]))  
+                echo "<h2>Statistiques pour le " . $this->param["day"] . "/" . $this->param["month"] . "/" . $this->param["year"] . "</h2>";
+            else {
+                echo "<h2>Statistiques du " . $this->param["day"] . "/" . $this->param["month"] . "/" . $this->param["year"];
+                echo " au " . $this->param["day2"] . "/" . $this->param["month2"] . "/" . $this->param["year2"] . "</h2>";
+            }
+        }
+        else {
+          echo "Veuillez choisir une date.";
+        }  ?>
     </div>
