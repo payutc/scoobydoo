@@ -39,9 +39,10 @@ class ModuleTreso extends Module {
 		}
 
 		else {
-			$this->view->add_param("day", date("d"));
-			$this->view->add_param("month", date("m"));
-			$this->view->add_param("year", date("Y"));
+			$now = mktime();
+			$this->view->add_param("day", date("d", $now));
+			$this->view->add_param("month", date("m", $now));
+			$this->view->add_param("year", date("Y", $now));
 			$summary = $AADMIN->get_summary_for_accounting(intval(date("Y")), intval(date("m")), intval(date("d")));
 		}
 		$this->view->add_param("summary", $summary);
