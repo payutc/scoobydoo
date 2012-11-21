@@ -15,6 +15,13 @@
         </form>
       </p>
       <? if (isset($this->param["day"])) {
+          echo "<a href='?";
+          foreach ($_GET as $key => $value) {
+            if ($key != "action")
+              echo  $key . "=" . $value . "&";
+          }
+          echo "action=download";
+          echo "''>Télécharger le rapport</a>";
             if (!isset($this->param["day2"]))  
                 echo "<h2>Statistiques pour le " . $this->param["day"] . "/" . $this->param["month"] . "/" . $this->param["year"] . "</h2>";
             else {
