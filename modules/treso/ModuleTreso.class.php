@@ -14,7 +14,7 @@ class ModuleTreso extends Module {
 		$this->view->add_jsfile('libs/underscore.js');
 		$this->view->add_jsfile('modules/treso/res/main.js');
 		$this->view->add_jsfile('libs/jquery-ui.js');
-		
+
 		$this->view->add_cssfile('modules/treso/view/jquery-ui-1.9.0.custom.min.css');
 		$this->view->add_cssfile('modules/treso/view/main.css');
 
@@ -22,7 +22,7 @@ class ModuleTreso extends Module {
 			$this->view->add_param("day", $_GET["day"]);
 			$this->view->add_param("month", $_GET["month"]);
 			$this->view->add_param("year", $_GET["year"]);
-			
+
 			if (isset($_GET["day2"]) && isset($_GET["month2"]) && isset($_GET["year2"]) ) {
 				$this->view->add_param("day2", $_GET["day2"]);
 				$this->view->add_param("month2", $_GET["month2"]);
@@ -31,14 +31,19 @@ class ModuleTreso extends Module {
 				$summary = $AADMIN->get_summary_for_accounting_period(
 									intval($_GET["day"]), intval($_GET["month"]), intval($_GET["year"]),
 									intval($_GET["day2"]),intval($_GET["month2"]),intval($_GET["year2"]));
-				
+
 			}
 			else {
 				$summary = $AADMIN->get_summary_for_accounting(intval($_GET["day"]), intval($_GET["month"]), intval($_GET["year"]));
 			}
 		}
 
-
+		else {
+			$this->view->add_param("day", date("d"));
+			$this->view->add_param("month", date("m"));
+			$this->view->add_param("year", date("Y"));
+			$summary = $AADMIN->get_summary_for_accounting(intval(date("Y")), intval(date("m")), intval(date("d")));
+		}
 		$this->view->add_param("summary", $summary);
 	}
 
