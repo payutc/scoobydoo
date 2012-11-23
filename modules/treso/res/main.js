@@ -74,7 +74,7 @@ $(function () {
 
         if (date2)
         window.location = ("?module=treso&action=index&day=" + date[0] + "&month=" + date[1] + "&year=" + date[2]
-                            + "&day2=" + date2[0] + "&month2=" + date2[1] + "&year2=" + date2[2]);
+                            + "&day2=" + date2[0] + "&month2=" + date2[1] + "&year2=" + date2[2] + "&fundation=" + $("#fundation_chosen").attr("value"));
         return false;
     });
 
