@@ -37,7 +37,7 @@
           <input type="submit" />
         </form>
       </p>
-      <? if (isset($this->param["day"])) {
+      <?php if (isset($this->param["day"])) {
           echo "<a href='?";
           foreach ($_GET as $key => $value) {
             if ($key != "action")
