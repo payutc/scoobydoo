@@ -1,0 +1,16 @@
+<?php
+    echo "obj_id, obj_name, categorie, objet_deleted, nombre, montant_total, fun_name, jour, mois, annee\n";
+     foreach ($this->param["summary"]["success"] as $e) {
+        echo $e["obj_id"] . ", ";
+        echo $e["obj_name"] . ", ";
+        echo $e["categorie"] . ", ";
+        echo $e["objet_deleted"] . ", ";
+        echo $e["nombre"] . ", ";
+        echo $e["montant_total"]/100 . ", ";
+        echo $e["fun_name"] . ", ";
+        echo $e["jour"] . ", ";
+        echo $e["mois"] . ", ";
+        echo $e["annee"] . ", ";
+        echo "\n";
+    }
+?>
