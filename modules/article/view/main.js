@@ -347,17 +347,6 @@ function fill_fundation(data) {
 }
 
 /**
- * Empackter le formulaire article
- */
-function collect_article_data() {
-	var price = $('#article_field_price').val();
-	if (price.indexOf(',') != -1)
-		price = price.replace(',','.');
-	price *= 100;
-	$('#article_field_price').val(price);
-}
-
-/**
  * Empackter le formulaire catégorie
  * @return {id, name, parent_id} data
  */
@@ -531,14 +520,6 @@ function load_fundation_details(id) {
 function save_article() {
 	close_alert();
 	start_details_spinner();
-    collect_article_data(); // Formate le champ montant
-	/*$.ajax({
-		url: '<?php echo $this->get_param("save_article") ?>',
-		data: data,
-		async: true,
-		success: on_save_success(data,fill_article),
-		error: on_ajax_error,
-        });*/
     var formData = new FormData($('form')[0]);
     formData.append("id", $('#article_id').html());
     

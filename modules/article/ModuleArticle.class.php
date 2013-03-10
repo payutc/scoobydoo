@@ -128,9 +128,11 @@ class ModuleArticle extends Module {
 		$this->view->set_template('json');
 		$name = $_REQUEST['name'];
 		$cat_id = $_REQUEST['categorie_id'];
-		$price = $_REQUEST['price'];
 		$stock = $_REQUEST['stock'];
 		$alcool = isset($_REQUEST['alcool']) ? 1 : 0;
+  	
+    $price = str_replace(',','.', $_REQUEST['price']);
+  	$price *= 100;
 
     $imageId = 0;
     if(!empty($_FILES['image']) && $_FILES["image"]["error"] == 0 && $_FILES["image"]["size"] < 1*1024*1024){
