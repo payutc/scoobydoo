@@ -348,24 +348,13 @@ function fill_fundation(data) {
 
 /**
  * Empackter le formulaire article
- * @return {id, name, price, stock, categorie_id} data
  */
 function collect_article_data() {
 	var price = $('#article_field_price').val();
 	if (price.indexOf(',') != -1)
 		price = price.replace(',','.');
 	price *= 100;
-	
-	var data = {
-		id : $('#article_id').html(),
-		name: $('#article_field_name').val(),
-		price: price,
-		stock: $('#article_field_stock').val(),
-		categorie_id: $('#article_field_categorie_id').val(),
-		alcool: $('#article_field_alcool').attr("checked") === "checked" ? 1 : 0,
-	};
-
-	return data;
+	$('#article_field_price').val(price);
 }
 
 /**
@@ -541,15 +530,44 @@ function load_fundation_details(id) {
  */
 function save_article() {
 	close_alert();
-	var data = collect_article_data();
 	start_details_spinner();
-	$.ajax({
+    collect_article_data(); // Formate le champ montant
+	/*$.ajax({
 		url: '<?php echo $this->get_param("save_article") ?>',
 		data: data,
 		async: true,
 		success: on_save_success(data,fill_article),
 		error: on_ajax_error,
-	});
+        });*/
+    var formData = new FormData($('form')[0]);
+    formData.append("id", $('#article_id').html());
+    
+    $.ajax({
+        url: '<?php echo $this->get_param("save_article") ?>',  //server script to process data
+        type: 'POST',
+        xhr: function() {  // custom xhr
+            myXhr = $.ajaxSettings.xhr();
+            if(myXhr.upload){ // check if upload property exists
+                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // for handling the progress of the upload
+            }
+            return myXhr;
+        },
+        //Ajax events
+        success: on_save_success(formData,fill_article),
+        error: on_ajax_error,
+        // Form data
+        data: formData,
+        //Options to tell JQuery not to process data or worry about content-type
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+}
+
+function progressHandlingFunction(e){
+    /*if(e.lengthComputable){
+        $('progress').attr({value:e.loaded,max:e.total});
+    }*/
 }
 
 /**

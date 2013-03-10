@@ -130,14 +130,23 @@ class ModuleArticle extends Module {
 		$cat_id = $_REQUEST['categorie_id'];
 		$price = $_REQUEST['price'];
 		$stock = $_REQUEST['stock'];
-		$alcool = $_REQUEST['alcool'];
+		$alcool = isset($_REQUEST['alcool']) ? 1 : 0;
+
+    $imageId = 0;
+    if(!empty($_FILES['image']) && $_FILES["image"]["error"] == 0 && $_FILES["image"]["size"] < 1*1024*1024){
+      $image = base64_encode(file_get_contents($_FILES["image"]["tmp_name"]));
+
+      if(!empty($image)){
+        $imageId = $AADMIN->uploadImage($image);
+      }      
+    }
+
 		if (isset($_REQUEST['id']) and !empty($_REQUEST['id'])) {
-			$result = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price, $stock, $alcool);
+			$result = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price, $stock, $alcool, $imageId);
 		}
 		else {
-			$result = $AADMIN->add_article($name, $cat_id, $price, $stock, $alcool);
+			$result = $AADMIN->add_article($name, $cat_id, $price, $stock, $alcool, $imageId);
 		}
-
 		$this->view->set_param($result);
 	}
 
