@@ -2,10 +2,59 @@
 
 class Module {
 	protected $view;
-	
+    protected $json_client;
+
 	public function __construct(&$view) {
 		$this->view = $view;
+        if(isset($this->service)) {
+            if(!isset($_SESSION["json_client"])) {
+                $_SESSION["json_client"] = new \JsonClient\AutoJsonClient("http://localhost/server", $this->service);
+                $this->json_client = $_SESSION["json_client"];
+            } else if (!isset($_GET["ticket"])) {
+                $this->json_client = $_SESSION["json_client"];
+                $this->check_json_client();
+            } else {
+                $this->json_client = $_SESSION["json_client"];
+            }
+        }
 	}
+
+    protected function check_json_client() {
+        $status = $this->json_client->getStatus();
+        if (!$status->user)
+            $this->auth_json_client();
+    }
+
+    protected function auth_json_client() {
+        global $CONF;
+        $cas_url = $this->json_client->getCasUrl();
+        $service = $CONF['scoobydoo_url'].$this->get_link_to_action("auth_json_client");
+        header("Location: ".$cas_url."login?service=".urlencode($service));
+        exit();
+    }
+
+    protected function action_auth_json_client() {
+        global $CONF;
+        if(isset($_GET["ticket"])) {
+		    $ticket = $_GET["ticket"];
+            $service = $CONF['scoobydoo_url'].$this->get_link_to_action("auth_json_client");
+            try {
+                $con = $this->json_client->loginCas(array("ticket"=>$ticket, "service"=>urlencode($service)));
+            } catch (\JsonClient\JsonException $e) {
+                die("error login cas.");
+            }
+            try {
+                $this->json_client->loginApp(array("key"=>$CONF['application_key']));     
+            } catch (\JsonClient\JsonException $e) {
+                die("error login application.");
+            }
+            // Return to index page, the json client is authenticated.
+            header("Location: ".$CONF['scoobydoo_url']);
+            exit();
+        } else {
+            $this->auth_json_client();
+        }
+    }
 
 	public function execute() {
 		$view_template = null;

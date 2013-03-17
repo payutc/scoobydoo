@@ -1,5 +1,7 @@
 <?php
 
+require_once 'payutc-json-client/jsonclient/JsonClient.class.php';
+
 require_once 'config.php';
 require_once 'soap.php';
 require_once 'auth.php';
