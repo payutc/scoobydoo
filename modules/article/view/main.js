@@ -304,7 +304,15 @@ function fill_article(data) {
 	$('#article_field_name').val(data.name);
 	$('#article_field_price').val(price);
 	$('#article_field_stock').val(data.stock);
-	console.log(data.name, data.alcool);
+    $('#article_field_delete_image').removeAttr("checked");
+
+    if(data.image) {
+        $("#article_field_delete_image_div").show();
+    }
+    else {
+        $("#article_field_delete_image_div").hide();
+    }
+        
 	if (data.alcool == 1)
 		$('#article_field_alcool').attr("checked", "checked");
 	else
@@ -344,28 +352,6 @@ function fill_fundation(data) {
 		}
 		$('#fundation_categories').html(html);
 	}
-}
-
-/**
- * Empackter le formulaire article
- * @return {id, name, price, stock, categorie_id} data
- */
-function collect_article_data() {
-	var price = $('#article_field_price').val();
-	if (price.indexOf(',') != -1)
-		price = price.replace(',','.');
-	price *= 100;
-	
-	var data = {
-		id : $('#article_id').html(),
-		name: $('#article_field_name').val(),
-		price: price,
-		stock: $('#article_field_stock').val(),
-		categorie_id: $('#article_field_categorie_id').val(),
-		alcool: $('#article_field_alcool').attr("checked") === "checked" ? 1 : 0,
-	};
-
-	return data;
 }
 
 /**
@@ -541,15 +527,23 @@ function load_fundation_details(id) {
  */
 function save_article() {
 	close_alert();
-	var data = collect_article_data();
 	start_details_spinner();
-	$.ajax({
-		url: '<?php echo $this->get_param("save_article") ?>',
-		data: data,
-		async: true,
-		success: on_save_success(data,fill_article),
-		error: on_ajax_error,
-	});
+    var formData = new FormData($('form')[0]);
+    formData.append("id", $('#article_id').html());
+    
+    $.ajax({
+        url: '<?php echo $this->get_param("save_article") ?>',  //server script to process data
+        type: 'POST',
+        //Ajax events
+        success: on_save_success(formData,fill_article),
+        error: on_ajax_error,
+        // Form data
+        data: formData,
+        //Options to tell JQuery not to process data or worry about content-type
+        cache: false,
+        contentType: false,
+        processData: false
+    });
 }
 
 /**

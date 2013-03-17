@@ -128,16 +128,31 @@ class ModuleArticle extends Module {
 		$this->view->set_template('json');
 		$name = $_REQUEST['name'];
 		$cat_id = $_REQUEST['categorie_id'];
-		$price = $_REQUEST['price'];
 		$stock = $_REQUEST['stock'];
-		$alcool = $_REQUEST['alcool'];
+		$alcool = isset($_REQUEST['alcool']) ? 1 : 0;
+  	
+    $price = str_replace(',','.', $_REQUEST['price']);
+  	$price *= 100;
+
+    $imageId = 0;
+    if(!empty($_FILES['image']) && $_FILES["image"]["error"] == 0 && $_FILES["image"]["size"] < 1*1024*1024){
+      $image = base64_encode(file_get_contents($_FILES["image"]["tmp_name"]));
+
+      if(!empty($image)){
+        $imageId = $AADMIN->uploadImage($image);
+      }      
+    }
+    
+        if(!empty($_REQUEST['delete_image'])){
+            $imageId = -1;
+        }
+
 		if (isset($_REQUEST['id']) and !empty($_REQUEST['id'])) {
-			$result = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price, $stock, $alcool);
+			$result = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price, $stock, $alcool, $imageId);
 		}
 		else {
-			$result = $AADMIN->add_article($name, $cat_id, $price, $stock, $alcool);
+			$result = $AADMIN->add_article($name, $cat_id, $price, $stock, $alcool, $imageId);
 		}
-
 		$this->view->set_param($result);
 	}
 
