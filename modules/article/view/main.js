@@ -534,13 +534,6 @@ function save_article() {
     $.ajax({
         url: '<?php echo $this->get_param("save_article") ?>',  //server script to process data
         type: 'POST',
-        xhr: function() {  // custom xhr
-            myXhr = $.ajaxSettings.xhr();
-            if(myXhr.upload){ // check if upload property exists
-                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // for handling the progress of the upload
-            }
-            return myXhr;
-        },
         //Ajax events
         success: on_save_success(formData,fill_article),
         error: on_ajax_error,
@@ -551,12 +544,6 @@ function save_article() {
         contentType: false,
         processData: false
     });
-}
-
-function progressHandlingFunction(e){
-    /*if(e.lengthComputable){
-        $('progress').attr({value:e.loaded,max:e.total});
-    }*/
 }
 
 /**
