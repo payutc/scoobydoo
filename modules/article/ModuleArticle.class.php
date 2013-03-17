@@ -142,6 +142,10 @@ class ModuleArticle extends Module {
         $imageId = $AADMIN->uploadImage($image);
       }      
     }
+    
+        if(!empty($_REQUEST['delete_image'])){
+            $imageId = -1;
+        }
 
 		if (isset($_REQUEST['id']) and !empty($_REQUEST['id'])) {
 			$result = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price, $stock, $alcool, $imageId);

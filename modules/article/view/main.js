@@ -304,7 +304,15 @@ function fill_article(data) {
 	$('#article_field_name').val(data.name);
 	$('#article_field_price').val(price);
 	$('#article_field_stock').val(data.stock);
-	console.log(data.name, data.alcool);
+    $('#article_field_delete_image').removeAttr("checked");
+
+    if(data.image) {
+        $("#article_field_delete_image_div").show();
+    }
+    else {
+        $("#article_field_delete_image_div").hide();
+    }
+        
 	if (data.alcool == 1)
 		$('#article_field_alcool').attr("checked", "checked");
 	else
