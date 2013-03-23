@@ -1,3 +1,3 @@
 [submodule "payutc-json-client"]
 	path = payutc-json-client
-	url = git@github.com:payutc/payutc-json-client.git
+	url = git://github.com/payutc/scoobydoo.git
