@@ -5,10 +5,15 @@ class Module {
     protected $json_client;
 
 	public function __construct(&$view) {
+        global $CONF;
 		$this->view = $view;
         if(isset($this->service)) {
             if(!isset($_SESSION["json_client"])) {
-                $_SESSION["json_client"] = new \JsonClient\AutoJsonClient("http://localhost/server", $this->service);
+                if(ereg('^(.*)(/)$', $CONF['soap_url'])) { 
+                        $motif = ereg('^(.*)(/)$', $CONF['soap_url'], $r); 
+                        $CONF['soap_url'] = $r[1]; 
+                } 
+                $_SESSION["json_client"] = new \JsonClient\AutoJsonClient($CONF['soap_url'], $this->service);
                 $this->json_client = $_SESSION["json_client"];
             } else if (!isset($_GET["ticket"])) {
                 $this->json_client = $_SESSION["json_client"];
