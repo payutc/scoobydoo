@@ -26,6 +26,10 @@ class ModuleGraph extends Module {
 
 	}
 
+	public function has_rights() {
+		return False;
+	}
+
 }
 
 ?>
