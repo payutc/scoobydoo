@@ -7,9 +7,9 @@ session_start();
 
 if(isset($_GET["logout"]))
 {
-	session_destroy();
-	header("Location: ".$AADMIN->getCasUrl()."/logout?url=".$CONF['scoobydoo_url']);
-  exit();
+    session_destroy();
+    header("Location: ".$AADMIN->getCasUrl()."/logout?url=".$CONF['scoobydoo_url']);
+    exit();
 }
 
 if(isset($_SESSION["loged"]) && $_SESSION["loged"] == 1) {
