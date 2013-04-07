@@ -1,0 +1,47 @@
+        <div class="row-fluid">
+          <div class="hero-unit">
+            <h1>Gestion des blocages</h1>
+          </div>
+        </div><!--/row-->
+        <div class="row-fluid">
+                <?php if(isset($this->param['alert'])) { 
+                    $alert = $this->param['alert']; ?>
+                  <div class="<?php echo $alert['class']; ?>">
+                    <strong><?php echo $alert['strong']; ?></strong> <?php echo $alert['message']; ?>
+                  </div>
+                <?php } ?>
+                <h2>Ajouter un blocage</h2>
+                <form class="well form-inline" method="POST" action="<?php echo $this->param['block_url']; ?>" >
+                  <input type="text" class="input-large typeahead-user" name="usr" placeholder="Rechercher un utilisateur" autocomplete="off" />
+                  <input type="hidden" name="usr_id" id="usr_id" />
+                  <select class="input-large" name="fun_id">
+                    <option value=""></option>
+                    <?php foreach($this->param['fundations'] as $fun_id => $fun_name) { ?>
+                        <option value="<?php echo $fun_id; ?>"><?php echo $fun_name ?></option>
+                    <?php } ?>
+                  </select>
+                  <input type="text" class="input-xlarge" name="raison" placeholder="Raison du blocage" autocomplete="off" />
+                  <button type="submit" class="btn btn-success">Bloquer l'utilisateur</button>
+                </form>
+            <?php foreach($this->param['fundations'] as $fun_id => $fun_name) {  ?>
+                <h2><?php echo $fun_name; ?></h2>
+                <h3>Liste des utilisateurs actuellement bloqués</h3>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                      <tr><th>Login</th><th>Prénom</th><th>Nom</th><th>Raison</th><th>Date de début</th><th>Date de fin</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($this->param['blocages'][$fun_id] as $blo_id => $blocage) {  ?>
+                            <tr>
+                                <td><?php echo $blocage->login; ?></td>
+                                <td><?php echo $blocage->usr_firstname; ?></td>
+                                <td><?php echo $blocage->usr_lastname; ?></td>
+                                <td><?php echo $blocage->blo_raison; ?></td>
+                                <td><?php echo $blocage->blo_insert; ?></td>
+                                <td><?php if($blocage->blo_removed == NULL) { echo "Non programmé"; } else { echo $blocage->blo_removed; } ?></td>
+                                <td><a href="<?php echo $this->param['unblock_url']; ?>&fun_id=<?php echo $fun_id; ?>&blo_id=<?php echo $blo_id; ?>" class="btn btn-success">Débloquer</a></td>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            <?php } ?>
+        </div>
