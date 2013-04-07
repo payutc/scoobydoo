@@ -1,13 +1,10 @@
 <?php
 require_once 'modules/Module.class.php';
+
 class ModuleDroitsv2 extends Module {
+
     protected $service = "ADMINRIGHT";
-    protected function get_js_files() {
-        return array('libs/jquery-1.7.2.min.js');
-    }
-    protected function get_css_files() {
-        return array();
-    }
+
     protected function action_index() {
         // Recuperation des services (les services étant les droits attribuables)
         $services = $this->json_client->getServices();
@@ -39,6 +36,7 @@ class ModuleDroitsv2 extends Module {
         $this->view->add_param("remove_user_right", $this->get_link_to_action("remove_user_right"));
         $this->view->add_param("remove_app_right", $this->get_link_to_action("remove_app_right"));
     }
+
     protected function action_add_user_right() {
         global $_REQUEST;
         if (!isset($_REQUEST['login']) || !isset($_REQUEST['right']) || !isset($_REQUEST['fun_id'])) $this->view->param["alert"]["users"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => "un paramétre est manquant.");
@@ -53,6 +51,7 @@ class ModuleDroitsv2 extends Module {
         }
         $this->action_index();
     }
+
     protected function action_add_app_right() {
         global $_REQUEST;
         if (!isset($_REQUEST['app_id']) || !isset($_REQUEST['right']) || !isset($_REQUEST['fun_id'])) $this->view->param["alert"]["applications"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => "un paramétre est manquant.");
@@ -67,6 +66,7 @@ class ModuleDroitsv2 extends Module {
         }
         $this->action_index();
     }
+
     protected function action_remove_user_right() {
         global $_REQUEST;
         if (!isset($_REQUEST['usr_id']) || !isset($_REQUEST['right']) || !isset($_REQUEST['fun_id'])) $this->view->param["alert"]["users"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => "un paramétre est manquant.");
@@ -81,6 +81,7 @@ class ModuleDroitsv2 extends Module {
         }
         $this->action_index();
     }
+
     protected function action_remove_app_right() {
         global $_REQUEST;
         if (!isset($_REQUEST['app_id']) || !isset($_REQUEST['right']) || !isset($_REQUEST['fun_id'])) $this->view->param["alert"]["users"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => "un paramétre est manquant.");
@@ -95,6 +96,7 @@ class ModuleDroitsv2 extends Module {
         }
         $this->action_index();
     }
+
     public function has_rights() {
         try {
             $this->json_client->checkRight();
