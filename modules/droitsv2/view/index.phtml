@@ -24,7 +24,8 @@ function helper_list_droits($droits, $remove_url, $services) {
                   </div>
                 <?php } ?>
                 <form class="well form-inline" method="POST" action="<?php echo $this->param['add_user_right']; ?>" >
-                  <input type="text" class="input-small" name="login"placeholder="Login utc">
+                  <input type="text" class="input-large typeahead-user" name="usr" placeholder="Rechercher un utilisateur" autocomplete="off" />
+                  <input type="hidden" name="usr_id" id="usr_id" />
                   <select class="input-xlarge" name="right">
                     <option value=""></option>
                     <?php foreach($this->param['services'] as $service_name => $service) { ?>
@@ -102,7 +103,7 @@ function helper_list_droits($droits, $remove_url, $services) {
                         $app_right = $this->param['app_right'][$fun_id]; ?>
                     <h2><?php echo $fun_name; ?></h2>
                     <?php if(count($app_right) == 0) { ?>
-                        <div class="alert alert-info">Aucun droit utilisateur n'a été donné sur cette fundation</div>
+                        <div class="alert alert-info">Aucun droit application n'a été donné sur cette fundation</div>
                     <?php } else { ?>
                         <table class="table table-striped table-bordered">
                             <thead>
