@@ -97,14 +97,5 @@ class ModuleDroitsv2 extends Module {
         $this->action_index();
     }
 
-    public function has_rights() {
-        try {
-            $this->json_client->checkRight();
-            return true;
-        }
-        catch(\Exception $e) {
-            return false;
-        }
-    }
 }
 ?>

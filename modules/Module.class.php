@@ -106,8 +106,18 @@ class Module {
 		return "?module=".$this->get_module_name()."&action=$action";
 	}
 
-	public function has_rights() {
-		return True;
+    /*
+     * Return true si l'utilisateur à le droit sur le module.
+     */
+    public function has_rights() {
+        if(isset($this->service)) {
+            if(!array_key_exists('EnabledServices', $GLOBALS)) {
+                $GLOBALS['EnabledServices'] = $this->json_client->getEnabledServices();
+            }
+            return in_array($this->service, $GLOBALS['EnabledServices']);
+        } else {
+            return true;
+        }
 	}
 
 	public function get_menus() {
