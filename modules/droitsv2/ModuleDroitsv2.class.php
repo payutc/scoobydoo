@@ -7,7 +7,12 @@ class ModuleDroitsv2 extends Module {
 
     protected function action_index() {
         // Recuperation des services (les services étant les droits attribuables)
-        $services = $this->json_client->getServices();
+        $raw_services = $this->json_client->getServices();
+        // on index pour aller plus vite après
+        $services = array();
+        foreach($raw_services as $service) {
+            $services[$service->service] = $service;
+        }
 
         // Templates conf
         $this->view->set_template('html');
@@ -22,7 +27,8 @@ class ModuleDroitsv2 extends Module {
         $user_right = array();
         $app_right = array();
 
-        foreach ($fundations as $fun_id => $fun_name) {
+        foreach ($fundations as $fun) {
+            $fun_id = $fun->fun_id;
             $user_right[$fun_id] = $this->json_client->getUserRights(array("fun_id" => $fun_id));
             $app_right[$fun_id] = $this->json_client->getApplicationRights(array("fun_id" => $fun_id));
         }
@@ -98,10 +104,10 @@ class ModuleDroitsv2 extends Module {
         else {
             try {
                 $this->json_client->removeApplicationRight(array("app_id" => $_REQUEST['app_id'], "service" => $_REQUEST['right'], "fun_id" => $_REQUEST['fun_id']));
-                $this->view->param["alert"]["users"] = array("class" => "alert alert-success", "strong" => "Succés, ", "message" => "la supression du droit à réussi.");
+                $this->view->param["alert"]["applications"] = array("class" => "alert alert-success", "strong" => "Succés, ", "message" => "la supression du droit à réussi.");
             }
             catch(\JsonClient\JsonException $e) {
-                $this->view->param["alert"]["users"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => $e->getMessage());
+                $this->view->param["alert"]["applications"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => $e->getMessage());
             }
         }
         $this->action_index();
