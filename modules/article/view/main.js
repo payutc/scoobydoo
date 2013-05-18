@@ -88,6 +88,13 @@ $(document).ready(function () {
 		}
 	});
 
+	$('#article_field_categorie_id').change(function(event) {
+		var opt = $('#article_field_categorie_id option:selected');
+		var parent_id = opt.val();
+		var node_categorie = get_nod_by_id(parent_id);
+		$('#article_field_fundation_id').val(node_categorie.fundation_id);
+	});
+
 	/*$('#tree').bind(
 		'tree.move',
 		function(event) {
@@ -269,8 +276,11 @@ function clear_article() {
 		name: 'Nouvel article',
 		price: 0,
 		stock: 0,
-		categorie_id: current_categorie_id,
-	}
+		categorie_id: current_categorie_id
+    }
+    if (current_fundation_id && current_fundation_id.indexOf('fun') != -1) {
+        data['fundation_id'] = current_fundation_id.substr(3);
+    }
 	fill_article(data);
 }
 
@@ -307,6 +317,7 @@ function fill_article(data) {
     $('#article_field_delete_image').removeAttr("checked");
 
     if(data.image) {
+        $("#article_field_delete_image_img").html("<img src='" + data.image_url + "' />");
         $("#article_field_delete_image_div").show();
     }
     else {
@@ -318,6 +329,7 @@ function fill_article(data) {
 	else
 		$('#article_field_alcool').removeAttr("checked");
 	if (data.categorie_id) $('#article_field_categorie_id').val(data.categorie_id);
+    if (data.fundation_id) $('#article_field_fundation_id').val(data.fundation_id);
 }
 
 /**
@@ -342,16 +354,20 @@ function fill_categorie(data) {
  * @data {id, name, {array} categories} data donées récupérée via ajax
  */
 function fill_fundation(data) {
-	$('#fundation_name').html(data.name);
-	$('#fundation_id').html(data.id);
+    if(data.name)
+	    $('#fundation_name').html(data.name);
+    if(data.id)
+	    $('#fundation_id').html(data.id);
 	if (data.categories) {
 		var html = '';
 		for(var i in data.categories) {
 			var categorie = data.categories[i];
-			html += '<tr><td>'+categorie.id+'</td><td><a>'+categorie.name+'</a></td></tr>';
+			html += '<tr><td>'+categorie.id+'</td><td>'+categorie.name+'</td></tr>';
 		}
 		$('#fundation_categories').html(html);
-	}
+	} else {
+        $('#fundation_categories').html("");
+    }
 }
 
 /**
@@ -363,6 +379,7 @@ function collect_categorie_data() {
 		id : $('#categorie_id').html(),
 		name: $('#categorie_field_name').val(),
 		parent_id: $('#categorie_field_parent_id').val(),
+        fundation_id: $('#categorie_field_fundation_id').val()
 	};
 
 	return data;
@@ -422,13 +439,14 @@ function load_article_details(id) {
 	// update globals
 	current_node_view = node;
 	current_categorie_id = node.parent.id;
+    current_fundation_id = node.parent.fundation_id
 	
 	fill_article({id: id, name: node.name});
 	display_article_view();
 	start_details_spinner();
 	$.ajax({
 		url: '<?php echo $this->get_param("details_article") ?>',
-		data: {id: id},
+		data: {id: id, fun_id: node.fun_id},
 		async: true,
 		success: function(result) {
 			// arret du spinner
@@ -462,9 +480,10 @@ function load_categorie_details(id) {
 	fill_categorie({id: id, name: node.name});
 	display_categorie_view();
 	start_details_spinner();
+
 	$.ajax({
 		url: '<?php echo $this->get_param("details_categorie") ?>',
-		data: {id: id},
+		data: {id: id, fun_id: node.fundation_id},
 		async: true,
 		success: function(result) {
 			// arret du spinner
@@ -495,12 +514,12 @@ function load_fundation_details(id) {
 	current_node_view = node;
 	current_fundation_id = node.id;
 	
-	fill_fundation({id: id, name: node.name});
+	fill_fundation({id: id.substring(3), name: node.name});
 	display_fundation_view();
 	start_details_spinner();
 	$.ajax({
 		url: '<?php echo $this->get_param("details_fundation") ?>',
-		data: {id: id},
+		data: {id: id.substring(3)},
 		async: true,
 		success: function(result) {
 			// arret du spinner
@@ -573,8 +592,9 @@ function on_save_success(data, fill_fn) {
 		if (result.success) {
 			// refresh tree, sans redemander au serveur les infos
 			data.id = result.success;
-			refresh_tree(result.success,data);
-			fill_fn(data);
+			refresh_tree(result.success);
+            select_node($('#tree').tree('getNodeById',data.id), false);
+			//fill_fn(data);
 
 			// affiche le message de succès
 			show_alert_success();
@@ -591,7 +611,7 @@ function on_save_success(data, fill_fn) {
  */
 function delete_article() {
 	start_details_spinner();
-	var data = {id: $('#article_id').html()};
+	var data = {id: $('#article_id').html(), fundation_id: $('#article_field_fundation_id').val()};
 	$.ajax({
 		url: '<?php echo $this->get_param("delete_article") ?>',
 		data: data,
@@ -619,7 +639,7 @@ function delete_article() {
  */
 function delete_categorie() {
 	start_details_spinner();
-	var data = {id: $('#categorie_id').html()};
+	var data = {id: $('#categorie_id').html(), fundation_id: $('#categorie_field_fundation_id').val()};
 	$.ajax({
 		url: '<?php echo $this->get_param("delete_categorie") ?>',
 		data: data,

@@ -32,9 +32,10 @@
 							<div class="controls">
 								<select name="categorie_id" id="article_field_categorie_id" class="input-xlarge">
 									<?php foreach($this->param['categories'] as $categorie)
-										echo '<option value="'.$categorie['id'].'">'.$categorie['name'].'</option>';
+										echo '<option value="'.$categorie->id.'">'.$categorie->name.'</option>';
 									?>
 								</select>
+                                <input type="hidden" name="fundation_id" id="article_field_fundation_id">
 							</div>
 						</div>
 						<div class="control-group">
@@ -66,6 +67,7 @@
 						<div class="control-group" id="article_field_delete_image_div">
 							<label class="control-label" for="article_field_delete_image">Image actuelle </label>
 							<div class="controls">
+                                    <div id="article_field_delete_image_img"></div>
 									<input type="checkbox" name="delete_image" id="article_field_delete_image"> Supprimer
 							</div>
 						</div>
@@ -113,7 +115,7 @@
 							<div class="controls">
 								<select name="fundation_id" id="categorie_field_fundation_id" class="input-xlarge" disabled>
 									<?php foreach($this->param['fundations'] as $fundation)
-										echo '<option value="'.$fundation['id'].'">'.$fundation['name'].'</option>';
+										echo '<option value="'.$fundation->fun_id.'">'.$fundation->name.'</option>';
 									?>
 								</select>
 							</div>
