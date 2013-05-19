@@ -3,7 +3,7 @@
 function helper_list_droits($droits, $remove_url, $services) {
     echo "<ul>";
     foreach($droits as $droit) {
-        echo "<li>".$services->{$droit->service}->name." <a href=\"".$remove_url."&right=".$droit->service."\" ><i class=\"icon-remove\"></i></a></li>";
+        echo "<li>".$services[$droit->service]->name." <a href=\"".$remove_url."&right=".$droit->service."\" ><i class=\"icon-remove\"></i></a></li>";
     }
     echo "</ul>";
 }
@@ -24,7 +24,8 @@ function helper_list_droits($droits, $remove_url, $services) {
                   </div>
                 <?php } ?>
                 <form class="well form-inline" method="POST" action="<?php echo $this->param['add_user_right']; ?>" >
-                  <input type="text" class="input-small" name="login"placeholder="Login utc">
+                  <input type="text" class="input-large typeahead-user" name="usr" placeholder="Rechercher un utilisateur" autocomplete="off" />
+                  <input type="hidden" name="usr_id" id="usr_id" />
                   <select class="input-xlarge" name="right">
                     <option value=""></option>
                     <?php foreach($this->param['services'] as $service_name => $service) { ?>
@@ -35,13 +36,18 @@ function helper_list_droits($droits, $remove_url, $services) {
                   </select>
                   <select class="input-xlarge" name="fun_id">
                     <option value=""></option>
-                    <?php foreach($this->param['fundations'] as $fun_id => $fun_name) { ?>
+                    <?php foreach($this->param['fundations'] as $fun) { 
+                        $fun_id = $fun->fun_id;
+                        $fun_name = $fun->name;
+                        ?>                        
                         <option value="<?php echo $fun_id; ?>"><?php echo $fun_name ?></option>
                     <?php } ?>
                   </select>
                   <button type="submit" class="btn btn-success">Ajouter le droit</button>
                 </form>
-                <?php foreach($this->param['fundations'] as $fun_id => $fun_name) { 
+                <?php foreach($this->param['fundations'] as $fun) { 
+                    $fun_id = $fun->fun_id;
+                    $fun_name = $fun->name;
                     $user_right = $this->param['user_right'][$fun_id];
                 ?>
                     <h2><?php echo $fun_name; ?></h2>
@@ -92,17 +98,26 @@ function helper_list_droits($droits, $remove_url, $services) {
                   </select>
                   <select class="input-xlarge" name="fun_id">
                     <option value=""></option>
-                    <?php foreach($this->param['fundations'] as $fun_id => $fun_name) { ?>
+                    <?php foreach($this->param['fundations'] as $fun) { 
+                        $fun_id = $fun->fun_id;
+                        $fun_name = $fun->name;
+                        ?>      
                         <option value="<?php echo $fun_id; ?>"><?php echo $fun_name ?></option>
                     <?php } ?>
                   </select>
                   <button type="submit" class="btn btn-success">Ajouter le droit</button>
                 </form>
-                <?php foreach($this->param['fundations'] as $fun_id => $fun_name) { 
-                        $app_right = $this->param['app_right'][$fun_id]; ?>
+                    <?php foreach($this->param['fundations'] as $fun) { 
+                        $fun_id = $fun->fun_id;
+                        $fun_name = $fun->name;
+                        if($fun_id) {
+                            $app_right = $this->param['app_right'][$fun_id];
+                        } else {
+                            $app_right = $this->param['app_right'][""];
+                        } ?>
                     <h2><?php echo $fun_name; ?></h2>
                     <?php if(count($app_right) == 0) { ?>
-                        <div class="alert alert-info">Aucun droit utilisateur n'a été donné sur cette fundation</div>
+                        <div class="alert alert-info">Aucun droit application n'a été donné sur cette fundation</div>
                     <?php } else { ?>
                         <table class="table table-striped table-bordered">
                             <thead>

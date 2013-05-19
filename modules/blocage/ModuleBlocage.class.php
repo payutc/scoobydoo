@@ -14,7 +14,8 @@ class ModuleBlocage extends Module {
         // Get fundations
         $fundations = $this->json_client->getFundations();
         $blocages = array();
-        foreach ($fundations as $fun_id => $fun_name) {
+        foreach ($fundations as $fun) {
+            $fun_id = $fun->fun_id;
             $blocages[$fun_id] = $this->json_client->getAll(array("fun_id" => $fun_id));
         }
 

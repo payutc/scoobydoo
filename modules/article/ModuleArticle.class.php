@@ -6,206 +6,213 @@ require_once 'config.php';
 
 class ModuleArticle extends Module {
 
-	public function action_index() {
-		global $AADMIN;
-		$categories = $AADMIN->get_categories(); $categories = $categories['success'];
-		$fundations = $AADMIN->get_fundations_with_right("GESARTICLE"); $fundations=$fundations['success'];
-		$article_parents = array();
-		foreach($fundations as $fundation) {
-			$article_parents[] = array('id'=>'fun'.$fundation['id'], 'name'=>'asso : '.$fundation['name']);
-		}
-		foreach($categories as $categorie) {
-			$article_parents[] = array('id'=>$categorie['id'], 'name'=>'catégorie : '.$categorie['name']);
-		}
-		$this->view->add_param('categorie_parents', $article_parents);
-		$this->view->add_param('categories', $categories);
-		$this->view->add_param('fundations', $fundations);
-		$modulepath = $this->get_path_module();
-		$this->view->set_template('html');
-		$this->view->add_jsfile($modulepath.'res/js/jqtree.jquery.js');
-		$this->view->add_jsfile($modulepath.'res/js/spin.min.js');
-		$this->view->add_jsfile('?module=article&action=mainjs');
-		$this->view->add_cssfile($modulepath.'res/css/jqtree.css');
-		$this->view->set_view($modulepath.'view/index.phtml');
-	}
+    protected $service = "GESARTICLE";
+
+    public function action_index() {
+        // Template conf
+        $this->view->set_template('html');
+        $modulepath = $this->get_path_module();
+        $this->view->set_view($modulepath.'view/index.phtml');
+        $this->view->add_jsfile($modulepath.'res/js/tree.jquery.js');
+        $this->view->add_jsfile($modulepath.'res/js/spin.min.js');
+        $this->view->add_jsfile('?module='.$this->get_module_name().'&action=mainjs');
+        $this->view->add_cssfile($modulepath.'res/css/jqtree.css');
+
+        // Get informations
+        $fundations = $this->json_client->getFundations();
+        $categories = $this->json_client->getCategories();
+
+        $article_parents = array();
+        foreach($fundations as $fundation) {
+            if($fundation->fun_id)
+	            $article_parents[] = array('id'=>'fun'.$fundation->fun_id, 'name'=>'asso : '.$fundation->name);
+        }
+
+        foreach($categories as $categorie) {
+	        $article_parents[] = array('id'=>$categorie->id, 'name'=>'catégorie : '.$categorie->name);
+        }
+        $this->view->add_param('categorie_parents', $article_parents);
+        $this->view->add_param('categories', $categories);
+        $this->view->add_param('fundations', $fundations);
+    }
 
 	public function action_get_tree() {
-		global $AADMIN;
 		$this->view->set_template('json');
 
-
-		$fundations = $AADMIN->get_fundations_with_right("GESARTICLE");
-		$categories = $AADMIN->get_categories();
-		$articles = $AADMIN->get_articles();
-		if (!isset($fundations['success']) or !isset($categories['success']) or !isset($articles['success'])) {
+        try {
+		    $fundations = $this->json_client->getFundations();
+		    $categories = $this->json_client->getCategories();
+		    $articles = $this->json_client->getProducts();
+        } catch (Exception $e) {
 			$this->view->set_param(array(array('name'=>'echec')));
-			return;
-		}
-		
-		$fundations = $fundations['success'];
-		$categories = $categories['success'];
-		$articles = $articles['success'];
-		
-		$arr = array('root' => $this::ArrNode('root','root',NULL,'root'));
+            return;
+        }
+
+		$arr = array('root' => $this::ArrNode('root','root',NULL,'root',NULL));
 		
 		foreach ($fundations as $fundation) {
-			$arr['fun'.$fundation['id']] = $this::ArrNode(
-				$fundation['id'],
-				$fundation['name'],
-				'root',
-				'fundation'
-			);
+            if($fundation->fun_id) {
+			    $arr['fun'.$fundation->fun_id] = $this::ArrNode(
+				    'fun'.$fundation->fun_id,
+				    $fundation->name,
+				    'root',
+				    'fundation',
+                    $fundation->fun_id
+			    );
+            }
 		}
 
 		foreach ($categories as $categorie) {
-			if (!$categorie['parent_id']) {
-				$parent_id = 'fun'.$categorie['fundation_id'];
+			if (!$categorie->parent_id) {
+				$parent_id = 'fun'.$categorie->fundation_id;
 			}
 			else {
-				$parent_id = $categorie['parent_id'];
+				$parent_id = $categorie->parent_id;
 			}
-			$arr[$categorie['id']] = $this::ArrNode(
-				$categorie['id'],
-				$categorie['name'],
+			$arr[$categorie->id] = $this::ArrNode(
+				$categorie->id,
+				$categorie->name,
 				$parent_id,
-				'categorie'
+				'categorie',
+                $categorie->fundation_id
 			);
-			$arr[$categorie['id']]['fundation_id'] = $categorie['fundation_id'];
+			$arr[$categorie->id]['fundation_id'] = $categorie->fundation_id;
 		}
 		foreach ($articles as $article) {
-			$arr[$article['categorie_id']]['children'][] = $this::ArrNode(
-				$article['id'],
-				$article['name'],
-				$article['categorie_id'],
-				'article'
+			$arr[$article->categorie_id]['children'][] = $this::ArrNode(
+				$article->id,
+				$article->name,
+				$article->categorie_id,
+				'article',
+                $article->fundation_id
 			);
 		}
 
-		//echo '<pre>';print_r($categories);echo '</pre>';
+		// echo '<pre>';print_r($categories);echo '</pre>';
 		
 		$tree = $this::generate_tree($arr, 'parent_id');
 		$tree = $tree[0]['children'];
 
-		//echo '<pre>';print_r($tree);echo '</pre>';
-
-		//die();
+		// echo '<pre>';print_r($tree);echo '</pre>';
+		// die();
 
 		$this->view->set_param($tree);
 	}
 
 	public function action_fundation_details() {
-		global $AADMIN;
 		$this->view->set_template('json');
 		$id = $_REQUEST['id'];
-		$result = $AADMIN->get_fundation($id);
-		if (isset($result['success'])) {
-			$result2 = $AADMIN->get_categories_by_fundation_id($id, true);
-			if (isset($result2['success'])) {
-				$result['success']['categories'] = $result2['success'];
-				$this->view->set_param($result);
-			}
-			else {
-				$this->view->set_param($result2);
-			}
-		}
-		else {
-			$this->view->set_param($result);
-		}
+        $result['success']['categories'] = $this->json_client->getCategories(array("fun_ids" => json_encode(array($id))));	
+		$this->view->set_param($result);
 	}
 
 	public function action_article_details() {
-		global $AADMIN;
 		$this->view->set_template('json');
 		$id = $_REQUEST['id'];
-		$result = $AADMIN->get_article($id);
-		//echo '<pre>';print_r($article);echo '</pre>'; die();
-		// TODO check $result
+        $fun_id = $_REQUEST['fun_id'];
+		$result = $this->json_client->getProduct(array("obj_id" => $id, "fun_id" => $fun_id));
+        $result->success->image_url = $this->get_link_to_action('get_image') . "&image_id=".$result->success->image;
+        // TODO check $result
 		$this->view->set_param($result);
 	}
 
 	public function action_save_article() {
-		global $AADMIN;
 		$this->view->set_template('json');
 		$name = $_REQUEST['name'];
 		$cat_id = $_REQUEST['categorie_id'];
+		$fun_id = $_REQUEST['fundation_id'];
 		$stock = $_REQUEST['stock'];
 		$alcool = isset($_REQUEST['alcool']) ? 1 : 0;
   	
-    $price = str_replace(',','.', $_REQUEST['price']);
-  	$price *= 100;
+        $price = str_replace(',','.', $_REQUEST['price']);
+        $price *= 100;
 
-    $imageId = 0;
-    if(!empty($_FILES['image']) && $_FILES["image"]["error"] == 0 && $_FILES["image"]["size"] < 1*1024*1024){
-      $image = base64_encode(file_get_contents($_FILES["image"]["tmp_name"]));
+        $imageId = 0;
+        if(!empty($_FILES['image']) && $_FILES["image"]["error"] == 0 && $_FILES["image"]["size"] < 1*1024*1024){
+            $image = base64_encode(file_get_contents($_FILES["image"]["tmp_name"]));
 
-      if(!empty($image)){
-        $imageId = $AADMIN->uploadImage($image);
-      }      
-    }
+            if(!empty($image)){
+                $imageId = $this->json_client->uploadImage(array("image" => $image));
+            }      
+        }
     
         if(!empty($_REQUEST['delete_image'])){
             $imageId = -1;
         }
 
+        $product = array(
+            "obj_id" => null, // null implique la création d'un article
+            "name" => $name,
+            "parent" => $cat_id, 
+            "prix" => $price, 
+            "stock" => $stock, 
+            "alcool" => $alcool, 
+            "image" => $imageId, 
+            "fun_id" => $fun_id
+        );
+
+
 		if (isset($_REQUEST['id']) and !empty($_REQUEST['id'])) {
-			$result = $AADMIN->edit_article($_REQUEST['id'], $name, $cat_id, $price, $stock, $alcool, $imageId);
+            $product['obj_id'] = $_REQUEST['id'];
 		}
-		else {
-			$result = $AADMIN->add_article($name, $cat_id, $price, $stock, $alcool, $imageId);
-		}
+        $result = $this->json_client->setProduct($product);
 		$this->view->set_param($result);
 	}
 
 	public function action_delete_article() {
-		global $AADMIN;
 		$this->view->set_template('json');
 		$id = $_REQUEST['id'];
+        $fun_id = $_REQUEST['fundation_id'];
 
-		$result = $AADMIN->delete_article($id);
-
+		$result = $this->json_client->deleteProduct(array("obj_id" => $id, "fun_id" => $fun_id));
 		$this->view->set_param($result);
 	}
 
 	public function action_categorie_details() {
-		global $AADMIN;
 		$this->view->set_template('json');
 		$id = $_REQUEST['id'];
-		$result = $AADMIN->get_categorie($id);
+        $fun_id = $_REQUEST['fun_id'];
+
+		$result = $this->json_client->getCategory(array("obj_id" => $id, "fun_id" => $fun_id));
 		//echo '<pre>';print_r($categorie);echo '</pre>'; die();
 		// TODO check $result
 		$this->view->set_param($result);
 	}
 
 	public function action_save_categorie() {
-		global $AADMIN;
 		$this->view->set_template('json');
 		$name = $_REQUEST['name'];
 		$parent = $_REQUEST['parent_id'];
+        $fundation_id = $_REQUEST['fundation_id'];
 		if (substr($parent, 0, 3) == 'fun') {
 			$parent_id = NULL;
-			$fundation_id = substr($parent, 3);
 		}
 		else {
 			$parent_id = $parent;
-			$fundation_id = NULL;
 		}
+        
+        $category = array(
+            "obj_id" => null, // null implique la creation d'une nouvelle category
+            "name" => $name,
+            "parent_id" => $parent_id,
+            "fun_id" => $fundation_id
+        );
+
 		//print_r(array($_REQUEST['id'], $name, $parent_id, $fundation_id));
 		if (isset($_REQUEST['id']) and !empty($_REQUEST['id'])) {
-			$result = $AADMIN->edit_categorie($_REQUEST['id'], $name, $parent_id, $fundation_id);
-		}
-		else {
-			$result = $AADMIN->add_categorie($name, $parent_id, $fundation_id);
+			$category['obj_id'] = $_REQUEST['id'];
 		}
 		
+        $result = $this->json_client->setCategory($category);
 		$this->view->set_param($result);
 	}
 
 	public function action_delete_categorie() {
-		global $AADMIN;
 		$this->view->set_template('json');
 		$id = $_REQUEST['id'];
+        $fun_id = $_REQUEST['fundation_id'];
 
-		$result = $AADMIN->delete_categorie($id);
+		$result = $this->json_client->deleteCategory(array("obj_id" => $id, "fun_id" => $fun_id));
 
 		$this->view->set_param($result);
 	}
@@ -221,17 +228,24 @@ class ModuleArticle extends Module {
 
 		// Configuration des parametres nécessaires à la vue (les urls ajax)
 		global $CONF;
-		$url_base = $CONF['scoobydoo_url'].'?module=article&action=';
-		$this->view->add_param('get_tree', $url_base.'get_tree');
-		$this->view->add_param('details_fundation', $url_base.'fundation_details');
-		$this->view->add_param('details_article', $url_base.'article_details');
-		$this->view->add_param('details_categorie', $url_base.'categorie_details');
-		$this->view->add_param('save_article', $url_base.'save_article');
-		$this->view->add_param('save_categorie', $url_base.'save_categorie');
-		$this->view->add_param('delete_article', $url_base.'delete_article');
-		$this->view->add_param('delete_categorie', $url_base.'delete_categorie');
+		$url_base = $CONF['scoobydoo_url'];
+		$this->view->add_param('get_tree', $url_base.$this->get_link_to_action('get_tree'));
+		$this->view->add_param('details_fundation', $url_base.$this->get_link_to_action('fundation_details'));
+		$this->view->add_param('details_article', $url_base.$this->get_link_to_action('article_details'));
+		$this->view->add_param('details_categorie', $url_base.$this->get_link_to_action('categorie_details'));
+		$this->view->add_param('save_article', $url_base.$this->get_link_to_action('save_article'));
+		$this->view->add_param('save_categorie', $url_base.$this->get_link_to_action('save_categorie'));
+		$this->view->add_param('delete_article', $url_base.$this->get_link_to_action('delete_article'));
+		$this->view->add_param('delete_categorie', $url_base.$this->get_link_to_action('delete_categorie'));
 	}
 
+    public function action_get_image() {
+        $image_id = $_REQUEST['image_id'];
+        $img_base64 = $this->json_client->getImage64(array("img_id" => $image_id, "outw" => 200, "outh" => 200));
+        header('Content-Type: image/png');
+        echo base64_decode($img_base64->success);
+        die();
+    }
 	
 	/**
 	 * A partir d'une array cré l'arbre hierarchisé associé, fonction récursive.
@@ -249,15 +263,15 @@ class ModuleArticle extends Module {
 				if (!$object['children']) {
 					$object['children'] = array();
 				}
-				$object['children'] = array_merge($object['children'], ModuleArticle::generate_tree($arr, $key_parent, $key));
+				$object['children'] = array_merge($object['children'], static::generate_tree($arr, $key_parent, $key));
 				$tree[] = $object;
 			}
 		}
 		return $tree;
 	}
 
-	public static function ArrNode($id, $name, $parent, $type, $children=array()) {
-		return array('id'=>$id, 'name'=>$name, 'parent_id'=>$parent, 'type'=>$type, 'children'=>$children);
+	public static function ArrNode($id, $name, $parent, $type, $fun_id, $children=array()) {
+		return array('id'=>$id, 'name'=>$name, 'parent_id'=>$parent, 'type'=>$type, 'fun_id'=>$fun_id, 'children'=>$children);
 	}
 
 	public function get_menus() {
@@ -273,14 +287,6 @@ class ModuleArticle extends Module {
                               
 	}
 
-	public function has_rights() {
-		global $AADMIN;
-		$right=$AADMIN->get_fundations_with_right("GESARTICLE");
-		if(count($right["success"]) > 0)
-			return True;
-		else
-			return False;
-	}
 }
 
 ?>
