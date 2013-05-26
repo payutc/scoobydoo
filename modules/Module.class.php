@@ -112,6 +112,7 @@ class Module {
     public function has_rights() {
         if(isset($this->service)) {
             if(!array_key_exists('EnabledServices', $GLOBALS)) {
+                $this->check_json_client();
                 $GLOBALS['EnabledServices'] = $this->json_client->getEnabledServices();
             }
             return in_array($this->service, $GLOBALS['EnabledServices']);
