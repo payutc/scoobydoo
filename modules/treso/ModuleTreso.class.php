@@ -14,9 +14,9 @@ class ModuleTreso extends Module {
 
 		$this->view->add_jsfile('libs/underscore.js');
 		$this->view->add_jsfile('modules/treso/res/main.js');
-		$this->view->add_jsfile('libs/jquery-ui.js');
+		$this->view->add_jsfile('libs/jquery-ui-1.10.3.custom.min.js');
 
-		$this->view->add_cssfile('modules/treso/view/jquery-ui-1.9.0.custom.min.css');
+		$this->view->add_cssfile('modules/treso/view/jquery-ui-1.10.3.custom.min.css');
 		$this->view->add_cssfile('modules/treso/view/main.css');
 
 		$fundations = $AADMIN->get_fundations_with_right("TRESO"); $fundations=$fundations['success'];
