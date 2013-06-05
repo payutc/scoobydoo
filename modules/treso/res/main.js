@@ -65,17 +65,13 @@ $(function () {
 
 
 
-    $("#dates").submit(function () {
-        var date = $("#datepicker").attr("value").split("/");
+    $("#dates").submit(function(e) {
+        var date = $("#datepicker").val().split("/");
+        var date2 = $("#datepicker2").val().split("/");
 
-        var date2 = undefined
-        if ($("#datepicker2").attr("value") != "" || $("#datepicker2").attr("value") != $("#datepicker").attr("value"))
-            date2 = $("#datepicker2").attr("value").split("/");
-
-        if (date2)
-        window.location = ("?module=treso&action=index&day=" + date[0] + "&month=" + date[1] + "&year=" + date[2]
-                            + "&day2=" + date2[0] + "&month2=" + date2[1] + "&year2=" + date2[2] + "&fundation=" + $("#fundation_chosen").attr("value"));
-        return false;
+        window.location = "?module=treso&action=index&day=" + date[0] + "&month=" + date[1] + "&year=" + date[2]
+                            + "&day2=" + date2[0] + "&month2=" + date2[1] + "&year2=" + date2[2] + "&fundation=" + $("#fundation_chosen").val();
+        e.preventDefault();
     });
 
 });
