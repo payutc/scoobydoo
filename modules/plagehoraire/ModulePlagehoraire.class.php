@@ -5,7 +5,7 @@ require_once 'modules/Module.class.php';
 class ModulePlagehoraire extends Module {
 
 	protected function get_js_files() {
-		return array('libs/jquery-1.7.2.min.js');
+		return array();
 	}
 
 	protected function get_css_files() {
