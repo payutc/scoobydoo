@@ -18,11 +18,14 @@ class Module {
                 } 
                 $_SESSION[$this->service]["json_client"] = new \JsonClient\AutoJsonClient($CONF['soap_url'], $this->service);
                 $this->json_client = $_SESSION[$this->service]["json_client"];
-            } else if (!isset($_GET["ticket"])) {
-                $this->json_client = $_SESSION[$this->service]["json_client"];
-                $this->check_json_client();
             } else {
                 $this->json_client = $_SESSION[$this->service]["json_client"];
+            }
+            if(isset($_SESSION["json_client_cookie"])) {
+                $this->json_client->cookie = $_SESSION["json_client_cookie"];
+            }
+            if (!isset($_GET["ticket"])) {
+                $this->check_json_client();
             }
         }
 	}
@@ -56,6 +59,8 @@ class Module {
             } catch (\JsonClient\JsonException $e) {
                 die("error login application.");
             }
+            // Save this cookie
+            $_SESSION["json_client_cookie"] = $this->json_client->cookie;
             // Return to index page, the json client is authenticated.
             header("Location: ".$CONF['scoobydoo_url']);
             exit();
