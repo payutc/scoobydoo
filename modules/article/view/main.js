@@ -325,7 +325,7 @@ function fill_article(data) {
     }
         
 	if (data.alcool == 1)
-		$('#article_field_alcool').attr("checked", "checked");
+		$('#article_field_alcool').prop('checked', true);
 	else
 		$('#article_field_alcool').removeAttr("checked");
 	if (data.categorie_id) $('#article_field_categorie_id').val(data.categorie_id);
