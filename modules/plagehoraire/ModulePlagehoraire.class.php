@@ -103,11 +103,11 @@ class ModulePlagehoraire extends Module {
 	}
 
 	public function has_rights() {
-		global $AADMIN;
+		/*global $AADMIN;
 		$right=$AADMIN->get_fundations_with_right("ADMIN");
 		if(count($right["success"]) > 0)
 			return True;
-		else
+		else*/
 			return False;
 	}
 }
