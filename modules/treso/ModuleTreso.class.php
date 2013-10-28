@@ -109,6 +109,10 @@ class ModuleTreso extends Module {
 			$this->view->add_param("summary", $summary);
 		}
 	}
+	
+	public function has_rights() {
+	    return false;
+	}
 
 }
 

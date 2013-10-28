@@ -31,14 +31,24 @@ class Module {
 	}
 
     protected function check_json_client() {
-        $status = $this->json_client->getStatus();
-        if (!$status->user)
+        if(!isset($_SESSION['json_client_status']) || !$_SESSION['json_client_status']->user) {
+            $_SESSION['json_client_status'] = $this->json_client->getStatus();
+        }
+        if (!$_SESSION['json_client_status']->user) {
             $this->auth_json_client();
+        }
+    }
+
+    protected function get_cas_url() {
+        if(!isset($_SESSION['cas_url'])) {
+            $_SESSION['cas_url'] = $this->json_client->getCasUrl();
+        }
+        return $_SESSION['cas_url'];
     }
 
     protected function auth_json_client() {
         global $CONF;
-        $cas_url = $this->json_client->getCasUrl();
+        $cas_url = $this->get_cas_url();
         $service = $CONF['scoobydoo_url'].$this->get_link_to_action("auth_json_client");
         header("Location: ".$cas_url."login?service=".urlencode($service));
         exit();
@@ -50,8 +60,9 @@ class Module {
 		    $ticket = $_GET["ticket"];
             $service = $CONF['scoobydoo_url'].$this->get_link_to_action("auth_json_client");
             try {
-                $con = $this->json_client->loginCas(array("ticket"=>$ticket, "service"=>urlencode($service)));
+                $con = $this->json_client->loginCas(array("ticket"=>$ticket, "service"=>$service));
             } catch (\JsonClient\JsonException $e) {
+                print("<pre>"); print_r($e); print("</pre>");
                 die("error login cas.");
             }
             try {
