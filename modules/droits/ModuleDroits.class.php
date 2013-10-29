@@ -1,108 +1,137 @@
 <?php
-
 require_once 'modules/Module.class.php';
 
 class ModuleDroits extends Module {
 
-	protected function get_js_files() {
-		return array();
-	}
+    protected $service = "ADMINRIGHT";
 
-	protected function get_css_files() {
-		return array();
-	}
+    protected function action_index() {
+        // Recuperation des services (les services étant les droits attribuables)
+        $raw_services = $this->json_client->getServices();
+        // on index pour aller plus vite après
+        $services = array();
+        foreach($raw_services as $service) {
+            $services[$service->service] = $service;
+        }
 
-	protected function action_index() {
-		global $AADMIN;
-		$this->view->set_template('html');
-		$this->view->set_view($this->get_path_module()."view/index.phtml");
-		$fundations = $AADMIN->get_fundations_with_right("ADMIN"); $fundations = $fundations["success"];
-		$tab = array();
-		foreach($fundations as $fundation)
-		{
-			$right = $AADMIN->get_rights_fundation($fundation["id"]);
-			$tab[] = array(
-						"name" => $fundation["name"], 
-						"id" => $fundation["id"],
-						"url_add" => "?module=droits&action=add&fun_id=".$fundation["id"], 
-						"url_remove" => "?module=droits&action=remove", 
-						"right"=>$right["success"]);
-		}
-		$this->view->add_param("tab", $tab);
-	}
+        // Templates conf
+        $this->view->set_template('html');
+        $this->view->set_view($this->get_path_module() . "view/index.phtml");
 
-	protected function action_add() {
-		global $_REQUEST, $AADMIN;
-		if(!isset($_REQUEST['login']) || !isset($_REQUEST['right']) || !isset($_REQUEST['fun_id']))
-			$this->view->param["alert"][$_REQUEST['fun_id']] = array(
-				"class" => "alert alert-error",
-				"strong" => "Erreur, ",
-				"message" => "un paramétre est manquant."
-			);
-		else {
-			$user_id = $AADMIN->getUserIDfromLogin($_REQUEST['login']);
-			if(isset($user_id['success']))
-			{
-				$retour = $AADMIN->set_right_fundation($user_id['success'], $_REQUEST['right'], $_REQUEST['fun_id']);
-				if(isset($retour['success']))
-					$this->view->param["alert"][$_REQUEST['fun_id']] = array(
-						"class" => "alert alert-success",
-						"strong" => "Succés, ",
-						"message" => "l'ajout du droit à réussi."
-					);
-				else
-					$this->view->param["alert"][$_REQUEST['fun_id']] = array(
-						"class" => "alert alert-error",
-						"strong" => "Erreur, ",
-						"message" => $retour['error_msg']
-					);
-			}
-			else
-				$this->view->param["alert"][$_REQUEST['fun_id']] = array(
-					"class" => "alert alert-error",
-					"strong" => "Erreur, ",
-					"message" => $user_id['error_msg']
-				);
-		}
+        // autocomplete
+        $this->view->add_jsfile('bootstrap/js/bootstrap.min.js');
+        $this->view->add_jsfile($this->get_link_to_action("autocompletejs"));
 
-		$this->action_index();
-	}
+        // Get fundations
+        $fundations = $this->json_client->getFundations();
+        $user_right = array();
+        $app_right = array();
 
-	protected function action_remove() {
-		global $_REQUEST, $AADMIN;
-		if(!isset($_REQUEST['usr_id']) || !isset($_REQUEST['rig_id']) || !isset($_REQUEST['fun_id']))
-			$this->view->param["alert"][$_REQUEST['fun_id']] = array(
-				"class" => "alert alert-error",
-				"strong" => "Erreur, ",
-				"message" => "un paramétre est manquant."
-			);
-		else {
-			$retour = $AADMIN->remove_right_fundation($_REQUEST['usr_id'], $_REQUEST['rig_id'], $_REQUEST['fun_id']);
-			if(isset($retour['success']))
-				$this->view->param["alert"][$_REQUEST['fun_id']] = array(
-					"class" => "alert alert-success",
-					"strong" => "Succés, ",
-					"message" => "la suppression du droit à réussi."
-				);
-			else
-				$this->view->param["alert"][$_REQUEST['fun_id']] = array(
-					"class" => "alert alert-error",
-					"strong" => "Erreur, ",
-					"message" => $retour['error_msg']
-				);
-		}
+        foreach ($fundations as $fun) {
+            $fun_id = $fun->fun_id;
+            $user_right[$fun_id] = $this->json_client->getUserRights(array("fun_id" => $fun_id));
+            $app_right[$fun_id] = $this->json_client->getApplicationRights(array("fun_id" => $fun_id));
+        }
 
-		$this->action_index();
-	}
+        // Get applications
+        $raw_applications = $this->json_client->getApplications();
+        $applications = array();
+        foreach ($raw_applications as $app) {
+            $applications[$app->app_id] = $app;
+        }
 
-	public function has_rights() {
-		global $AADMIN;
-		$right=$AADMIN->get_fundations_with_right("ADMIN");
-		if(count($right["success"]) > 0)
-			return True;
-		else
-			return False;
-	}
+
+        // Pass parameters to view
+        $this->view->add_param("fundations", $fundations);
+        $this->view->add_param("user_right", $user_right);
+        $this->view->add_param("app_right", $app_right);
+        $this->view->add_param("services", $services);
+        $this->view->add_param("applications", $applications);
+        $this->view->add_param("add_user_right", $this->get_link_to_action("add_user_right"));
+        $this->view->add_param("add_app_right", $this->get_link_to_action("add_app_right"));
+        $this->view->add_param("remove_user_right", $this->get_link_to_action("remove_user_right"));
+        $this->view->add_param("remove_app_right", $this->get_link_to_action("remove_app_right"));
+    }
+
+    protected function action_add_user_right() {
+        global $_REQUEST;
+        if (!isset($_REQUEST['usr_id']) || !isset($_REQUEST['right']) || !isset($_REQUEST['fun_id'])) $this->view->param["alert"]["users"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => "un paramétre est manquant.");
+        else {
+            try {
+                $this->json_client->setUserRight(array("usr_id" => $_REQUEST['usr_id'], "service" => $_REQUEST['right'], "fun_id" => $_REQUEST['fun_id']));
+                $this->view->param["alert"]["users"] = array("class" => "alert alert-success", "strong" => "Succés, ", "message" => "l'ajout du droit à réussi. ");
+            }
+            catch(\JsonClient\JsonException $e) {
+                $this->view->param["alert"]["users"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => $e->getMessage());
+            }
+        }
+        $this->action_index();
+    }
+
+    protected function action_add_app_right() {
+        global $_REQUEST;
+        if (!isset($_REQUEST['app_id']) || !isset($_REQUEST['right']) || !isset($_REQUEST['fun_id'])) $this->view->param["alert"]["applications"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => "un paramétre est manquant.");
+        else {
+            try {
+                $this->json_client->setApplicationRight(array("app_id" => $_REQUEST['app_id'], "service" => $_REQUEST['right'], "fun_id" => $_REQUEST['fun_id']));
+                $this->view->param["alert"]["applications"] = array("class" => "alert alert-success", "strong" => "Succés, ", "message" => "l'ajout du droit à réussi.");
+            }
+            catch(\JsonClient\JsonException $e) {
+                $this->view->param["alert"]["applications"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => $e->getMessage());
+            }
+        }
+        $this->action_index();
+    }
+
+    protected function action_remove_user_right() {
+        global $_REQUEST;
+        if (!isset($_REQUEST['usr_id']) || !isset($_REQUEST['right']) || !isset($_REQUEST['fun_id'])) $this->view->param["alert"]["users"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => "un paramétre est manquant.");
+        else {
+            try {
+                $this->json_client->removeUserRight(array("usr_id" => $_REQUEST['usr_id'], "service" => $_REQUEST['right'], "fun_id" => $_REQUEST['fun_id']));
+                $this->view->param["alert"]["users"] = array("class" => "alert alert-success", "strong" => "Succés, ", "message" => "la supression du droit à réussi.");
+            }
+            catch(\JsonClient\JsonException $e) {
+                $this->view->param["alert"]["users"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => $e->getMessage());
+            }
+        }
+        $this->action_index();
+    }
+
+    protected function action_remove_app_right() {
+        global $_REQUEST;
+        if (!isset($_REQUEST['app_id']) || !isset($_REQUEST['right']) || !isset($_REQUEST['fun_id'])) $this->view->param["alert"]["users"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => "un paramétre est manquant.");
+        else {
+            try {
+                $this->json_client->removeApplicationRight(array("app_id" => $_REQUEST['app_id'], "service" => $_REQUEST['right'], "fun_id" => $_REQUEST['fun_id']));
+                $this->view->param["alert"]["applications"] = array("class" => "alert alert-success", "strong" => "Succés, ", "message" => "la supression du droit à réussi.");
+            }
+            catch(\JsonClient\JsonException $e) {
+                $this->view->param["alert"]["applications"] = array("class" => "alert alert-error", "strong" => "Erreur, ", "message" => $e->getMessage());
+            }
+        }
+        $this->action_index();
+    }
+
+    /*
+        Renvoie du json pour l'autocomplete des noms d'utilisateurs
+    */
+    protected function action_autocomplete() {
+        global $_REQUEST;
+        $this->view->set_template('json');
+        isset($_REQUEST['query']) ? $queryString = $_REQUEST['query'] : $queryString = "";
+        $result = $this->json_client->userAutocomplete(array("queryString" => $queryString));
+        $this->view->add_param("result", $result);
+    }
+
+    /*
+        Renvoie le fichier js faisant l'autocompleter
+    */
+    protected function action_autocompletejs() {
+        $this->view->set_template('js');
+        $this->view->set_view($this->get_path_module() . "view/autocomplete.js");
+        $this->view->add_param("autocomplete", $this->get_link_to_action("autocomplete"));
+    }
+
 }
-
 ?>

@@ -1,6 +1,6 @@
 <?php
-global $AADMIN;
-$username = ucfirst($AADMIN->getFirstname())." ".ucfirst($AADMIN->getLastname());
+$user_data = $_SESSION['json_client_status']->user_data;
+$username = ucfirst($user_data->firstname)." ".ucfirst($user_data->lastname);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
