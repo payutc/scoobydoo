@@ -91,7 +91,7 @@ function helper_list_droits($droits, $remove_url, $services) {
                   <select class="input-xlarge" name="right">
                     <option value=""></option>
                     <?php foreach($this->param['services'] as $service_name => $service) { ?>
-                        <?php if($service->user) { ?>
+                        <?php if($service->app) { ?>
                             <option value="<?php echo $service_name; ?>"><?php echo $service->name ?></option>
                         <?php } ?>
                     <?php } ?>
