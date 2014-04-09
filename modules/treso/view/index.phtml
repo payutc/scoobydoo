@@ -1,62 +1,13 @@
-	  <script>
-        <?php 
-        if (isset($this->param['summary'])) {
-          ?>
-    			var summary = <?php echo json_encode($this->param['summary']); ?>;
-          summary = summary["success"] || [];
-        <?php
-        }
-        ?>
-	  </script>
-    <div class="hero-unit">
-      <h1>Trésorerie</h1>
-    </div>
-    <div id="treso">
-      <form method="GET">
-      Choisi ta fondation :
-      <select name="fundation">
-        <?php
-        $fundations = Array(); 
-        foreach ($this->param["fundations"] as $key => $fundation) {
-          echo "<option value='" . $fundation["id"] . "'>" . $fundation["name"] . "</option>";
-          $fundations[$fundation["id"]] = $fundation["name"];
-        }
-        ?>
-        <input type="submit" value="choisir"/>
-        <input type="hidden" name="module" value="treso"/>
-      </form>
-    </select>
-      <?php 
-      if (isset($this->param['summary'])) {
-      ?>
-      <p>Choisissez une ou deux dates pour en avoir le resumé d'un jour ou d'une période:  
-        <form action="" method="GET" id="dates">
-          Du <input type="text" id="datepicker"/> au 
-          <input type="text" id="datepicker2"/>
-          <input type="hidden" id="fundation_chosen" value="<?php  echo $_GET["fundation"]; ?>"/>
-          <input type="submit" />
-        </form>
-      </p>
-      <?php if (isset($this->param["day"])) {
-          echo "<a href='?";
-          foreach ($_GET as $key => $value) {
-            if ($key != "action")
-              echo  $key . "=" . $value . "&";
-          }
-          echo "action=download";
-          echo "''>Télécharger le rapport</a>";
-            if (!isset($this->param["day2"]))  
-                echo "<h2>Statistiques pour le " . $this->param["day"] . "/" . $this->param["month"] . "/" . $this->param["year"] . " pour la fondation " . $fundations[$_GET["fundation"]] . "</h2>";
-            else {
-                echo "<h2>Statistiques du " . $this->param["day"] . "/" . $this->param["month"] . "/" . $this->param["year"];
-                echo " au " . $this->param["day2"] . "/" . $this->param["month2"] . "/" . $this->param["year2"];
-                echo " pour la fondation " . $fundations[$_GET["fundation"]] . "</h2>";
-            }
-        }
-        else {
-          echo "Veuillez choisir une date.";
-        }  ?>
-        <?php
-      }
-        ?>
-    </div>
+<div class="container">
+
+<!-- Example row of columns -->
+<div class="row">
+  <?php foreach($this->param['fundations'] as $fun) { ?>
+  <div class="span4">
+    <h2><?php echo $fun->name; ?></h2>
+    <p><a class="btn" href="<?php echo $this->param['url']; ?>&fun_id=<?php echo $fun->fun_id; ?>">Gérer »</a></p>
+  </div>
+  <?php } ?>
+</div>
+
+</div>

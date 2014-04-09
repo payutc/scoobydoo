@@ -1,0 +1,59 @@
+<div class="container">
+
+<div class="row">
+  <div class="span12">
+    <h1>Gestion trésorerie de payutc</h1>
+    <br />
+  </div>
+  <div class="span5 well">
+    <h2>Statistiques</h2>
+
+    <table class="table">
+      <tr><td><strong>Ventes depuis toujours : </strong></td><td><?php echo $this->param['details']->amount_total / 100; ?> € </td></tr>
+      <tr><td><strong>Somme des comptes : </strong></td><td><?php echo $this->param['details']->account_total / 100; ?> € </td></tr>
+      <tr><td><strong>Somme non reversés : </strong></td><td><?php echo ($this->param['details']->amount_total - $this->param['details']->reversement_total) / 100; ?> € </td></tr>
+      <tr><td><strong>En attente de reversement : </strong></td><td><?php echo $this->param['details']->reversement_wait / 100; ?> € </td></tr>
+    </table>
+  </div>
+  <div class="span11 well">
+    <h2>Fundations</h2>
+    <table class="table">
+      <thead>
+        <th>Fundation</th>
+        <th>Montant total</th>
+        <th>Solde</th>
+        <th>Dernier reversement</th>
+        <th>En attente de reversement</th>
+        <th></th>
+      </thead>
+      <tbody>
+        <?php foreach($this->param['details']->fundations as $fun) { ?>
+        <tr>
+          <td><?php echo $fun->name; ?></td>
+          <td><?php echo $fun->amount_total / 100; ?> €</td>
+          <td><?php echo ($fun->amount_total - $fun->reversement_total)/100; ?> €</td>
+          <td><?php if($fun->reversement_last) {
+            $rev = $fun->reversement_last;
+            echo $rev->amount/100 ." € le ".$rev->updated;
+          } else {
+            echo "aucun";
+          }?></td>
+          <td><?php if($fun->reversement_wait) {
+            $rev = $fun->reversement_wait;
+            echo $rev->amount/100 ." € demandé le ".$rev->created;
+          } else {
+            echo "aucun";
+          }?></td>
+          <td><?php
+            if($fun->reversement_wait != null) {
+              echo '<a href="'.$this->param['url_rev'].'&rev_id='.$fun->reversement_wait->id.'" class="btn btn-primary">Reverser</a>';
+            }
+          ?></td>
+        </tr>
+        <?php } ?>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>

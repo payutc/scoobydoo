@@ -1,0 +1,49 @@
+<?php
+  $rev = $this->param["reversement"];
+  foreach($this->param["fundations"] as $fundation) {
+    if($fundation->fun_id == $rev->funId) {
+      $fun = $fundation;
+    }
+  }
+?>
+
+<div class="container">
+
+<div class="row">
+  <div class="span5">
+    <h1>Faire un reversement</h1>
+    <br />
+    <form method="post" >
+    <input type="hidden" name="rev_id" value="<?php echo $rev->id; ?>" />
+    <table class="table">
+    <tr><td>Reversement ID :</td><td><?php echo $rev->id; ?></td></tr>
+    <tr><td>Fundation :</td><td><?php echo $fun->name; ?></td></tr>
+    <tr><td>Date de la demande :</td><td><?php echo $rev->created; ?></td></tr>
+    <tr><td>Montant :</td><td><?php echo $rev->amount / 100; ?> €</td></tr>
+    <tr><td>Taux de com :</td><td>
+                <div class="input-append">
+                    <input type="number" class="span1" min="0" max="99.99" step="0.01" name="taux" id="taux" value="0" onchange="calculate()"/>
+                    <span class="add-on">%</span>
+                </div></td></tr>
+    <tr><td>Frais :</td><td>
+                <div class="input-append">
+                    <input type="number" class="span1" name="frais" id="frais" value="0" readonly />
+                    <span class="add-on">€</span>
+                </div></td></tr>
+    <tr><td>Montant a reverser :</td><td><span name="reverse" id="reverse" ><?php echo $rev->amount / 100; ?></span> €</td></tr>
+    <tr><td></td><td><button type="submit" class="pull-right btn btn-primary">Valider le reversement</a></td></tr>
+    </table>
+    </form>
+  </div>
+</div>
+
+</div>
+
+<script>
+function calculate() {
+    taux = $("#taux").val();
+    frais = Math.ceil(<?php echo $rev->amount; ?> * taux / 100);
+    $("#frais").val(frais/100);
+    $("#reverse").html((<?php echo $rev->amount; ?> - frais) / 100);
+}
+</script>

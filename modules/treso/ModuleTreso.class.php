@@ -4,116 +4,89 @@ require_once 'modules/Module.class.php';
 
 class ModuleTreso extends Module {
 
-	protected function action_index() {
-		global $CONF;
-		global $AADMIN;
+	protected $service = "TRESO";
 
+	protected function action_index() {
+		// Get fundations
+        $fundations = $this->json_client->getFundations();
 
 		$this->view->set_template('html');
 		$this->view->set_view($this->get_path_module()."view/index.phtml");
-
-		$this->view->add_jsfile('libs/underscore.js');
-		$this->view->add_jsfile('modules/treso/res/main.js');
-		$this->view->add_jsfile('libs/jquery-ui-1.10.3.custom.min.js');
-
-		$this->view->add_cssfile('modules/treso/view/jquery-ui-1.10.3.custom.min.css');
-		$this->view->add_cssfile('modules/treso/view/main.css');
-
-		$fundations = $AADMIN->get_fundations_with_right("TRESO"); $fundations=$fundations['success'];
 		$this->view->add_param("fundations", $fundations);
-		if (isset($_GET["fundation"])) {
-			$fundation_id = intval($_GET["fundation"]);
+		$this->view->add_param("url", $this->get_link_to_action("details"));
+	}
 
-			if (isset($_GET["day"]) && isset($_GET["month"]) && isset($_GET["year"]) ) {
-				$this->view->add_param("day", $_GET["day"]);
-				$this->view->add_param("month", $_GET["month"]);
-				$this->view->add_param("year", $_GET["year"]);
-
-				if (isset($_GET["day2"]) && isset($_GET["month2"]) && isset($_GET["year2"]) ) {
-					$this->view->add_param("day2", $_GET["day2"]);
-					$this->view->add_param("month2", $_GET["month2"]);
-					$this->view->add_param("year2", $_GET["year2"]);
-
-					$summary = $AADMIN->get_CA_period(intval($_GET["day"]), intval($_GET["month"]), intval($_GET["year"]),
-													  intval($_GET["day2"]),intval($_GET["month2"]),intval($_GET["year2"]),
-													$fundation_id);
-				}
-				else {
-					$summary = $AADMIN->get_CA(intval($_GET["day"]), 
-											   intval($_GET["month"]), 
-											   intval($_GET["year"], 
-											   $fundation_id));
-				}
+	protected function action_details() {
+		$fun_id = $_GET['fun_id'];
+		if(empty($fun_id)) {
+			return $this->super_treso();
+		}
+		// Get fundation
+        $fundations = $this->json_client->getFundations();
+		foreach($fundations as $fun) {
+			if($fun->fun_id == $_GET['fun_id']) {
+				$fundation = $fun;
 			}
-
-			else {
-				$now = mktime();
-				$this->view->add_param("day", date("d", $now));
-				$this->view->add_param("month", date("m", $now));
-				$this->view->add_param("year", date("Y", $now));
-				$summary = $AADMIN->get_CA(intval(date("Y")), 
-															   intval(date("m")), 
-															   intval(date("d"),
-															   	$fundation_id));
-			}
-			$this->view->add_param("summary", $summary);
 		}
 
+		$this->view->set_template('html');
+		$this->view->set_view($this->get_path_module()."view/treso.phtml");
+
+		$this->view->add_param("fundation", $fundation);
+		$this->view->add_param("details", $this->json_client->getDetails(array("fun_id" => $fun_id)));
+		$this->view->add_param("url_ask", $this->get_link_to_action("askreversement")."&fun_id=".$fun_id);
 	}
 
-	protected function action_download() {
-		global $CONF;
-		global $AADMIN;
-		$fundations = $AADMIN->get_fundations_with_right("TRESO"); $fundations=$fundations['success'];
-		$this->view->add_param("fundations", $fundations);
-		$fundation_ok = false;
+	protected function action_askreversement() {
+		$fun_id = $_GET['fun_id'];
+		$this->json_client->askReversement(array("fun_id" => $fun_id));
+		header("Location: ".$this->get_link_to_action("details")."&fun_id=".$fun_id);
+		exit();
+	}
 
-		if (isset($_GET["fundation"])) {
-			$fundation_id = intval($_GET["fundation"]);
-			$this->view->set_template('csv');
-			$this->view->set_view($this->get_path_module()."view/stats.phtml");
-
-			if (isset($_GET["day"]) && isset($_GET["month"]) && isset($_GET["year"]) ) {
-				$this->view->add_param("day", $_GET["day"]);
-				$this->view->add_param("month", $_GET["month"]);
-				$this->view->add_param("year", $_GET["year"]);
-
-				if (isset($_GET["day2"]) && isset($_GET["month2"]) && isset($_GET["year2"]) ) {
-					$this->view->add_param("day2", $_GET["day2"]);
-					$this->view->add_param("month2", $_GET["month2"]);
-					$this->view->add_param("year2", $_GET["year2"]);
-
-					$summary = $AADMIN->get_CA_period(
-										intval($_GET["day"]), intval($_GET["month"]), intval($_GET["year"]),
-										intval($_GET["day2"]),intval($_GET["month2"]),intval($_GET["year2"]),
-										$fundation_id);
-
-				}
-				else {
-					$summary = $AADMIN->get_CA(intval($_GET["day"]), 
-																   intval($_GET["month"]), 
-																   intval($_GET["year"]),
-																   $fundation_id);
-				}
-			}
-			else {
-				$now = mktime();
-				$this->view->add_param("day", date("d", $now));
-				$this->view->add_param("month", date("m", $now));
-				$this->view->add_param("year", date("Y", $now));
-				$summary = $AADMIN->get_CA(intval(date("Y")), 
-															   intval(date("m")), 
-															   intval(date("d")),
-															   $fundation_id);
-			}
-			$this->view->add_param("summary", $summary);
+	protected function super_treso() {
+		$isAdmin = $this->json_client->isAdmin();
+		if(!$isAdmin) {
+			header("Location: ".$this->get_link_to_action("index"));
+			exit();
 		}
-	}
-	
-	public function has_rights() {
-	    return false;
+
+		$this->view->set_template('html');
+		$this->view->set_view($this->get_path_module()."view/supertreso.phtml");
+
+		$this->view->add_param("details",  $this->json_client->getDetails());
+		$this->view->add_param("url_rev",  $this->get_link_to_action("reversement"));
 	}
 
+	protected function action_reversement() {
+		$isAdmin = $this->json_client->isAdmin();
+		if(!$isAdmin) {
+			header("Location: ".$this->get_link_to_action("index"));
+			exit();
+		}
+
+		if(isset($_POST['rev_id'])) {
+			// Do reversement
+			$rev_id = $_POST['rev_id'];
+			$taux = $_POST['taux'];
+			$frais = $_POST['frais'];
+
+			$this->json_client->makeReversement(array(
+				"rev_id" => $rev_id,
+				"taux" => $taux*100,
+				"frais" => $frais*100
+				));
+
+			header("Location: ".$this->get_link_to_action("details")."&fun_id=");
+			exit();
+		}
+
+
+		$this->view->add_param("reversement", $this->json_client->getReversement(array("rev_id" => $_GET['rev_id'])));
+		$this->view->add_param("fundations", $this->json_client->getFundations());
+		$this->view->set_template('html');
+		$this->view->set_view($this->get_path_module()."view/reversement.phtml");
+	}
 }
 
 ?>
