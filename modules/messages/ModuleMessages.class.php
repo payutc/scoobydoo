@@ -35,7 +35,7 @@ class ModuleMessages extends Module {
         $this->view->set_template('html');
         $this->view->set_view($this->get_path_module() . "view/fun.phtml");
 
-        $msg = $this->json_client->getCurrentMsg(array("fun_id"=>$_REQUEST['fun_id']));
+        $msg = $this->json_client->getMsg(array("fun_id"=>$_REQUEST['fun_id'], "usr_id"=>null));
 
         // Pass parameters to view
         $this->view->add_param("current_msg", $msg);
