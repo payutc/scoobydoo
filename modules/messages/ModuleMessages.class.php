@@ -34,7 +34,6 @@ class ModuleMessages extends Module {
         // Templates conf
         $this->view->set_template('html');
         $this->view->set_view($this->get_path_module() . "view/fun.phtml");
-        $this->view->add_jsfile('bootstrap/js/bootstrap.min.js');
 
         $msg = $this->json_client->getCurrentMsg(array("fun_id"=>$_REQUEST['fun_id']));
 
