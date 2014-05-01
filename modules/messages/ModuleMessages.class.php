@@ -55,7 +55,7 @@ class ModuleMessages extends Module {
             return;
         }
         $message = htmlspecialchars($_REQUEST['message']);
-        $this->json_client->changeMsg(array("message"=>$message, "fun_id"=>$_REQUEST['fun_id']));
+        $this->json_client->changeMsg(array("message"=>$message, "fun_id"=>$_REQUEST['fun_id'], "usr_id"=>null));
         $this->action_index();
     }
 }
