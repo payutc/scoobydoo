@@ -1,0 +1,32 @@
+        <div class="row-fluid">
+          <div class="hero-unit">
+            <h2>Gestion des messages de fundation</h2>
+          </div>
+        </div>
+        <div class="row-fluid">
+            <?php if(isset($this->param['alert'])) {
+                $alert = $this->param['alert']; ?>
+                <div class="<?php echo $alert['class']; ?>">
+                    <strong><?php echo $alert['strong']; ?></strong> <?php echo $alert['message']; ?>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="row-fluid">
+            <form method="POST" action="<?php echo $this->param['fun_url']; ?>" >
+            Choisi ta fondation :
+            <select name="fun_id">
+                <?php
+                echo var_dump($_REQUEST);
+                foreach ($this->param["fundations"] as $fundation) {
+                  echo "<option value='" . $fundation->fun_id . "'>" . $fundation->name . "</option>";
+                }
+                ?>
+            </select>
+
+            <button type="submit">Choisir</button>
+            <input type="hidden" name="module" value="messages"/>
+            <input type="hidden" name="name" value="<?php echo $fundation->name; ?>"/>
+
+          </form>
+
+        </div>
