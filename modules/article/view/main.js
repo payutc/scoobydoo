@@ -276,6 +276,7 @@ function clear_article() {
 		name: 'Nouvel article',
 		price: 0,
 		stock: 0,
+		tva: 0,
 		categorie_id: current_categorie_id
     }
     if (current_fundation_id && current_fundation_id.indexOf('fun') != -1) {
@@ -313,6 +314,7 @@ function fill_article(data) {
 	$('#article_id').html(data.id);
 	$('#article_field_name').val(data.name);
 	$('#article_field_price').val(price);
+	$('#article_field_tva').val(data.tva);
 	$('#article_field_stock').val(data.stock);
     $('#article_field_delete_image').removeAttr("checked");
 

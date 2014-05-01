@@ -127,6 +127,8 @@ class ModuleArticle extends Module {
         $price = str_replace(',','.', $_REQUEST['price']);
         $price *= 100;
 
+        $tva = str_replace(',','.', $_REQUEST['tva']);
+
         $imageId = 0;
         if(!empty($_FILES['image']) && $_FILES["image"]["error"] == 0 && $_FILES["image"]["size"] < 1*1024*1024){
             $image = base64_encode(file_get_contents($_FILES["image"]["tmp_name"]));
@@ -148,7 +150,8 @@ class ModuleArticle extends Module {
             "stock" => $stock, 
             "alcool" => $alcool, 
             "image" => $imageId, 
-            "fun_id" => $fun_id
+            "fun_id" => $fun_id,
+            "tva" => $tva
         );
 
 
