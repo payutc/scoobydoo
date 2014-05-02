@@ -1,3 +1,15 @@
+<?php
+
+function formatPrix($p) {
+  return number_format($p, 2, ',', ' ') . " €";
+}
+
+?>
+<style>
+.text-right {
+  text-align: right;
+}
+</style>
 <div class="container">
 
 <div class="row">
@@ -9,22 +21,34 @@
     <h2>Statistiques</h2>
 
     <table class="table">
-      <tr><td><strong>Ventes depuis toujours : </strong></td><td><?php echo $this->param['details']->amount_total / 100; ?> € </td></tr>
-      <tr><td><strong>Somme non reversés : </strong></td><td><?php echo ($this->param['details']->amount_total - $this->param['details']->reversement_total) / 100; ?> € </td></tr>
-      <tr><td><strong>En attente de reversement : </strong></td><td><?php 
+      <tr>
+        <td><strong>Ventes depuis toujours : </strong></td>
+        <td><p class="text-right"><?php echo formatPrix($this->param['details']->amount_total / 100); ?></td>
+      </tr>
+      <tr>
+        <td><strong>Somme non reversés : </strong></td>
+        <td><p class="text-right"><?php echo formatPrix($this->param['details']->amount_total - $this->param['details']->reversement_total / 100); ?></td>
+      </tr>
+      <tr>
+        <td><strong>En attente de reversement : </strong></td>
+        <td><p class="text-right"><?php 
         if($this->param['details']->reversement_wait) {
             $rev = $this->param['details']->reversement_wait;
-            echo $rev->amount/100 ." € demandé le ".$rev->created;
+            echo formatPrix($rev->amount/100) ." demandé le ".$rev->created;
           } else {
             echo "aucun";
-          } ?></td></tr>
-      <tr><td><strong>Dernier reversement : </strong></td><td><?php 
+          } ?></p></td>
+      </tr>
+      <tr>
+        <td><strong>Dernier reversement : </strong></td>
+        <td><p class="text-right"><?php 
         if($this->param['details']->reversement_last) {
             $rev = $this->param['details']->reversement_last;
-            echo $rev->amount/100 ." € le ".$rev->updated;
+            echo formatPrix($rev->amount/100) ." le ".$rev->updated;
           } else {
             echo "aucun";
-          } ?></td></tr>
+          } ?></p></td>
+      </tr>
     </table>
     <?php
       if(($this->param['details']->amount_total - $this->param['details']->reversement_total) > 0 && $this->param['details']->reversement_wait == null) {

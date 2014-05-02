@@ -1,4 +1,11 @@
 <?php
+
+function formatPrix($p) {
+  return number_format($p, 2, ',', ' ') . " €";
+}
+
+?>
+<?php
   $rev = $this->param["reversement"];
   foreach($this->param["fundations"] as $fundation) {
     if($fundation->fun_id == $rev->funId) {
@@ -19,7 +26,7 @@
     <tr><td>Reversement ID :</td><td><?php echo $rev->id; ?></td></tr>
     <tr><td>Fundation :</td><td><?php echo $fun->name; ?></td></tr>
     <tr><td>Date de la demande :</td><td><?php echo $rev->created; ?></td></tr>
-    <tr><td>Montant :</td><td><?php echo $rev->amount / 100; ?> €</td></tr>
+    <tr><td>Montant :</td><td><?php echo formatPrix($rev->amount / 100); ?></td></tr>
     <tr><td>Taux de com :</td><td>
                 <div class="input-append">
                     <input type="number" class="span1" min="0" max="99.99" step="0.01" name="taux" id="taux" value="0" onchange="calculate()"/>
@@ -30,7 +37,7 @@
                     <input type="number" class="span1" name="frais" id="frais" value="0" readonly />
                     <span class="add-on">€</span>
                 </div></td></tr>
-    <tr><td>Montant a reverser :</td><td><span name="reverse" id="reverse" ><?php echo $rev->amount / 100; ?></span> €</td></tr>
+    <tr><td>Montant a reverser :</td><td><span name="reverse" id="reverse" ><?php echo formatPrix($rev->amount / 100); ?></span></td></tr>
     <tr><td></td><td><button type="submit" class="pull-right btn btn-primary">Valider le reversement</a></td></tr>
     </table>
     </form>
