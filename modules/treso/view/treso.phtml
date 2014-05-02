@@ -27,7 +27,7 @@ function formatPrix($p) {
       </tr>
       <tr>
         <td><strong>Somme non reversés : </strong></td>
-        <td><p class="text-right"><?php echo formatPrix($this->param['details']->amount_total - $this->param['details']->reversement_total / 100); ?></td>
+        <td><p class="text-right"><?php echo formatPrix(($this->param['details']->amount_total - $this->param['details']->reversement_total) / 100); ?></td>
       </tr>
       <tr>
         <td><strong>En attente de reversement : </strong></td>
