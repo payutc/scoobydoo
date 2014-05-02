@@ -81,7 +81,6 @@ class ModuleTreso extends Module {
 			exit();
 		}
 
-
 		$this->view->add_param("reversement", $this->json_client->getReversement(array("rev_id" => $_GET['rev_id'])));
 		$this->view->add_param("fundations", $this->json_client->getFundations());
 		$this->view->set_template('html');

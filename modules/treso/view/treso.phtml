@@ -17,7 +17,7 @@ function formatPrix($p) {
     <h1>Gestion trésorerie assos <?php echo $this->param['fundation']->name; ?></h1>
     <br />
   </div>
-  <div class="span5 well">
+  <div class="span6 well">
     <h2>Statistiques</h2>
 
     <table class="table">
@@ -55,6 +55,29 @@ function formatPrix($p) {
         echo '<a href="'.$this->param['url_ask'].'" class="btn btn-primary pull-right">Demander un reversement</a>';
       }
     ?>
+  </div>
+  <div class="span11 well">
+    <h2>Reversements</h2>
+    <table class="table">
+      <thead>
+        <th>Demande</th>
+        <th>Realisation</th>
+        <th><p class="text-right">Montant</p></th>
+        <th><p class="text-right">Frais</p></th>
+        <th><p class="text-right">Montant reversé</p></th>
+      </thead>
+      <tbody>
+        <?php foreach($this->param['details']->reversements as $rev) { ?>
+        <tr>
+          <td><?php echo $rev->created; ?></p></td>
+          <td><?php echo $rev->updated; ?></p></td>
+          <td><p class="text-right"><?php echo formatPrix(($rev->amount)/100); ?></p></td>
+          <td><p class="text-right"><?php echo formatPrix(($rev->frais)/100); ?> ( <?php echo number_format($rev->taux / 100, 2, ',', ' '); ?> %)</p></td>
+          <td><p class="text-right"><?php echo formatPrix(($rev->amount - $rev->frais)/100); ?></p></td>
+        </tr>
+        <?php } ?>
+      </tbody>
+    </table>
   </div>
 </div>
 
