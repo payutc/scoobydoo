@@ -1,0 +1,105 @@
+<?php
+
+function formatPrix($p) {
+  return number_format($p, 2, ',', ' ') . " €";
+}
+
+?>
+<style>
+.text-right {
+  text-align: right;
+  margin: 0;
+}
+</style>
+<div class="container">
+
+<div class="row">
+  <div class="span12">
+    <h1>Journal des ventes <?php echo $this->param['fundation']->name; ?></h1>
+    <p>Pour la période du <?php echo $this->param['start']; ?> au <?php echo $this->param['end']; ?></p>
+    <form class="form-inline" method="post" action="<?php echo $this->param['url_journal']; ?>">
+      <input type="date" name="start" value="<?php echo $this->param['start']; ?>" />
+      <input type="date" name="end" value="<?php echo $this->param['end']; ?>" />
+      <button type="submit" class="btn">Actualiser</button>
+    </form>
+    <br />
+  </div>
+  <div class="span12">
+    <table class="table">
+      <thead>
+        <th>Article</th>
+        <th><p class="text-right">Prix unitaire TTC</p></th>
+        <th><p class="text-right">Tva</p></th>
+        <th>Nombre de ventes</th>
+        <th><p class="text-right">Somme des ventes TTC</p></th>
+      </thead>
+      <tbody>
+        <?php 
+          $tva = array();
+          $nb_sell = 0;
+          $total = 0;
+          foreach($this->param['journal'] as $row) { 
+            if(array_key_exists($row->pur_tva, $tva)) {
+              $tva[$row->pur_tva] += $row->total;
+            } else {
+              $tva[$row->pur_tva] = $row->total;
+            }
+            $nb_sell += $row->qte;
+            $total += $row->total;
+            ?>
+            <tr>
+              <td><?php echo $row->obj_name; ?></td>
+              <td><p class="text-right"><?php echo formatPrix($row->pur_unit_price / 100); ?></p></td>
+              <td><p class="text-right"><?php echo number_format($row->pur_tva, 2, ',', ' '); ?> %</p></td>
+              <td><?php echo $row->qte; ?></td>
+              <td><p class="text-right"><?php echo formatPrix($row->total / 100); ?></p></td>
+            </tr>
+        <?php } ?>
+      </tbody>
+    </table>
+  </div>
+  <div class="offset7 span5 well">
+    <h3>Résumé</h3>
+    <table class="table">
+      <tbody>
+        <tr>
+          <td>Nombres d'articles</td>
+          <td><?php echo $nb_sell; ?></td>
+        </tr>
+        <tr>
+          <td>Montant total TTC</td>
+          <td><?php echo formatPrix($total / 100); ?></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>TVA</h3>
+    <table class="table">
+    <thead>
+        <th>Taux</th>
+        <th><p class="text-right">Montant encaissé</p></th>
+        <th><p class="text-right">A déclarer</p></th>
+      </thead>
+      <tbody>
+        <?php 
+        $total_declare = 0;
+        foreach($tva as $t => $a) { 
+          $declare = ($a * $t / ($t + 100));
+          $total_declare += $declare;
+          ?>
+          <tr>
+            <td><?php echo number_format($t, 2, ',', ' '); ?> %</td>
+            <td><p class="text-right"><?php echo formatPrix($a / 100); ?></p></td>
+            <td><p class="text-right"><?php echo formatPrix($declare / 100); ?></p></td>
+          </tr>
+        <?php } ?>
+          <tr>
+            <td><strong>TOTAL :</strong></td>
+            <td><p class="text-right"><?php echo formatPrix($total / 100); ?></p></td>
+            <td><p class="text-right"><?php echo formatPrix($total_declare / 100); ?></p></td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>

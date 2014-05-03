@@ -35,6 +35,32 @@ class ModuleTreso extends Module {
 		$this->view->add_param("fundation", $fundation);
 		$this->view->add_param("details", $this->json_client->getDetails(array("fun_id" => $fun_id)));
 		$this->view->add_param("url_ask", $this->get_link_to_action("askreversement")."&fun_id=".$fun_id);
+		$this->view->add_param("url_journal", $this->get_link_to_action("journal")."&fun_id=".$fun_id);
+	}
+
+	protected function action_journal() {
+		$fun_id = $_GET['fun_id'];
+		if(empty($fun_id)) {
+			return $this->index();
+		}
+		// Get fundation
+        $fundations = $this->json_client->getFundations();
+		foreach($fundations as $fun) {
+			if($fun->fun_id == $_GET['fun_id']) {
+				$fundation = $fun;
+			}
+		}
+		$start = isset($_POST['start']) ? $_POST['start'] : date("Y-m-d", mktime(0, 0, 0, date("m")-1, date("d"),   date("Y")));
+		$end = isset($_POST['end']) ? $_POST['end'] : date("Y-m-d");
+
+		$this->view->set_template('html');
+		$this->view->set_view($this->get_path_module()."view/journal.phtml");
+		$this->view->add_param("journal", $this->json_client->getExport(array("fun_id" => $fun_id, "start" => $start, "end" => $end)));
+		$this->view->add_param("start", $start);
+		$this->view->add_param("end", $end);
+		$this->view->add_param("fundation", $fundation);
+		$this->view->add_param("url_journal", $this->get_link_to_action("journal")."&fun_id=".$fun_id);
+
 	}
 
 	protected function action_askreversement() {
