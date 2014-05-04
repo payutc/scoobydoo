@@ -310,11 +310,16 @@ function fill_article(data) {
 		price = (''+price).replace('.', ',');
 	}
 	
+	var tva = data.tva;
+	if (tva) {
+		tva = (''+tva).replace('.', ',');
+	}
+
 	$('#article_name').html(data.name);
 	$('#article_id').html(data.id);
 	$('#article_field_name').val(data.name);
 	$('#article_field_price').val(price);
-	$('#article_field_tva').val(data.tva);
+	$('#article_field_tva').val(tva);
 	$('#article_field_stock').val(data.stock);
     $('#article_field_delete_image').removeAttr("checked");
 
