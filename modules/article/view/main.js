@@ -277,6 +277,8 @@ function clear_article() {
 		price: 0,
 		stock: 0,
 		tva: 0,
+		alcool: 0,
+		cotisant: 1,
 		categorie_id: current_categorie_id
     }
     if (current_fundation_id && current_fundation_id.indexOf('fun') != -1) {
@@ -330,6 +332,12 @@ function fill_article(data) {
 		$('#article_field_alcool').prop('checked', true);
 	else
 		$('#article_field_alcool').removeAttr("checked");
+
+	if (data.cotisant == 1)
+		$('#article_field_cotisant').prop('checked', true);
+	else
+		$('#article_field_cotisant').removeAttr("checked");
+
 	if (data.categorie_id) $('#article_field_categorie_id').val(data.categorie_id);
     if (data.fundation_id) $('#article_field_fundation_id').val(data.fundation_id);
 }

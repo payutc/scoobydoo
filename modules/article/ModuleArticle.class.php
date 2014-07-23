@@ -123,6 +123,7 @@ class ModuleArticle extends Module {
 		$fun_id = $_REQUEST['fundation_id'];
 		$stock = $_REQUEST['stock'];
 		$alcool = isset($_REQUEST['alcool']) ? 1 : 0;
+		$cotisant = isset($_REQUEST['cotisant']) ? 1 : 0;
   	
         $price = str_replace(',','.', $_REQUEST['price']);
         $price *= 100;
@@ -151,7 +152,8 @@ class ModuleArticle extends Module {
             "alcool" => $alcool, 
             "image" => $imageId, 
             "fun_id" => $fun_id,
-            "tva" => $tva
+            "tva" => $tva,
+            "cotisant" => $cotisant
         );
 
 
